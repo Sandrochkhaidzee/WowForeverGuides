@@ -467,15 +467,15 @@
   /* ---------- first-visit welcome ---------- */
 
   const WELCOME = {
-    guide: ["Welcome, adventurer!", "📜", "🗺️", "⚔️",
+    guide: ["Welcome, adventurer!", "inv_misc_note_01", "inv_misc_map_01", "ability_dualwield",
       `<p>This guide takes your ${esc(ME ? ME.name : "character")} from level 1 to 60, one small step at a time.</p>
        <ol><li>Read the step on the parchment and do it in game.</li>
        <li>Press <b>Next Step</b> when it's done. Your place is saved.</li>
        <li>Click any word with a <b>dotted line</b> to see what it means.</li></ol>`],
-    professions: ["Professions made easy", "⚒️", "🧵", "💰",
+    professions: ["Professions made easy", "trade_blacksmithing", "trade_tailoring", "inv_misc_coin_01",
       `<p>Professions let you make your own gear and earn gold. This page shows the cheapest way from skill 1 to 300.</p>
        <ol><li>Read <b>Basics</b> to see which two to pick.</li><li>Open a profession tab and follow the steps.</li></ol>`],
-    addons: ["What are addons?", "🧩", "🧭", "✨",
+    addons: ["What are addons?", "trade_engineering", "inv_gizmo_01", "inv_misc_spyglass_03",
       `<p>Addons are free extras that make the game's interface easier. You don't need any to play.</p>
        <ol><li>Start with the <b>must-have</b> (orange) ones.</li><li><b>How to Install</b> shows you how, step by step.</li></ol>`],
   };
@@ -486,7 +486,7 @@
     // people who already used this page before the update just get a nudge on the Help button
     if (WF.returning) { nudgeHelp(); return; }
     const d = dialog(w[0],
-      `<div class="wf-welcome"><div class="wf-welcome-ico" aria-hidden="true"><span>${w[1]}</span><span>${w[2]}</span><span>${w[3]}</span></div>${w[4]}
+      `<div class="wf-welcome"><div class="wf-welcome-ico" aria-hidden="true"><span>${WF.icon(w[1])}</span><span>${WF.icon(w[2])}</span><span>${WF.icon(w[3])}</span></div>${w[4]}
        <p class="hint">Stuck at any point? The <b>?</b> button at the bottom right has answers.</p>
        <div class="wf-dlg-foot">${TOURS[PAGE] ? '<button type="button" class="wowbtn" data-tour>Show me around</button>' : ""}<button type="button" class="wowbtn" data-go>Let's go!</button></div></div>`);
     d.addEventListener("click", (e) => {
@@ -555,7 +555,7 @@
        <button type="button" class="wf-navbtn" aria-expanded="false" aria-haspopup="true">${ICON.swap}<span>Switch</span>${ICON.caret}</button>
        <div class="wf-menu" hidden role="menu"></div>`;
     const btn = nav.querySelector("button"), menu = nav.querySelector(".wf-menu");
-    const mini = (c) => `<span class="wf-mini" style="--orb:${c.orb}"><img src="${WF.ICON_URL}${c.icon}.jpg" alt="" onerror="this.remove()"></span>`;
+    const mini = (c) => `<span class="wf-mini" style="--orb:${c.orb}"><img src="${WF.ICON_URL}${c.icon}.jpg" alt="" onerror="WF.iconErr(this)"></span>`;
     let h = "";
     if (ME) {
       h += `<h4>${esc(ME.name)}</h4>`;
@@ -698,34 +698,19 @@
          The HTML stays simple to edit; this only decorates it.
      ========================================================= */
 
-  const SEC_ICON = {
-    quest:   '<path d="M8 3h9a2 2 0 012 2v14a2 2 0 01-2 2H8"/><path d="M8 3a2 2 0 00-2 2v1H4V5a2 2 0 012-2M8 21a2 2 0 01-2-2v-1H4v1a2 2 0 002 2"/><path d="M12.5 7v6M12.5 16.5v.5"/>',
-    fight:   '<path d="M4 4l10 10M14 14l2-2M14 14l-2 2M15 17l2 2M17 15l2 2M20 4L10 14M10 14l-2-2M10 14l2 2M9 17l-2 2M7 15l-2 2"/>',
-    rest:    '<path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/><path d="M9 11h6M12 8v6"/>',
-    up:      '<path d="M12 3l2.4 5 5.6.8-4 3.9.9 5.5L12 15.6 7.1 18.2 8 12.7 4 8.8 9.6 8z"/>',
-    compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
-    puzzle:  '<path d="M4 8h3a2 2 0 114 0h3v3a2 2 0 110 4v3H4v-3a2 2 0 100-4z"/>',
-    keys:    '<rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h1M9.5 10h1M13 10h1M16.5 10h1M7 14h10"/>',
-    combo:   '<path d="M4 12a8 8 0 0113.7-5.6L20 9M20 4v5h-5M20 12a8 8 0 01-13.7 5.6L4 15M4 20v-5h5"/>',
-    hammer:  '<path d="M14 6l4 4-9.5 9.5a1.5 1.5 0 01-2.1 0l-1.9-1.9a1.5 1.5 0 010-2.1z"/><path d="M12 4l3-1 6 6-1 3"/>',
-    flag:    '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
-    palette: '<path d="M12 3a9 9 0 100 18c1.3 0 2-1 1.5-2-.6-1.2.2-2.5 1.5-2.5H18a3 3 0 003-3c0-5.5-4-10.5-9-10.5z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/>',
-    ceiling: '<path d="M4 4h16M12 20V8M7 13l5-5 5 5"/>',
-    leaf:    '<path d="M5 19C5 10 10 5 20 4c0 10-5 15-14 15zM5 19l7-7"/>',
-    link:    '<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',
-    shield:  '<path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5z"/>',
-    gem:     '<path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20"/>',
-  };
+  /* a game icon for each section, picked by words in its heading */
   const SEC_RULES = [
-    [/combo/i, "combo"], [/quest/i, "quest"], [/fight/i, /after/i, "rest"], [/fight/i, "fight"],
-    [/stronger/i, "up"], [/around/i, "compass"], [/addon/i, "puzzle"], [/key/i, "keys"],
-    [/what is/i, "hammer"], [/how to start/i, "flag"], [/colou?r/i, "palette"], [/stop/i, "ceiling"],
-    [/gathering/i, "leaf"], [/pair/i, "link"], [/fits|class/i, "shield"],
+    [/combo/i, "inv_sword_04"], [/quest/i, "achievement_quests_completed_01"],
+    [/fight/i, /after/i, "inv_misc_food_19"], [/fight/i, "ability_dualwield"],
+    [/stronger/i, "spell_holy_heroism"], [/around/i, "ability_mount_ridinghorse"],
+    [/addon/i, "trade_engineering"], [/key/i, "inv_misc_key_03"],
+    [/what is/i, "trade_blacksmithing"], [/how to start/i, "inv_misc_book_09"],
+    [/colou?r/i, "inv_misc_gem_variety_01"], [/stop/i, "inv_misc_book_07"],
+    [/gathering/i, "trade_herbalism"], [/pair/i, "inv_misc_bag_08"], [/fits|class/i, "inv_chest_leather_01"],
   ];
   const secIcon = (title) => {
     const r = SEC_RULES.find((rule) => rule.slice(0, -1).every((re) => re.test(title)));
-    const k = r ? r[r.length - 1] : "gem";
-    return `<span class="hc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${SEC_ICON[k]}</svg></span>`;
+    return `<span class="hc-ico" aria-hidden="true">${WF.icon(r ? r[r.length - 1] : "inv_misc_questionmark")}</span>`;
   };
 
   /* turn "h3 + what follows" into cards, with a row of picture links to jump to each */

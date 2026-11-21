@@ -61,7 +61,18 @@ WF.characters = [
   },
 ];
 
-WF.ICON_URL = "https://wow.zamimg.com/images/wow/icons/large/";
+/* Game icons are stored with the site in assets/icons/<name>.jpg, copied from the
+   game's own files by tools/extract-icons.py. An icon that isn't there yet is
+   loaded from Wowhead instead, and hidden if that fails too. */
+WF.ICON_URL = document.currentScript ? new URL("../icons/", document.currentScript.src).href : "assets/icons/";
+WF.ICON_CDN = "https://wow.zamimg.com/images/wow/icons/large/";
+WF.iconErr = (img) => {
+  if (img.dataset.cdn) { img.remove(); return; }
+  img.dataset.cdn = "1";
+  img.src = WF.ICON_CDN + img.src.split("/").pop();
+};
+/* <img> for a game icon by name, e.g. WF.icon("inv_misc_note_01", "gi") */
+WF.icon = (name, cls) => `<img${cls ? ` class="${cls}"` : ""} src="${WF.ICON_URL}${name}.jpg" alt="" draggable="false" onerror="WF.iconErr(this)">`;
 
 /* Page link for a character, relative to the site root. */
 WF.href = (c, page) => encodeURI(`${c.folder}/${c.pages[page || "guide"]}`);

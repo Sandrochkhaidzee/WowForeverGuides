@@ -7,3 +7,6 @@ desktop.ini
 # local-only helper scripts and tool config
 *.bat
 .claude/
+
+# Python
+__pycache__/

@@ -265,6 +265,7 @@ section { scroll-margin-top: 24px; }
 .opt:hover { transform: translateY(-3px); border-color: var(--gold); box-shadow: 0 8px 18px rgba(0, 0, 0, .6), 0 0 14px rgba(255, 209, 0, .2); }
 .opt[aria-pressed="true"] { border-color: var(--wow-yellow); background: linear-gradient(rgba(255, 209, 0, .12), rgba(0, 0, 0, .25)); box-shadow: 0 0 0 1px var(--wow-yellow), 0 0 20px rgba(255, 209, 0, .25); }
 .opt .ico { font-size: 34px; line-height: 1; filter: drop-shadow(0 2px 2px #000); transition: transform .3s cubic-bezier(.3, 1.6, .5, 1); }
+.opt .ico img { display: block; width: 48px; height: 48px; border: 2px solid var(--gold-dark); border-radius: 8px; box-shadow: 0 0 0 1px #000; }
 .opt:hover .ico { transform: scale(1.15) rotate(-6deg); }
 .opt b { color: var(--wow-yellow); font-weight: normal; font-size: 18px; }
 .opt small { color: var(--muted); font-size: 14.5px; line-height: 1.4; }

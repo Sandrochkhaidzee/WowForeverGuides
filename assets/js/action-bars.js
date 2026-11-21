@@ -38,7 +38,7 @@ const GLYPH = {
 };
 
 
-const ICON_URL = "https://wow.zamimg.com/images/wow/icons/large/";
+const ICON_URL = WF.ICON_URL;   // assets/icons/, see assets/js/characters.js
 function spellIn(slot, level) {
   let id = null;
   slot[1].forEach(([from, spell]) => { if (level >= from) id = spell; });
@@ -54,7 +54,7 @@ function iconHTML(id, key, fresh) {
   const s = SPELLBOOK[id];
   return `<button type="button" class="slot sc-${s.school}${fresh ? " fresh" : ""}" data-spell="${id}" aria-label="${s.name}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${GLYPH[s.icon]}</svg>
-      ${ICONS[id] ? `<img class="ico" src="${ICON_URL}${ICONS[id]}.jpg" alt="" draggable="false" onerror="this.remove()">` : ""}
+      ${ICONS[id] ? `<img class="ico" src="${ICON_URL}${ICONS[id]}.jpg" alt="" draggable="false" onerror="WF.iconErr(this)">` : ""}
       ${key ? `<span class="hk">${keyLabel(key)}</span>` : ""}
       <span class="cd"></span>
     </button>`;
@@ -65,7 +65,7 @@ function keyLabel(k) { return k.startsWith("S") ? "s" + k.slice(1) : k.startsWit
 function showSpellTip(btn) {
   const s = SPELLBOOK[btn.dataset.spell];
   const tip = document.getElementById("spelltip");
-  tip.innerHTML = `<div class="tt-name">${ICONS[btn.dataset.spell] ? `<img class="tt-ico" src="${ICON_URL}${ICONS[btn.dataset.spell]}.jpg" alt="" onerror="this.remove()">` : ""}${s.name}</div>
+  tip.innerHTML = `<div class="tt-name">${ICONS[btn.dataset.spell] ? `<img class="tt-ico" src="${ICON_URL}${ICONS[btn.dataset.spell]}.jpg" alt="" onerror="WF.iconErr(this)">` : ""}${s.name}</div>
     <div class="tt-sub">${s.talent ? "Talent" : s.school === "racial" ? "Racial" : s.school === "item" ? "Item" : (GUIDE_PAGE.abilityWord || "Spell")} · from level ${s.lv}</div>
     <div class="tt-text">${s.text}</div>`;
   tip.hidden = false;

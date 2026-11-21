@@ -69,6 +69,21 @@ See [docs/ADDING-A-CHARACTER.md](docs/ADDING-A-CHARACTER.md). In short: copy a c
 edit its `data/*.js` and page text, and add one entry to `assets/js/characters.js`. The landing page,
 the "Switch" menu and the class chooser pick it up automatically.
 
+## Game icons
+
+Every icon on the site (abilities, items, step badges, section cards) is a real game icon stored in
+`assets/icons/<name>.jpg`, copied from the game's own files. After adding a character or using a new
+icon name anywhere in the site's `.js` / `.html`, run:
+
+```
+python tools/extract-icons.py "E:/World of Warcraft/_forever_"
+```
+
+It reads the WoW: Forever install (nothing there is changed), finds every icon name the site uses
+(`inv_…`, `ability_…`, `spell_…`, `trade_…`, `achievement_…`, `classicon_…`) and saves the ones that
+are missing. Needs Python with Pillow (`pip install pillow`). An icon that isn't in `assets/icons` yet
+loads from Wowhead instead, so nothing breaks in the meantime.
+
 ## Hosting on GitHub Pages
 
 1. Push this folder to a GitHub repository.

@@ -33,7 +33,7 @@
         <span class="glare" aria-hidden="true"></span>
         <div class="card-head">
           <div class="portrait">
-            <img src="${WF.ICON_URL}${c.icon}.jpg" alt="" onerror="this.remove()">
+            <img src="${WF.ICON_URL}${c.icon}.jpg" alt="" onerror="WF.iconErr(this)">
             ${frac ? `<svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="bg" cx="50" cy="50" r="${R}"/>
               <circle class="fg" cx="50" cy="50" r="${R}" stroke-dasharray="${LEN}" stroke-dashoffset="${LEN}" data-off="${LEN * (1 - frac)}"/></svg>` : ""}
           </div>
@@ -69,7 +69,7 @@
     $("#contlist").innerHTML = started.map(([c, p]) => {
       const pct = p.total ? Math.round(((p.step + 1) / p.total) * 100) : 0;
       return `<a class="cont" href="${WF.href(c, "guide")}" style="--class:${c.color};--glow:${c.glow}">
-        <span class="wf-mini" style="--orb:${c.orb}"><img src="${WF.ICON_URL}${c.icon}.jpg" alt="" onerror="this.remove()"></span>
+        <span class="wf-mini" style="--orb:${c.orb}"><img src="${WF.ICON_URL}${c.icon}.jpg" alt="" onerror="WF.iconErr(this)"></span>
         <span style="flex:1;min-width:0">
           <span class="who">${esc(c.name)}</span>
           <span class="what" style="display:block">Step ${p.step + 1}${p.total ? ` of ${p.total}` : ""}${p.level ? ` · Level ${p.level}` : ""}${p.title ? ` · ${esc(p.title)}` : ""}</span>

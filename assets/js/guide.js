@@ -74,17 +74,18 @@ const KINDS = {
   start:   { label: "Getting ready",   hint: "Set up before you fight anything." },
   done:    { label: "Level 60",        hint: "You made it." },
 };
+/* game icons for each kind of step (assets/icons/<name>.jpg) */
 const KIND_ICON = {
-  quest:   '<path d="M8 3h9a2 2 0 012 2v14a2 2 0 01-2 2H8"/><path d="M8 3a2 2 0 00-2 2v1H4V5a2 2 0 012-2M8 21a2 2 0 01-2-2v-1H4v1a2 2 0 002 2"/><path d="M12 7v6M12 16.5v.5"/>',
-  train:   '<path d="M4 5h6a2 2 0 012 2v13a2 2 0 00-2-2H4zM20 5h-6a2 2 0 00-2 2v13a2 2 0 012-2h6z"/>',
-  talent:  '<path d="M12 2l2.6 6.9L22 9.3l-5.7 4.8L18 21.5 12 17.6 6 21.5l1.7-7.4L2 9.3l7.4-.4z"/>',
-  travel:  '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
-  home:    '<path d="M3 11l9-8 9 8M5 10v11h14V10"/><path d="M10 21v-6h4v6"/>',
-  dungeon: '<path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/>',
-  start:   '<circle cx="12" cy="12" r="3.4"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/>',
-  done:    '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0zM7 6H4a3 3 0 003 4M17 6h3a3 3 0 01-3 4"/>',
+  quest:   "inv_misc_note_01",                         // a quest note
+  train:   "inv_misc_book_09",                         // the spellbook
+  talent:  "spell_holy_powerinfusion",
+  travel:  "inv_misc_map_01",
+  home:    "inv_misc_rune_01",                         // the Hearthstone
+  dungeon: "achievement_dungeon_classicdungeonmaster",
+  start:   "inv_misc_gear_01",
+  done:    "achievement_level_60",
 };
-const kindIcon = (k) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${KIND_ICON[k]}</svg>`;
+const kindIcon = (k) => WF.icon(KIND_ICON[k], "gi");
 
 function stepKind(i) {
   const s = STEPS[i];
