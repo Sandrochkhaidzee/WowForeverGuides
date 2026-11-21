@@ -35,7 +35,8 @@ html[data-contrast="high"] .tier-note { color: var(--muted); }
 html[data-contrast="high"] #wf-embers { display: none; }
 
 html[data-font="readable"] {
-  --font: Verdana, "Segoe UI", Tahoma, system-ui, sans-serif;
+  --font: "Atkinson Hyperlegible", Verdana, "Segoe UI", system-ui, sans-serif;
+  --font-title: var(--font);
 }
 html[data-font="readable"] body { letter-spacing: .01em; }
 
