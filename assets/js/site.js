@@ -482,7 +482,7 @@
   }
 
   /* =========================================================
-     6. Dock (help / settings / top) and scroll progress
+     6. Dock (help / settings / top)
      ========================================================= */
 
   function buildDock() {
@@ -500,15 +500,10 @@
     });
     body.append(dock);
 
-    const bar = make("div", "wf-scroll");
-    bar.setAttribute("aria-hidden", "true");
-    body.append(bar);
     const top = dock.querySelector(".wf-top");
     let ticking = false;
     const update = () => {
       ticking = false;
-      const max = doc.documentElement.scrollHeight - innerHeight;
-      bar.style.setProperty("--p", max > 0 ? Math.min(1, scrollY / max) : 0);
       top.classList.toggle("show", scrollY > 500);
     };
     addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
