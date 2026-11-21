@@ -24,9 +24,7 @@ const DIRS = {
   "threatclassic2": ["ThreatClassic2"],
   "dungeonjournal": ["DungeonJournal"],
   "deadly-boss-mods": ["DBM-Core", "+DBM-"],
-  "bigwigs": ["BigWigs", "BigWigs_Core"],
   "baganator": ["Baganator"],
-  "bagnon": ["Bagnon"],
   "details": ["Details"],
   "gtfo": ["GTFO"],
   "atlasloot-forever": ["AtlasLootClassic", "AtlasLoot", "+AtlasBIStooltips"],
@@ -35,25 +33,55 @@ const DIRS = {
   "rarescanner": ["RareScanner"],
   "openmap": ["OpenMap"],
   "handynotes": ["HandyNotes"],
-  "mastercraft-forever": ["Mastercraft", "MastercraftForever", "Mastercraft_Forever"],
   "spoken": ["Spoken"],
   "minimapbuttonbutton": ["MinimapButtonButton"],
   "bartender4": ["Bartender4"],
   "gathermate2": ["GatherMate2"],
   "foreverauras": ["ForeverAuras"],
   "tradeskill-master": ["TradeSkillMaster"],
-  "weakauras-2": ["WeakAuras"],
-  "omni-cc": ["OmniCC"],
-  "postal": ["Postal"],
-  "scrap": ["Scrap"]
+  "nova-instance-tracker": ["NovaInstanceTracker"],
+  "lfg-forever": ["LFGForever", "LFG_Forever"],
+  "plater-nameplates": ["Plater"],
+  "gearquest-forever": ["GearQuest", "GearQuestForever"],
+  "talents-forever": ["TalentsForever"],
+  "glowing-bars": ["GlowingBars"],
+  "shortest-path-forever": ["ShortestPath", "ShortestPathForever"],
+  "bugsack": ["BugSack"],
+  "forever-quest-tint": ["ForeverQuestTint"],
+  "forever-loot-sparkles": ["ForeverLootSparkles"],
+  "skillup-forever": ["SkillUp", "SkillUpForever"],
+  "blizzmove": ["BlizzMove"]
 };
 
 // helper addons that other addons use; they're expected, not "other folders"
-const HELPERS = { QuestieDB: "questiedb", BagBrother: "bagbrother", LittleWigs: "littlewigs", Syndicator: "syndicator" };
+const HELPERS = { QuestieDB: "questiedb", Syndicator: "syndicator",
+  "!BugGrabber": "bug-grabber", BugGrabber: "bug-grabber", ForeverCore: "forevercore" };
+
+const CHARS = (window.WF && WF.characters) || [];
+
+// tiers that belong to a group (e.g. Dungeons) are drawn under that group's heading
+const tierOf = (id) => TIERS.find((t) => t.id === id);
+const GROUPS = [...new Set(TIERS.filter((t) => t.group).map((t) => t.group))];
+
+// addons in the same pick group count as one: installing either one is enough
+function units(tierIds) {
+  const out = [], byPick = {};
+  for (const a of ADDONS.filter((x) => tierIds.includes(x.tier))) {
+    if (!a.pick) { out.push([a]); continue; }
+    if (!byPick[a.pick]) out.push(byPick[a.pick] = []);
+    byPick[a.pick].push(a);
+  }
+  return out;
+}
+const mustIds = (group) => TIERS.filter((t) => (t.group || "") === group && t.quality === "legendary").map((t) => t.id);
+const missingUnits = (group) => units(mustIds(group)).filter((u) => !u.some((a) => got[a.slug]));
 
 const SCAN_KEY = ADDONS_PAGE.scanKey;
 let scan = null;      // { at, folders, found: {slug: true}, helpers: {slug: true}, extra: [{dir, title}] }
-try { scan = JSON.parse(localStorage.getItem(SCAN_KEY)); } catch (e) { scan = null; }
+try {
+  // a scan saved by the old per-character addons pages still counts
+  for (const k of [SCAN_KEY, ...(ADDONS_PAGE.oldScanKeys || [])]) { scan = JSON.parse(localStorage.getItem(k)); if (scan) break; }
+} catch (e) { scan = null; }
 let got = (scan && scan.found) || {};
 const hasPicker = "showDirectoryPicker" in window;
 
@@ -211,7 +239,6 @@ async function runScan(pickNew) {
 
 function status(a) {
   if (!scan) return "";
-  if (a.tier === "skip") return got[a.slug] ? `<span class="got bad">✗ In your AddOns folder</span>` : `<span class="got no">Not installed (good)</span>`;
   return got[a.slug] ? `<span class="got yes">✓ Installed</span>` : `<span class="got no">Not installed</span>`;
 }
 
@@ -222,7 +249,6 @@ function missingHelpers(a) {
 
 function scanWarn(a) {
   if (!scan || !got[a.slug]) return "";
-  if (a.tier === "skip") return `<p class="awarn">This is in your AddOns folder. ${a.tag === "Not needed" ? "You don't need it, so you can delete its folder." : "It has no WoW Forever version, so delete its folder."}</p>`;
   return missingHelpers(a).map(([, n]) => `<p class="awarn">${n} isn't in your AddOns folder. Install it too.</p>`).join("");
 }
 
@@ -234,19 +260,21 @@ function drawScan(error) {
     html = `<p>Press <b>Scan</b> and pick your AddOns folder: ${where}.</p>
       <p>${hasPicker ? "You only pick it once. After that, one click checks it again." : "Your browser will ask to <b>upload</b> the folder. Nothing is sent anywhere; the page only reads the folder names."} Nothing leaves your computer.</p>`;
   } else {
-    const list = ADDONS.filter((a) => a.tier !== "skip");
+    const list = ADDONS;
     const have = list.filter((a) => got[a.slug]).length;
     const when = new Date(scan.at).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
     const notes = [];
-    const missMust = ADDONS.filter((a) => a.tier === "must" && !got[a.slug]);
-    if (missMust.length) notes.push(`<li class="warn">Still missing must-haves: <b>${missMust.map((a) => a.name).join(", ")}</b></li>`);
-    else notes.push(`<li class="ok">All must-haves installed.</li>`);
+    const uname = (u) => u.map((a) => a.name).join(" or ");
+    for (const g of ["", ...GROUPS]) {
+      const label = g ? `${g.toLowerCase().replace(/s$/, "")} must-haves` : "must-haves";
+      const miss = missingUnits(g);
+      if (miss.length) notes.push(`<li class="warn">Still missing ${label}: <b>${miss.map(uname).join(", ")}</b></li>`);
+      else notes.push(`<li class="ok">All ${label} installed.</li>`);
+    }
     for (const a of ADDONS) for (const [, n] of missingHelpers(a)) notes.push(`<li class="warn">${a.name} needs <b>${n.replace(/\s*\(.*\)/, "")}</b>, which isn't in the folder.</li>`);
     const groups = {};
     for (const a of ADDONS) if (a.pick && got[a.slug]) (groups[a.pick] = groups[a.pick] || []).push(a.name);
     for (const names of Object.values(groups)) if (names.length > 1) notes.push(`<li class="warn">You have both <b>${names.join("</b> and <b>")}</b>. They do the same job, so keep one.</li>`);
-    const bad = ADDONS.filter((a) => a.tier === "skip" && got[a.slug]);
-    if (bad.length) notes.push(`<li class="warn">Delete from the folder: <b>${bad.map((a) => a.name).join(", ")}</b></li>`);
     if (scan.extra.length) notes.push(`<li>Not on this list: ${scan.extra.map((x) => `<b>${esc(x.title && norm(x.title) !== norm(x.dir) ? `${x.title} (${x.dir})` : x.dir)}</b>`).join(", ")}</li>`);
     html = `<p>Last scan: <b>${when}</b>. <b>${have} of ${list.length}</b> addons from this list are installed (${scan.folders} folders in AddOns).</p>
       <ul>${notes.join("")}</ul>
@@ -260,8 +288,16 @@ const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
 let filter = "all";
 
+// one line per class that has a tip, in that class's color
+function tips(a) {
+  if (!a.tips) return "";
+  return CHARS.filter((c) => a.tips[c.cls])
+    .filter((c, i, all) => all.findIndex((x) => x.cls === c.cls) === i)
+    .map((c) => `<p class="atip" style="--c:${c.color}"><b>${c.cls}:</b> ${a.tips[c.cls]}</p>`).join("");
+}
+
 function card(a) {
-  const q = TIERS.find((t) => t.id === a.tier).quality;
+  const q = tierOf(a.tier).quality;
   const icon = a.icon
     ? `<img src="${ICON(a.icon.replace("/256/256/", "/64/64/"))}" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('⚙'))">`
     : "⚙";
@@ -275,9 +311,10 @@ function card(a) {
   return `<article class="addon ${q}${got[a.slug] ? " done" : ""}" data-slug="${a.slug}">
     <div class="aicon">${icon}</div>
     <div>
-      <div class="ahead"><b class="aname">${a.name}</b><span class="atag">${a.tag} · ${a.dl} downloads</span>${a.pick ? `<span class="apick">${a.pick}</span>` : ""}</div>
+      <div class="ahead"><b class="aname">${a.name}</b><span class="atag">${a.tag} · ${a.dl} downloads</span>${a.pick ? `<span class="apick">${a.pick}</span>` : ""}${a.only ? `<span class="apick">${a.only.join(", ")} only</span>` : ""}</div>
       <p class="awhat">${a.what}</p>
       <p class="awhy">${a.why}</p>
+      ${tips(a)}
       ${needs}
       ${a.warn ? `<p class="awarn">${a.warn}</p>` : ""}
       ${scanWarn(a)}
@@ -289,11 +326,22 @@ function card(a) {
   </article>`;
 }
 
+// a tier shows for "all", for its own id, or for its group's name
+const shown = (t) => filter === "all" || filter === t.id || filter === t.group;
+const countIn = (ids) => ADDONS.filter((a) => ids.includes(a.tier)).length;
+
 function draw() {
+  let last = "";
   $("#tiers").innerHTML = TIERS.map((t) => {
     const list = ADDONS.filter((a) => a.tier === t.id);
-    return `<section class="tier" data-tier="${t.id}"${filter !== "all" && filter !== t.id ? " hidden" : ""}>
-      <h3 style="color: var(--q-${t.quality})">${t.title} <small>${list.length} addons</small></h3>
+    let head = "";
+    if (t.group && t.group !== last) {
+      head = `<div class="tgroup" data-group="${t.group}"${shown(t) ? "" : " hidden"}>
+        <h2>${t.group}</h2>${t.groupNote ? `<p>${t.groupNote}</p>` : ""}</div>`;
+    }
+    last = t.group || "";
+    return head + `<section class="tier" data-tier="${t.id}"${shown(t) ? "" : " hidden"}>
+      <h3 style="color: var(--q-${t.quality})">${t.title} <small>${list.length} addon${list.length === 1 ? "" : "s"}</small></h3>
       <p class="tier-note">${t.note}</p>
       <div class="addons">${list.map(card).join("")}</div>
     </section>`;
@@ -302,19 +350,25 @@ function draw() {
 }
 
 function drawFilters() {
-  const must = ADDONS.filter((a) => a.tier === "must");
-  const done = must.filter((a) => got[a.slug]).length;
+  const btn = (f, label, n) => `<button type="button" data-f="${f}" class="${filter === f ? "on" : ""}">${label}<small>${n}</small></button>`;
+  const progress = ["", ...GROUPS].map((g) => {
+    const all = units(mustIds(g));
+    const done = scan ? all.length - missingUnits(g).length : "?";
+    return `${g || "Must-haves"}: <b>${done} / ${all.length}</b>`;
+  }).join(" · ");
   $("#filters").innerHTML =
     `<button type="button" data-f="all" class="${filter === "all" ? "on" : ""}">All</button>` +
-    TIERS.map((t) => `<button type="button" data-f="${t.id}" class="${filter === t.id ? "on" : ""}">${t.title}<small>${ADDONS.filter((a) => a.tier === t.id).length}</small></button>`).join("") +
-    `<span class="progress">Must-haves installed: <b>${scan ? done : "?"} / ${must.length}</b></span>`;
+    TIERS.filter((t) => !t.group).map((t) => btn(t.id, t.title, countIn([t.id]))).join("") +
+    GROUPS.map((g) => btn(g, g, countIn(TIERS.filter((t) => t.group === g).map((t) => t.id)))).join("") +
+    `<span class="progress">${progress}</span>`;
 }
 
 $("#filters").addEventListener("click", (e) => {
   const b = e.target.closest("button[data-f]");
   if (!b) return;
   filter = b.dataset.f;
-  $$(".tier").forEach((s) => { s.hidden = filter !== "all" && filter !== s.dataset.tier; });
+  $$(".tier").forEach((s) => { s.hidden = !shown(tierOf(s.dataset.tier)); });
+  $$(".tgroup").forEach((s) => { s.hidden = filter !== "all" && filter !== s.dataset.group; });
   drawFilters();
 });
 
@@ -348,6 +402,7 @@ document.addEventListener("click", (e) => {
 });
 window.addEventListener("hashchange", () => showTab(location.hash.slice(1)));
 
+WF.backLink();
 draw();
 drawScan();
 if (location.hash) showTab(location.hash.slice(1));

@@ -267,7 +267,7 @@
       faq: [
         ["I've never played World of Warcraft. Is this for me?", "Yes. The guides are written for complete beginners: every step says exactly where to go and what to press, and game words explain themselves when you click them."],
         ["Which character should I pick?", "Use <b>Help me choose</b> on this page. Short version: Mage if you like fighting from far away, Rogue if you like sneaking up close."],
-        ["Do I need addons?", "No. The game works fine without them. A few make leveling easier, and each character's Addons page lists them."],
+        ["Do I need addons?", "No. The game works fine without them. A few make leveling easier, and the Addons page lists them."],
         ["Does it work on my phone?", "Yes. Keep the guide open on your phone next to the game. Your progress is saved separately on each device and browser."],
       ],
     },

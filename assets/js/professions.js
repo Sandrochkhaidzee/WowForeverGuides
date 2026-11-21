@@ -1,9 +1,30 @@
 /* =========================================================
    Professions page engine: step cards, progress, tabs.
-   Shared by every character. Content comes from <character>/data/*.js
+   One page (professions.html) for every character. Content comes from data/professions.js
    ========================================================= */
 
 const KEY = PROF_PAGE.saveKey;
+
+// first visit to the shared page: carry over ticks saved by the old per-character page
+// (the one whose guide linked here, else any), except routes whose rows moved
+(function carryOver() {
+  try {
+    if (localStorage.getItem(KEY) !== null) return;
+    const olds = PROF_PAGE.oldSaveKeys || {};
+    const has = (k) => k && localStorage.getItem(k) !== null;
+    const from = olds[document.body.dataset.character];
+    const old = has(from) ? from : Object.values(olds).find(has);
+    if (!old) return;
+    const keep = (prof) => !(PROF_PAGE.changedRoutes || []).includes(prof);
+    const d = JSON.parse(localStorage.getItem(old)) || {}, out = {};
+    Object.keys(d).forEach((k) => { if (keep(k.split(":")[0])) out[k] = d[k]; });
+    localStorage.setItem(KEY, JSON.stringify(out));
+    Object.keys(PROFS).filter(keep).forEach((prof) => {
+      const v = localStorage.getItem(old + ".cur." + prof);
+      if (v !== null) localStorage.setItem(KEY + ".cur." + prof, v);
+    });
+  } catch (e) {}
+})();
 function loadDone() {
   try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
 }
@@ -91,7 +112,8 @@ function card(prof, i) {
     };
   }
 
-  const tag = r.t === "horde" ? '<span class="badge horde">Horde only</span>'
+  const tag = r.race ? '<span class="badge alt">' + esc(r.race) + ' route</span>'
+    : r.t === "horde" ? '<span class="badge horde">Horde only</span>'
     : r.t === "alliance" ? '<span class="badge alliance">Alliance only</span>'
     : r.t === "alt" ? '<span class="badge alt">other option</span>'
     : r.t === "vendor" ? '<span class="badge vendor">recipe from a vendor</span>' : "";
@@ -101,6 +123,7 @@ function card(prof, i) {
     const todo = [];
     if (r.t === "horde") todo.push("<b>Horde players only.</b> If you're Alliance, skip this: press <b>Done, next</b>.");
     if (r.t === "alliance") todo.push("<b>Alliance players only.</b> If you're Horde, skip this: press <b>Done, next</b>.");
+    if (r.race) todo.push("This step is for the <b>" + esc(r.race) + "</b> route. Playing another race? Skip it: press <b>Done, next</b>.");
     if (r.t === "alt") todo.push("This is <b>another place</b> for about the same skill range as the step before. You only need one. If you already did that one, press <b>Done, next</b>.");
     todo.push("Go to <b>" + esc(r.c) + "</b>" + (r.w ? ": " + esc(r.w) : "") + ".");
     todo.push("Kill <b>" + esc(r.e) + "</b>. They're level " + esc(r.n) + ".");
@@ -253,6 +276,7 @@ function showTab(name) {
 tabs.forEach(t => t.addEventListener("click", () => { showTab(t.dataset.tab); window.scrollTo(0, 0); }));
 document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => { showTab(b.dataset.go); window.scrollTo(0, 0); }));
 
+WF.backLink();
 Object.keys(PROFS).forEach(build);
 let startTab = "overview";
 try { startTab = localStorage.getItem(KEY + ".tab") || "overview"; } catch (e) {}

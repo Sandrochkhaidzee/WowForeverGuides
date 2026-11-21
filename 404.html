@@ -37,7 +37,17 @@
   <script>
     // on GitHub Pages project sites the site lives under /<repo>/ — send people there, not to the domain root
     var parts = location.pathname.split("/").filter(Boolean);
-    if (location.hostname.endsWith("github.io") && parts.length) document.getElementById("home").href = "/" + parts[0] + "/";
+    var root = location.hostname.endsWith("github.io") && parts.length ? "/" + parts[0] + "/" : "/";
+    document.getElementById("home").href = root;
+    // pages that were merged into one shared page: send old bookmarks there
+    var MOVED = {
+      "Gnome-Mage-Professions.html": "professions.html?c=gnome-mage",
+      "NightElf-Rogue-Professions.html": "professions.html?c=nightelf-rogue",
+      "Gnome-Mage-Addons.html": "addons.html?c=gnome-mage",
+      "NightElf-Rogue-Addons.html": "addons.html?c=nightelf-rogue"
+    };
+    var to = MOVED[decodeURIComponent(parts[parts.length - 1] || "")];
+    if (to) location.replace(root + to + location.hash);
   </script>
 </body>
 </html>

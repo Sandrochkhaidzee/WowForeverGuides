@@ -1,9 +1,18 @@
-/* Settings the shared professions engine (assets/js/professions.js) reads for this character. */
-const PROF_PAGE = { character: "gnome-mage", saveKey: "mageProfessions.v1", city: "Ironforge for Gnomes" };
+/* Settings the shared professions engine (assets/js/professions.js) reads.
+   One page for every character. oldSaveKeys: progress saved by the old per-character
+   pages, copied over on the first visit. changedRoutes: routes whose rows moved when the
+   pages were merged, so their old ticks are left behind. */
+const PROF_PAGE = {
+  saveKey: "wfProfessions.v1",
+  oldSaveKeys: { "gnome-mage": "mageProfessions.v1", "nightelf-rogue": "nelfRogueProfessions.v1" },
+  changedRoutes: ["skinning"],
+  city: "Ironforge for Gnomes, Darnassus for Night Elves"
+};
 
 /* Each profession: plaque title, intro, column headers, steps, and a shopping list or tips.
    Step fields: s = skill range, c = craft or zone, t = tag (known / vendor / alliance / horde / alt),
-   w = where to buy (or extra line), n = count, e = materials or mobs, note = red hint.
+   w = where to buy (or extra line), n = count, e = materials or mobs, note = red hint,
+   race = this row is only for that race's route (Skinning), the others skip it.
    Rows with only m are trainer stops.
    Ticks are saved by row position, so add new rows only at the end of a list. */
 const PROFS = {
@@ -156,10 +165,12 @@ const PROFS = {
     numLabel: "Mob level ", eachLabel: "Skin: ",
     steps: [
       { m: "Apprentice (skill 1–75): learn the profession at a trainer" },
-      { s: "1–75",    c: "your starting zone", w: "Northshire Valley, Elwynn Forest (Alliance) · Valley of Trials, Durotar (Horde)", n: "1–10", e: "Any beast: Young Wolves, Timber Wolves, Mottled Boars", note: "At 50, train Journeyman at a city trainer (level 10)." },
-      { s: "75–130",  c: "Loch Modan", t: "alliance", n: "16–17", e: "Elder Mountain Boars, Black Bear Patriarchs, Loch Crocolisks along the shore" },
+      { s: "1–75",    c: "your starting zone", w: "Night Elves: Shadowglen and the woods around Dolanaar, Teldrassil · Gnomes: Coldridge Valley and Dun Morogh · Horde: Durotar", n: "1–11", e: "Any beast: nightsabers, owls and boars in Teldrassil, wolves and boars in Dun Morogh", note: "At 50, train Journeyman at a city trainer (level 10)." },
+      { s: "75–115",  c: "Darkshore", race: "Night Elf", w: "The beaches and hills around Auberdine", n: "12–19", e: "Moonstalkers, Thistle Bears, Rabid Thistle Bears, Foreststriders" },
+      { s: "115–150", c: "Ashenvale", race: "Night Elf", w: "The forest around Astranaar", n: "20–25", e: "Ashenvale Bears, Elder Ashenvale Bears, Ghostpaw Runners, Shadowhorn Stags", note: "At 125, train Expert (level 20)." },
+      { s: "75–130",  c: "Loch Modan", race: "Gnome", n: "16–17", e: "Elder Mountain Boars, Black Bear Patriarchs, Loch Crocolisks along the shore" },
+      { s: "130–150", c: "Wetlands", race: "Gnome", w: "Whelgar's Excavation Site", n: "25–27", e: "Mottled Scytheclaws, Mottled Razormaws", note: "At 125, train Expert (level 20)." },
       { s: "75–150",  c: "The Barrens", t: "horde", w: "Small raptor camp west of Northwatch Hold", n: "16–18", e: "Sunscale Scytheclaws, Zhevra Chargers, Ornery Plainstriders", note: "At 125, train Expert (level 20)." },
-      { s: "130–150", c: "Wetlands", t: "alliance", w: "Whelgar's Excavation Site", n: "25–27", e: "Mottled Scytheclaws, Mottled Razormaws", note: "At 125, train Expert (level 20)." },
       { s: "150–160", c: "Hillsbrad Foothills", w: "Outside Foothill Caverns (from Southshore or Tarren Mill)", n: "22–24", e: "Vicious Gray Bears, Starving Mountain Lions" },
       { s: "160–225", c: "Hillsbrad Foothills", w: "Inside Foothill Caverns, the yeti cave near Alterac", n: "30–32", e: "Cave Yetis, Ferocious Yetis (they respawn fast)", note: "At 200, train Artisan (level 35)." },
       { s: "150–225", c: "Duskwood", t: "alt", w: "Other option: Rotting Orchard and Roland's Doom", n: "26–29", e: "Nightbane Worgen, Shadow Weavers, Dark Runners" },

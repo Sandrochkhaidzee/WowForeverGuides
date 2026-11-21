@@ -2,7 +2,7 @@
 const GUIDE_PAGE = {
   character: "gnome-mage",
   saveKey: "gnomeMageBeginner.v1",
-  addonsHref: "Gnome-Mage-Addons.html",
+  addonsHref: "../addons.html?c=gnome-mage",
   abilityWord: "Spell",
   abilitiesWord: "spells",
   itemNote: { test: /^(water|food|managem)/, text: "Water, food and gems are items: they show up in your bags after you cast the Conjure spell. Drag them from your bag (<kbd>B</kbd>) onto the key shown. When a better one replaces an old one, drop the new one on the same key and sell or eat up the old ones." }
@@ -35,29 +35,30 @@ const STEPS = [
   tip:"Fireball is already on key <kbd>1</kbd>. That's your attack for now." },
 
 { lv:"1", place:"Coldridge Valley", title:"Your first quest", map:[["dunmorogh",[29.9,71.2,"Sten Stoutarm"],[26.5,75.5,"Wolves"]]],
-  done:"you've handed in <b>Dwarven Outfitters</b>.",
+  done:"you've handed in <b>Dwarven Outfitters</b> and have <b>Glyphic Memorandum</b> in your quest log.",
   todo:[
     "Talk to <b>Sten Stoutarm</b>, the dwarf right in front of you. He has a yellow <b>!</b> over his head. Accept <b>Dwarven Outfitters</b>.",
-    "Walk southwest and kill wolves until you have 8 Tough Wolf Meat.",
-    "Go back to Sten. He now has a yellow <b>?</b>. Talk to him to turn in the quest."
+    "Walk south-west and kill ragged wolves until you have <b>8 Tough Wolf Meat</b>.",
+    "Go back to Sten. He now has a yellow <b>?</b>. Talk to him to turn in the quest, then take your mage quest, <b>Glyphic Memorandum</b>."
   ],
   tip:"How to fight: click a wolf to target it, then press <kbd>1</kbd> while standing still. Start casting before it reaches you." },
 
-{ lv:"1–2", place:"Coldridge Valley", title:"Meet your trainer", map:[["dunmorogh",[28.7,66.4,"Marryk Nurribit (inside Anvilmar)"],[29.9,71.2,"Sten and Balir"],[28,79,"Troggs"]]],
+{ lv:"1–3", place:"Coldridge Valley", title:"Meet your trainer and the troggs", map:[["dunmorogh",[28.7,66.4,"Marryk Nurribit (inside Anvilmar)"],[29.9,71.2,"Sten and Balir"],[28,79,"Troggs"]]],
   done:"Marryk has the <b>Glyphic Memorandum</b> and you've handed in <b>A New Threat</b>.", stuck:"Fight the troggs south of Anvilmar until you're level 3.",
   todo:[
-    "Sten gives you a letter called <b>Glyphic Memorandum</b>. Take it to <b>Marryk Nurribit</b>, the mage trainer in the valley.",
-    "Also take <b>Coldridge Valley Mail Delivery</b> from Sten and <b>A New Threat</b> from Balir Frosthammer.",
-    "For A New Threat, kill the troggs to the south, then go back to Balir."
+    "Take <b>Glyphic Memorandum</b> to <b>Marryk Nurribit</b>, the mage trainer inside Anvilmar, the building behind Sten.",
+    "Take <b>A New Threat</b> from <b>Balir Frosthammer</b> next to Sten: kill <b>6 Rockjaw Troggs</b> and <b>6 Burly Rockjaw Troggs</b> in the hills south of the wolves. Hand it back to Balir.",
+    "Take <b>Coldridge Valley Mail Delivery</b> from Sten for the next step. In Anvilmar, the gnome <b>Felix Whindlebolt</b> gives <b>A Refugee's Quandary</b>: his lost box, chest and bucket are in the troll camps in the south-west."
   ],
   tip:"After every fight, if your health or mana is low, sit and eat or drink before the next one. It saves you from dying." },
 
-{ lv:"3–5", place:"Coldridge Valley", title:"Deliver the mail", map:[["dunmorogh",[22.6,71.4,"Talin Keeneye"],[25.1,75.7,"Grelin Whitebeard's camp"],[26.8,79.2,"Troll cave"]]],
-  done:"Grik'nir is dead and <b>The Stolen Journal</b> is handed in.", stuck:"Fight the young trolls in the cave until you're level 5.",
+{ lv:"3–5", place:"Coldridge Valley", title:"Deliver the mail", map:[["dunmorogh",[22.6,71.4,"Talin Keeneye"],[25.1,75.7,"Grelin Whitebeard's camp"],[26.8,79.2,"Troll cave"],[22.8,79.9,"Felix's things (troll camps)"]]],
+  done:"Grik'nir is dead, <b>The Stolen Journal</b> is handed in, and <b>Scalding Mornbrew Delivery</b> is in your quest log.", stuck:"Fight the young trolls in the cave until you're level 5.",
   todo:[
-    "Walk west along the road to <b>Talin Keeneye</b> and give him the mail. Take his quest <b>The Boar Hunter</b> and kill boars nearby.",
-    "Take the next mail to <b>Grelin Whitebeard</b>'s camp to the south. Take <b>The Troll Cave</b> and kill the young trolls.",
-    "Then <b>The Stolen Journal</b>: kill the troll leader, Grik'nir the Cold, at the back of the cave."
+    "Walk west from Anvilmar to <b>Talin Keeneye</b> and give him the mail. Take <b>The Boar Hunter</b> (kill small crag boars around his camp) and the next mail delivery.",
+    "Take the mail to <b>Grelin Whitebeard</b>'s camp to the south. Take <b>The Troll Cave</b>: kill <b>14 Frostmane troll whelps</b> in and around the cave.",
+    "Then <b>The Stolen Journal</b>: go into the cave, keep to the left, kill <b>Grik'nir the Cold</b> and loot the journal. Hand both to Grelin.",
+    "Pick up Felix's <b>box</b>, <b>chest</b> and <b>bucket of bolts</b> in the troll camps here. At Grelin's camp, <b>Nori Pridedrift</b> gives <b>Scalding Mornbrew Delivery</b>, and Grelin gives <b>Senir's Observations</b>."
   ],
   tip:"In caves, enemies stand close together. Fight them one at a time: target the closest one and step back so you don't pull its friends." },
 
@@ -69,19 +70,12 @@ const STEPS = [
     "Cast Conjure Water a few times. It makes <b>Conjured Water</b> in your bags. Drag that water onto <kbd>Alt</kbd> + <kbd>1</kbd> and drink it (press <kbd>Alt</kbd> + <kbd>1</kbd>) whenever your mana is low."
   ] },
 
-{ lv:"5", place:"Anvilmar", title:"Free bag", map:[["dunmorogh",[28.7,66.4,"Anvilmar"]]],
-  done:"the 6-slot bag is in a bag slot.",
+{ lv:"5", place:"Anvilmar", title:"Hot mornbrew and Felix's things", map:[["dunmorogh",[28.7,66.4,"Anvilmar"],[25.1,75.7,"Nori Pridedrift (Grelin's camp)"]]],
+  done:"you've handed in <b>Scalding Mornbrew Delivery</b>, <b>Bring Back the Mug</b> and <b>A Refugee's Quandary</b>.",
   todo:[
-    "Find <b>Grund Drokda</b> at Anvilmar (the building where you started) and do <b>Grund and Gozwin</b>.",
-    "The reward is a 6-slot bag. Right-click it to equip it in a free bag slot."
-  ],
-  tip:"If he doesn't have a quest yet, come back a level later." },
-
-{ lv:"5–6", place:"Coldridge Valley", title:"Finish the valley", map:[["dunmorogh",[28.7,66.4,"Anvilmar"]]],
-  done:"<b>Scalding Mornbrew Delivery</b> is handed in and you're level 6.", stuck:"Fight wolves and troggs in the valley until you are.",
-  todo:[
-    "Take <b>Scalding Mornbrew Delivery</b> at Anvilmar and run it straight to its destination before it goes cold, then bring the mug back.",
-    "Turn in everything you've finished."
+    "<b>Scalding Mornbrew Delivery</b>: run the hot mornbrew straight to <b>Durnan Furcutter</b> in Anvilmar before it goes cold. Don't stop to fight on the way.",
+    "Durnan gives <b>Bring Back the Mug</b>: take the empty mug back to Nori at Grelin's camp.",
+    "Give Felix his three things in Anvilmar. If <b>Grund Drokda</b> at Anvilmar offers <b>Grund and Gozwin</b>, do it too: the reward is a 6-slot bag. Right-click a new bag to put it in a free bag slot."
   ] },
 
 { lv:"6", place:"Marryk Nurribit (trainer)", title:"Level 6: train again", map:[["dunmorogh",[28.7,66.4,"Marryk Nurribit (mage trainer)"]]], learn:["fireblast","conjurefood","comprehend","food1"],
@@ -94,20 +88,21 @@ const STEPS = [
   ],
   tip:"Comprehend Scroll is a mage-only skill in Forever. Monsters sometimes drop odd scrolls; use it on them to get free buffs and small spells." },
 
-{ lv:"6", place:"Coldridge Pass", title:"Leave the valley", map:[["dunmorogh",[33.9,72.2,"Hands Springsprocket, Coldridge Pass"],[46.7,53,"Kharanos"]]],
+{ lv:"6", place:"Coldridge Pass", title:"Leave the valley", map:[["dunmorogh",[33.9,72.2,"Coldridge Pass: Thalos and Hands Springsprocket"],[46.7,53,"Kharanos"]]],
   done:"you're in Kharanos with <b>Supplies to Tannok</b> in your quest log.",
   todo:[
-    "Take <b>Supplies to Tannok</b> from Hands Springsprocket.",
-    "Walk through the tunnel (Coldridge Pass) to the town of <b>Kharanos</b>."
+    "At the tunnel out of the valley (Coldridge Pass), hand <b>Senir's Observations</b> to <b>Mountaineer Thalos</b> and do the second part he gives you.",
+    "Take <b>Supplies to Tannok</b> from <b>Hands Springsprocket</b>.",
+    "Walk through the tunnel to the town of <b>Kharanos</b>."
   ] },
 
 /* ---------- Kharanos, levels 6–11 ---------- */
 { chapter:"Kharanos", lv:"6", place:"Kharanos", title:"Make Kharanos your home", map:[["dunmorogh",[47.3,52.4,"Thunderbrew Distillery (inn)"]]],
-  done:"your Hearthstone says <b>Kharanos</b> when you hover over it.",
+  done:"your Hearthstone says <b>Kharanos</b> when you hover over it, and <b>Supplies to Tannok</b> is handed in.",
   todo:[
     "Find the innkeeper in the Thunderbrew Distillery (the big inn) and choose <b>Make this inn your home</b>.",
     "Your <b>Hearthstone</b> (in your bag) now teleports you back here. It has a 1 hour cooldown.",
-    "Turn in <b>Supplies to Tannok</b>."
+    "Hand <b>Supplies to Tannok</b> to <b>Tannok Frosthammer</b> in the inn."
   ],
   tip:"Always log out inside an inn. You'll get bonus XP (called rested XP) when you come back." },
 
@@ -115,22 +110,23 @@ const STEPS = [
   done:"you've learned Cooking and handed in <b>Beer Basted Boar Ribs</b>.",
   todo:[
     "Find the cooking trainer in Kharanos and learn Cooking.",
-    "Do <b>Beer Basted Boar Ribs</b> from Ragnar Thunderbrew. It teaches you a recipe.",
+    "Do <b>Beer Basted Boar Ribs</b> from <b>Ragnar Thunderbrew</b> by the inn door: kill crag boars on the roads for <b>Crag Boar Ribs</b>, buy the <b>Rhapsody Malt</b> in the inn, and cook. It teaches you a recipe.",
     "Cooked food gives the <b>Well Fed</b> buff: 5% more XP from kills."
   ] },
 
-{ lv:"6–7", place:"Kharanos", title:"Grab every quest in town", map:[["dunmorogh",[46.7,53,"Kharanos"],[49.4,48.4,"Steelgrill's Depot"],[42.5,53,"The Grizzled Den"]]],
-  done:"your quest log (<kbd>L</kbd>) has the quests listed above.",
+{ lv:"6–7", place:"Kharanos", title:"Grab every quest in town", map:[["dunmorogh",[46.7,53,"Kharanos"],[49.4,48.4,"Steelgrill's Depot"],[42.5,53,"The Grizzled Den"],[44,56,"Wrecked camp (ammo crate)"],[40.6,65.1,"Hegnar Rumbleshot"]]],
+  done:"you've handed in <b>Stocking Jetsteam</b>, <b>The Grizzled Den</b> and <b>Ammo for Rumbleshot</b>.", stuck:"Fight the boars, bears and wendigos near Kharanos until you're level 7.",
   todo:[
-    "Walk around Kharanos and take every yellow <b>!</b> you see: <b>Stocking Jetsteam</b>, <b>The Grizzled Den</b>, <b>Operation Recombobulation</b>, <b>The Perfect Stout</b>, <b>Bitter Rivals</b>, <b>Frostmane Hold</b> and <b>Ammo for Rumbleshot</b>.",
-    "Press <kbd>L</kbd> to open your quest log. Each quest tells you where to go.",
-    "Start with the easy ones close to town: <b>Stocking Jetsteam</b> (boars and bears) and <b>The Grizzled Den</b> (wendigos in a cave)."
+    "At <b>Steelgrill's Depot</b>, the gnome hangar just north-east of town, take <b>Stocking Jetsteam</b> (Pilot Bellowfiz: <b>4 Chunks of Boar Meat</b> and <b>2 Thick Bear Furs</b>), <b>The Grizzled Den</b> (Pilot Stonegear: <b>Wendigo Manes</b> from the wendigos in the cave west of town) and <b>Ammo for Rumbleshot</b> (Loslor Rudge).",
+    "<b>Ammo for Rumbleshot</b>: pick up the ammo crate at the wrecked camp just south of Kharanos and take it to <b>Hegnar Rumbleshot</b>, further south along the road.",
+    "In town, also take <b>Frostmane Hold</b> from <b>Senir Whitebeard</b> and <b>Operation Recombobulation</b> from <b>Razzle Sprysprocket</b>.",
+    "Hand the Depot quests back at the Depot. Press <kbd>L</kbd> to open your quest log: each quest says how many you need."
   ] },
 
 { lv:"7–8", place:"West of Kharanos", title:"Gnome quest: fix the machines", map:[["dunmorogh",[45.9,49.4,"Razzle Sprysprocket"],[25.5,41.5,"Leper Gnomes"]]],
   done:"Razzle has his gears and cogs.", stuck:"Fight the Leper Gnomes west of Kharanos until you're level 8.",
   todo:[
-    "For <b>Operation Recombobulation</b>, go west toward Gnomeregan and kill the Leper Gnomes for gears and cogs.",
+    "For <b>Operation Recombobulation</b>, go west toward Gnomeregan and kill the Leper Gnomes outside it for <b>Gyromechanic Gears</b> and <b>Restabilization Cogs</b>. Don't go into Gnomeregan itself.",
     "Bring them back to Razzle Sprysprocket in Kharanos."
   ] },
 
@@ -142,21 +138,21 @@ const STEPS = [
   ],
   tip:"If two enemies attack you, cast Polymorph on one of them. It turns into a sheep and can't fight for a while. Kill the other one, then deal with the sheep. Don't hit the sheep, or it wakes up." },
 
-{ lv:"8–9", place:"Around Kharanos", title:"Trolls and stout", map:[["dunmorogh",[40,43,"Shimmer Ridge"],[25,51,"Frostmane Hold"],[40.6,65.1,"Hunter camp"],[47.3,52.4,"Kharanos inn"]]],
-  done:"you've handed in <b>Shimmer Stout</b>, <b>Frostmane Hold</b>, <b>Bitter Rivals</b> and <b>Ammo for Rumbleshot</b>, and you're level 10.", stuck:"Fight the Frostmane trolls at Shimmer Ridge until you are.",
+{ lv:"8–10", place:"Brewnall Village and the troll camps", title:"Trolls, stout and the beer feud", map:[["dunmorogh",[30.5,45.5,"Brewnall Village (Rejold and Marleth)"],[37,42,"Shimmer Ridge (path up at the camp)"],[25,51,"Frostmane Hold"],[47.3,52.4,"Kharanos inn (Jarven)"]]],
+  done:"you've handed in <b>Frostmane Hold</b>, <b>Shimmer Stout</b>, <b>Return to Marleth</b> and <b>A Favor for Evershine</b>, and you're level 10.", stuck:"Fight the Frostmane trolls at Shimmer Ridge until you are.",
   todo:[
-    "<b>The Perfect Stout</b> / <b>Shimmer Stout</b>: kill the troll casters at Shimmer Ridge for Shimmerweed.",
-    "<b>Frostmane Hold</b>: explore the troll camp and kill the headhunters.",
-    "<b>Bitter Rivals</b> leads into the inn's cellar. <b>Ammo for Rumbleshot</b> sends you to a hunter's camp south of town.",
+    "<b>Frostmane Hold</b>: go to the troll cave in the south-west, walk in far enough to get the <b>Explore</b> message, and kill <b>5 Frostmane Headhunters</b>. Hand it back to Senir in Kharanos.",
+    "At <b>Brewnall Village</b> by the frozen lake, <b>Rejold Barleybrew</b> gives the stout quests: <b>The Perfect Stout</b> and then <b>Shimmer Stout</b>. Climb the path up to <b>Shimmer Ridge</b>, kill the trolls and loot the baskets for <b>Shimmerweed</b>. He also gives <b>A Favor for Evershine</b> (bears, boars and leopards).",
+    "<b>Marleth Barleybrew</b>, also in Brewnall, gives <b>Bitter Rivals</b>. In the Kharanos inn, buy a <b>Thunder Ale</b> from the innkeeper and give it to <b>Jarven Thunderbrew</b> (<b>Distracting Jarven</b>), then click the unguarded barrel behind him and take <b>Return to Marleth</b> back to Brewnall.",
     "If you see a new quest about <b>snow leopards</b> or <b>wendigos</b>, take it too. Forever added a new chain around this level."
   ],
   tip:"Trolls come in groups. Pull one at a time with Frostbolt from far away." },
 
-{ lv:"10", place:"Magis Sparkmantle (trainer, Kharanos)", title:"Level 10: Frost Nova and your first talent", map:[["dunmorogh",[47.3,52.4,"Magis Sparkmantle (Kharanos)"]]], learn:["frostnova"],
-  done:"Frost Nova is on <kbd>3</kbd> and your talent point is in Improved Frostbolt.",
+{ lv:"10", place:"Magis Sparkmantle (trainer, Kharanos)", title:"Level 10: Frost Nova and your first talent", map:[["dunmorogh",[47.3,52.4,"Magis Sparkmantle (Kharanos)"]]], learn:["frostnova","water2"],
+  done:"Frost Nova is on <kbd>3</kbd>, your new water is on <kbd>Alt</kbd> + <kbd>1</kbd>, and your talent point is in Precision.",
   todo:[
-    "Learn <b>Frost Nova</b>. Put it on key <kbd>3</kbd>.",
-    "Press <kbd>N</kbd> to open talents. Click the <b>Frost</b> tab and put your point into <b>Improved Frostbolt</b>.",
+    "Learn <b>Frost Nova</b> and the new rank of <b>Conjure Water</b>. Put Frost Nova on key <kbd>3</kbd> and the new water on <kbd>Alt</kbd> + <kbd>1</kbd>.",
+    "Press <kbd>N</kbd> to open talents. Click the <b>Frost</b> tab and put your point into <b>Precision</b>: your spells miss less often.",
     "Magis also gives you <b>Speak with Bink</b>, a mage quest in Ironforge. Keep it for later."
   ],
   tip:"The combo to learn now: Frostbolt the enemy. When it reaches you, press Frost Nova. It freezes in place. Walk a few steps away and keep casting Frostbolt." },
@@ -165,17 +161,17 @@ const STEPS = [
   done:"you've handed in <b>Those Blasted Troggs!</b>, <b>The Public Servant</b> and <b>Nip 'Em in the Bud</b>.", stuck:"Fight the troggs at the quarry until you're level 11.",
   todo:[
     "Follow the road east to Gol'Bolar Quarry.",
-    "Take <b>Those Blasted Troggs!</b> and <b>The Public Servant</b> and kill troggs in and around the mine.",
+    "Take <b>Those Blasted Troggs!</b> from Foreman Stonebrow (Rockjaw Skullthumpers in the quarry) and <b>The Public Servant</b> from Senator Mehr Stonehallow (Rockjaw Bonesnappers in the mine). Your quest log says how many.",
     "Talk to <b>Earthseer Farsen</b> and take <b>Nip 'Em in the Bud</b>: kill 10 Dark Iron Spies east of the quarry.",
     "One spy drops a <b>Dark Iron Map</b>. Right-click it, bring it to Farsen and take <b>Old Ironforge Incursion</b>. That's a dungeon quest for later."
   ] },
 
-{ lv:"10–11", place:"Dun Morogh", title:"Wrap up Dun Morogh", map:[["dunmorogh",[46.7,53,"Kharanos"]]],
-  done:"Kharanos has nothing left for you and <b>Stout to Kadrell</b> is in your log.",
+{ lv:"10–11", place:"Dun Morogh", title:"Wrap up Dun Morogh", map:[["dunmorogh",[46.7,53,"Kharanos"],[86,48,"South Gate Outpost (Mountaineer Barleybrew)"]]],
+  done:"Kharanos and Brewnall have nothing left for you and <b>Stout to Kadrell</b> is in your log.",
   todo:[
-    "Turn in everything in Kharanos.",
-    "Skip <b>Protecting the Herd</b>. Its boss is an <b>elite</b>, too strong to fight alone.",
-    "From Rejold Barleybrew, take <b>Stout to Kadrell</b>. It points you to the next zone."
+    "Turn in everything in Kharanos and Brewnall.",
+    "Skip <b>Protecting the Herd</b>. Its boss, Vagash, is an <b>elite</b>, too strong to fight alone.",
+    "On the road east, at the <b>South Gate Outpost</b>, <b>Mountaineer Barleybrew</b> gives <b>Stout to Kadrell</b>: carry the cask to Mountaineer Kadrell in Thelsamar, Loch Modan."
   ] },
 
 /* ---------- Ironforge ---------- */
@@ -184,56 +180,59 @@ const STEPS = [
   todo:[
     "Follow the road north from Kharanos to the big gate of <b>Ironforge</b>.",
     "Inside, find the gryphon master and talk to him to unlock the <b>flight path</b>.",
-    "Find the Tailoring and Enchanting trainers and learn both. Tailoring lets you make your own clothes from the cloth enemies drop. Step-by-step leveling routes are on the <a href=\"Gnome-Mage-Professions.html\">Professions page</a>."
+    "Find the Tailoring and Enchanting trainers and learn both. Tailoring lets you make your own clothes from the cloth enemies drop. Step-by-step leveling routes are on the <a href=\"../professions.html?c=gnome-mage\">Professions page</a>."
   ],
   tip:"Lost in Ironforge? Ask any guard. Click them and they'll mark the place on your map." },
 
-{ lv:"10–11", place:"Ironforge, Mystic Ward", title:"Mage quest: Bink", map:[["ironforge",[26.5,8.5,"Bink (Hall of Mysteries)"]],["dunmorogh",[23,40,"Huts outside Gnomeregan"]]],
-  done:"you've handed in <b>Mage-tastic Gizmonitor</b> to Bink.",
+{ lv:"10–11", place:"Ironforge, Mystic Ward", title:"Mage quest: Bink", map:[["ironforge",[26.5,8.5,"Bink (Hall of Mysteries)"]],["dunmorogh",[27,36,"Hut north of Gnomeregan (chest)"]]],
+  done:"you've handed in <b>Mage-tastic Gizmonitor</b> to Bink and picked the Ley Orb or Ley Staff.",
   todo:[
-    "Go to the Mystic Ward and find <b>Bink</b> in the Hall of Mysteries. Turn in Speak with Bink.",
-    "She gives <b>Mage-tastic Gizmonitor</b>. It's in one of the huts outside Gnomeregan, in the far west of Dun Morogh.",
-    "Search the huts but <b>don't go inside Gnomeregan</b>. Everything there is much too strong for you."
+    "Go to the Mystic Ward and find <b>Bink</b> in the Hall of Mysteries. Turn in <b>Speak with Bink</b>.",
+    "She gives <b>Mage-tastic Gizmonitor</b>. Go west in Dun Morogh to the huts just north of Gnomeregan: the gizmonitor is in a small chest inside the hut on the right.",
+    "Lots of Leper Gnomes walk around there. Polymorph one if two come at you. <b>Don't go inside Gnomeregan</b>: everything there is much too strong for you.",
+    "Bring it back to Bink and choose your reward: the <b>Ley Orb</b> or the <b>Ley Staff</b>."
   ] },
 
-{ lv:"10–12", place:"Ironforge", title:"Get a wand and a dungeon quest", map:[["ironforge",[25,74,"Auction house"],[39,55,"Thom Filch (below the High Seat)"]]], learn:["shoot"],
+{ lv:"10–13", place:"Ironforge", title:"Get a wand and a dungeon quest", map:[["ironforge",[25,74,"Auction house"],[39,55,"Thom Filch (below the High Seat)"]]], learn:["shoot"],
   done:"a wand is equipped, Shoot is on <kbd>6</kbd>, and <b>Important Heirlooms</b> is in your log.",
   todo:[
-    "Buy a <b>Lesser Magic Wand</b> from the auction house, or ask an enchanter to make you one.",
+    "Buy a <b>Lesser Magic Wand</b> from the auction house, or ask an enchanter to make you one. At level 13, upgrade to a <b>Greater Magic Wand</b>.",
     "Put your wand's <b>Shoot</b> on key <kbd>6</kbd>. Use it to finish enemies that are almost dead. It costs no mana.",
     "Find <b>Thom Filch</b> near the bridge under the king's throne room and take <b>Important Heirlooms</b>. It's for the Hall of Thanes dungeon later."
   ] },
 
 /* ---------- Loch Modan, levels 11–19 ---------- */
-{ chapter:"Loch Modan", lv:"11", place:"Road to Loch Modan", title:"Move to Loch Modan", map:[["dunmorogh",[46.7,53,"Kharanos"],[87.5,50,"Tunnel to Loch Modan"]],["lochmodan",[23.3,74,"Guard tower"]]],
+{ chapter:"Loch Modan", lv:"11", place:"Road to Loch Modan", title:"Move to Loch Modan", map:[["dunmorogh",[46.7,53,"Kharanos"],[87.5,50,"Tunnel to Loch Modan"]],["lochmodan",[23.3,74,"Southern guard tower"]]],
   done:"you have <b>The Trogg Threat</b> and <b>In Defense of the King's Lands</b>.",
   todo:[
     "From Kharanos, follow the road east through the mountain tunnel into <b>Loch Modan</b>.",
-    "At the first guard tower, take <b>The Trogg Threat</b> and <b>In Defense of the King's Lands</b>."
+    "At the southern guard tower, take <b>The Trogg Threat</b> from <b>Captain Rugelfuss</b> (8 Trogg Stone Teeth) and <b>In Defense of the King's Lands</b> from <b>Mountaineer Cobbleflint</b> (10 Stonesplinter Troggs and 10 Stonesplinter Scouts).",
+    "Both are done in <b>Stonesplinter Valley</b>, south of Thelsamar: the troggs drop the teeth."
   ] },
 
 { lv:"12", place:"Thelsamar", title:"Your new home: Thelsamar", map:[["lochmodan",[35,47,"Thelsamar"]]],
-  done:"Thelsamar is your home and you've unlocked its flight path.",
+  done:"Thelsamar is your home, the flight path is unlocked and the quests above are in your log.",
   todo:[
     "Follow the road to the town of <b>Thelsamar</b>.",
-    "Make the inn your home. Unlock the flight path. Turn in <b>Stout to Kadrell</b>.",
-    "Take every quest in town: <b>Rat Catching</b>, <b>Thelsamar Blood Sausages</b>, <b>Mountaineer Stormpike's Task</b>, <b>Ironband's Excavation</b>."
+    "Make the inn your home. Unlock the flight path. Hand <b>Stout to Kadrell</b> to <b>Mountaineer Kadrell</b>.",
+    "Take every quest in town: <b>Rat Catching</b> and <b>Mountaineer Stormpike's Task</b> (Kadrell), <b>Thelsamar Blood Sausages</b> (Vidra Hearthstove) and <b>Ironband's Excavation</b> (Jern Hornhelm)."
   ],
   tip:"There's no mage trainer here. Every two levels, fly to Ironforge to train. It's a short flight." },
 
-{ lv:"12", place:"Ironforge (fly)", title:"Level 12: train", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["slowfall"],
-  done:"you've learned the new ranks and spent your talent point.",
+{ lv:"12", place:"Ironforge (fly)", title:"Level 12: train", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["slowfall","food2"],
+  done:"you've learned the new ranks, your new food is on <kbd>Alt</kbd> + <kbd>2</kbd>, and you've spent your talent point.",
   todo:[
-    "Fly to Ironforge, open the mage trainer, and learn everything you can afford.",
-    "Spend your talent point (<kbd>N</kbd>): Improved Frostbolt again."
+    "Fly to Ironforge, open the mage trainer, and learn everything you can afford, including the new rank of <b>Conjure Food</b> (Conjured Bread).",
+    "Spend your talent point (<kbd>N</kbd>): <b>Improved Frostbolt</b>."
   ],
   tip:"From now on, train every even level and spend a talent point every level. The Talents tab of this guide tells you which one." },
 
-{ lv:"12–14", place:"Loch Modan", title:"Kobolds and the excavation", map:[["lochmodan",[24.8,18.4,"Mountaineer Stormpike"],[35,19,"Silver Stream Mine"],[65,65,"Ironband's Excavation"]]],
-  done:"you've handed in <b>Stormpike's Order</b> and you're level 14.", stuck:"Fight the kobolds in the Silver Stream Mine until you are.",
+{ lv:"12–14", place:"Loch Modan", title:"Troggs, rats and the mine", map:[["lochmodan",[24.8,18.4,"Mountaineer Stormpike (Algaz Station)"],[35,19,"Silver Stream Mine"],[30,70,"Stonesplinter Valley (troggs)"],[30,40,"Tunnel rat kobolds (hills west of town)"]]],
+  done:"you've handed in <b>The Trogg Threat</b>, <b>In Defense of the King's Lands</b>, <b>Rat Catching</b> and <b>Filthy Paws</b>, and you're level 14.", stuck:"Fight the troggs in Stonesplinter Valley until you are.",
   todo:[
-    "<b>Mountaineer Stormpike's Task</b> → <b>Filthy Paws</b> → <b>Stormpike's Order</b>: kobolds in the Silver Stream Mine.",
-    "<b>Ironband's Excavation</b>: go to the dig site in the southeast and follow the chain.",
+    "<b>Rat Catching</b>: kill the tunnel rat kobolds on the mountainside west of Thelsamar for <b>12 Tunnel Rat Ears</b>.",
+    "Finish <b>The Trogg Threat</b> and <b>In Defense of the King's Lands</b> in Stonesplinter Valley and hand them in at the southern tower. Take the next parts if they're offered.",
+    "<b>Mountaineer Stormpike's Task</b>: ride north to <b>Mountaineer Stormpike</b> at Algaz Station. He gives <b>Filthy Paws</b>: open the <b>Miners' League Crates</b> in the <b>Silver Stream Mine</b> for <b>4 Miners' Gear</b>. Then he gives <b>Stormpike's Order</b>, a letter for Stormwind (you go there at level 15).",
     "Take any new quests you see. Loch Modan has 11 new ones in Forever."
   ] },
 
@@ -254,20 +253,22 @@ const STEPS = [
     "You don't need it much while questing alone. It's for later, when you fight groups."
   ] },
 
-{ lv:"15", place:"Stormwind", title:"Mage quest: a free robe", map:[["ironforge",[76.5,51,"Deeprun Tram"]],["stormwind",[64,8,"The tram arrives here"],[39,80,"Jennea Cannon (Mage Quarter)"],[66.3,62.1,"Flight master"]]],
-  done:"you're wearing the <b>Manaweave Robe</b> and Stormwind's flight path is unlocked.",
+{ lv:"15", place:"Stormwind", title:"Mage quest: a free robe", map:[["ironforge",[76.5,51,"Deeprun Tram"]],["stormwind",[64,8,"The tram arrives here"],[49,86,"Jennea Cannon (Mage Quarter)"],[51.8,83.5,"Wynne Larson (Larson Clothiers)"],[66.3,62.1,"Flight master"]],["lochmodan",[35,19,"Silver Stream Mine (Charged Rift Gems)"]]],
+  done:"you're wearing the <b>Manaweave Robe</b>, <b>Stormpike's Order</b> is handed in, and Stormwind's flight path is unlocked.",
   todo:[
-    "In Ironforge, go to Tinker Town and take the <b>Deeprun Tram</b> to Stormwind.",
-    "Find <b>Jennea Cannon</b> in the Mage Quarter and do her chain, ending with <b>Manaweave Robe</b>.",
-    "Unlock Stormwind's flight path while you're there."
+    "Magis Sparkmantle in Kharanos gives <b>Report to Jennea</b> (optional). In Ironforge, go to Tinker Town and take the <b>Deeprun Tram</b> to Stormwind. Unlock the flight path, and hand <b>Stormpike's Order</b> to <b>Furen Longbeard</b> in the Dwarven District.",
+    "In the Mage Quarter, <b>Jennea Cannon</b> gives <b>Investigate the Blue Recluse</b>. Take the items from the table behind her, go to the <b>Blue Recluse</b> tavern, read the Cantation to make the creatures appear, beat them, and use a coffer on each while it's stunned. You need 3.",
+    "Next, <b>Gathering Materials</b>: <b>10 Linen Cloth</b> and <b>6 Charged Rift Gems</b>. The gems are in the Miners' League crates in the Silver Stream Mine in Loch Modan.",
+    "Give it all to <b>Wynne Larson</b> at Larson Clothiers in the Mage Quarter, then talk to her again for the <b>Manaweave Robe</b>."
   ] },
 
 { lv:"15–18", place:"Loch Modan", title:"Finish Loch Modan", map:[["lochmodan",[35,47,"Thelsamar"],[65,65,"Ironband's Excavation"]]],
   done:"you're level 18 and the Thelsamar quests are handed in.", stuck:"Fight the troggs and bears around Thelsamar until you are.",
   todo:[
-    "Finish your Thelsamar quests: <b>Thelsamar Blood Sausages</b> (parts from the bears, spiders and boars around town), <b>Rat Catching</b> (tunnel rats) and the rest of the <b>Ironband's Excavation</b> chain.",
-    "Your quest log (<kbd>L</kbd>) says how many of each thing you need. Hand each quest back to whoever gave it to you: they have a yellow <b>?</b>.",
-    "Skip <b>WANTED: Chok'sul</b>. It's an elite."
+    "<b>Thelsamar Blood Sausages</b>: bear meat, boar intestines and spider ichor from the bears, boars and spiders around town. Hand it to Vidra.",
+    "<b>Ironband's Excavation</b>: ride to Prospector Ironband's dig site in the south-east and follow his quests.",
+    "Take the next parts of <b>In Defense of the King's Lands</b> from the dwarves at the southern tower and the dam if they're offered.",
+    "Your quest log (<kbd>L</kbd>) says how many of each thing you need. Skip <b>WANTED: Chok'sul</b>: it's an elite."
   ],
   tip:"Running out of quests? Westfall (south of Stormwind) and Redridge Mountains also fit this level." },
 
@@ -281,15 +282,15 @@ const STEPS = [
 { lv:"18", place:"Ironforge (fly)", title:"Level 18: Remove Lesser Curse", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["removecurse"],
   done:"Remove Lesser Curse is on <kbd>Shift</kbd> + <kbd>9</kbd>.",
   todo:[
-    "Learn <b>Remove Lesser Curse</b>.",
+    "Learn <b>Remove Lesser Curse</b> and new ranks.",
     "In dungeons, when a party member has a curse on them, click them and cast it. Groups love mages who do this."
   ] },
 
 /* ---------- Level 20 ---------- */
-{ chapter:"Level 20 training", lv:"20", place:"Ironforge", title:"Level 20: the big one", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["blink","blizzard","evocation","manashield","tp_if","tp_sw"],
-  done:"Blink is on <kbd>7</kbd>, you know both teleports, and you have Runes of Teleportation.",
+{ chapter:"Level 20 training", lv:"20", place:"Ironforge", title:"Level 20: the big one", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["blink","blizzard","evocation","manashield","tp_if","tp_sw","water3"],
+  done:"Blink is on <kbd>7</kbd>, you know both teleports, you have Runes of Teleportation, and your new water is on <kbd>Alt</kbd> + <kbd>1</kbd>.",
   todo:[
-    "Learn everything: <b>Blink</b>, <b>Blizzard</b>, <b>Evocation</b>, <b>Teleport: Ironforge</b>, <b>Teleport: Stormwind</b> and new ranks.",
+    "Learn everything: <b>Blink</b>, <b>Blizzard</b>, <b>Evocation</b>, <b>Mana Shield</b>, <b>Teleport: Ironforge</b>, <b>Teleport: Stormwind</b> and new ranks, including a new <b>Conjure Water</b>.",
     "Buy a few <b>Runes of Teleportation</b> from the reagent vendor. Teleports use them up.",
     "Put Blink on key <kbd>7</kbd>. It jumps you forward a short distance. Use it to get away."
   ],
@@ -303,12 +304,13 @@ const STEPS = [
   ],
   tip:"Ice Lance does triple damage to a frozen enemy. New combo: Frostbolt → enemy reaches you → Frost Nova → step back → Ice Lance → Frostbolt." },
 
-{ lv:"20", place:"Loch Modan → Wetlands", title:"Travel to the Wetlands", map:[["lochmodan",[24.8,18.4,"Algaz Station: road north"]],["wetlands",[53,72,"Dun Algaz: you come in here"],[10.5,60,"Menethil Harbor"]]],
-  done:"you've reached Menethil Harbor.",
+{ lv:"20", place:"Loch Modan → Wetlands", title:"Travel to the Wetlands", map:[["lochmodan",[24.8,18.4,"Algaz Station: road north"]],["wetlands",[53,72,"Dun Algaz: you come in here"],[49.8,39.4,"Einar Stonegrip (crossroads)"],[10.5,60,"Menethil Harbor"]]],
+  done:"you've reached Menethil Harbor with <b>Daily Delivery</b> in your quest log.",
   todo:[
     "From Loch Modan, take the road north through the pass (Dun Algaz) into the <b>Wetlands</b>.",
     "Stay on the road. Some enemies along it are stronger than you.",
-    "Follow the road to <b>Menethil Harbor</b> on the west coast."
+    "At the crossroads, <b>Einar Stonegrip</b> gives <b>Daily Delivery</b>: a bundle of skins for the tanner in Menethil.",
+    "Follow the road west to <b>Menethil Harbor</b> on the coast."
   ] },
 
 /* ---------- Wetlands, levels 20–28 ---------- */
@@ -316,31 +318,40 @@ const STEPS = [
   done:"Menethil Harbor is your home, the flight path is unlocked and the town's quests are in your log.",
   todo:[
     "Make the inn your home. Unlock the flight path.",
-    "Take every quest in town: <b>Claws from the Deep</b>, <b>Young Crocolisk Skins</b>, <b>Digging Through the Ooze</b>, <b>Daily Delivery</b> and more."
+    "Hand <b>Daily Delivery</b> to <b>James Halloran</b>, the tanner, and take <b>Young Crocolisk Skins</b> from him.",
+    "Take every quest in town: <b>Claws from the Deep</b> (Karl Boran), <b>The Greenwarden</b> (First Mate Fitzsimmons), <b>Digging Through the Ooze</b> (Sida), <b>In Search of The Excavation Team</b> (Tarrel Rockweaver) and more."
   ] },
 
-{ lv:"21–24", place:"Wetlands", title:"Quest the Wetlands", map:[["wetlands",[56.4,40.4,"The Greenwarden"],[48,15,"Dun Modr"],[44,25,"Ironbeard's Tomb"]]],
-  done:"you're level 24 and the coast quests are handed in.", stuck:"Fight the murlocs along the coast until you are.",
+{ lv:"22", place:"Ironforge (teleport)", title:"Level 22: new ranks", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]], learn:["food3"],
+  done:"you've learned the new ranks and your new food is on <kbd>Alt</kbd> + <kbd>2</kbd>.",
   todo:[
-    "Do the coast quests first (murlocs, crocolisks), then move inland.",
-    "<b>The Greenwarden</b> → <b>Tramping Paws</b> (gnolls). Then the dwarf ruins in the north: <b>Fall of Dun Modr</b>, <b>Ironbeard's Tomb</b>.",
-    "The Wetlands got 20+ new quests in Forever. Take everything you find."
+    "Teleport to Ironforge and learn every new rank, including a new <b>Conjure Food</b> (Conjured Rye). Put it on <kbd>Alt</kbd> + <kbd>2</kbd>.",
+    "Hearth back to Menethil Harbor."
+  ] },
+
+{ lv:"21–24", place:"Wetlands", title:"Quest the Wetlands", map:[["wetlands",[17,39,"Gobbler and the murloc coast"],[56.4,40.4,"Rethiel the Greenwarden"],[44,24,"Ironbeard's Tomb (oozes)"],[34,42,"Whelgar's Excavation Site"]]],
+  done:"you're level 24 and have handed in <b>Claws from the Deep</b>, <b>Young Crocolisk Skins</b> and <b>Tramping Paws</b>.", stuck:"Fight the murlocs along the coast until you are.",
+  todo:[
+    "Coast first: <b>Claws from the Deep</b>: kill <b>12 Bluegill murlocs</b> and <b>Gobbler</b>, north of Menethil, for his head. Kill young crocolisks in the marsh for <b>Young Crocolisk Skins</b>.",
+    "Then inland: give <b>The Greenwarden</b> to <b>Rethiel the Greenwarden</b>. He gives <b>Tramping Paws</b> (gnolls to the south-east), then <b>Fire Taboo</b> and <b>Blisters on The Land</b>.",
+    "<b>In Search of The Excavation Team</b>: talk to Merrin Rockweaver at Whelgar's Excavation Site and follow his quests.",
+    "<b>Digging Through the Ooze</b>: kill the black oozes at <b>Ironbeard's Tomb</b> (north, past Dun Modr) until one drops <b>Sida's Bag</b>. The Wetlands got 20+ new quests in Forever: take everything you find."
   ] },
 
 { lv:"24", place:"Ironforge (teleport)", title:"Level 24: Counterspell", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["counterspell"],
   done:"Counterspell is on <kbd>-</kbd>.",
   todo:[
-    "Learn <b>Counterspell</b>. When an enemy is casting a spell (you'll see a cast bar under its name), press it to stop the spell."
+    "Learn <b>Counterspell</b> and new ranks. When an enemy is casting a spell (you'll see a cast bar under its name), press Counterspell to stop it."
   ] },
 
-{ lv:"25", place:"Talents (N)", title:"Level 25: Ice Block and Legacy", learn:["iceblock"],
-  done:"Ice Block is on <kbd>9</kbd> and your Legacy point is spent.",
+{ lv:"25", place:"Talents (N)", title:"Level 25: Shatter and Legacy", learn:[],
+  done:"your talent point is in Shatter and your Legacy point is spent.",
   todo:[
-    "Talent: <b>Ice Block</b>. Put it on key <kbd>9</kbd>. When you're about to die, press it: you're frozen in a block of ice and nothing can hurt you for a few seconds.",
+    "Talent: <b>Shatter</b>. Your spells crit much more often on frozen enemies, so Frost Nova + Ice Lance hits even harder.",
     "Around now you get your first <b>Legacy</b> point. Press <kbd>Y</kbd> and put it in <b>Thrill of Adventure</b>: every kill gives back some health and mana."
   ] },
 
-{ lv:"24–29", place:"Wetlands", title:"Dungeon: Excavation Site", map:[["wetlands",[10.5,60,"Caitlin Grassman (Menethil)"],[34,42,"Whelgar's Excavation Site"]],["redridge",[26,46,"Dorin Songblade (Lakeshire)"]]],
+{ lv:"24–29", place:"Wetlands", title:"Dungeon: Excavation Site (optional)", map:[["wetlands",[10.5,60,"Caitlin Grassman (Menethil)"],[34,42,"Whelgar's Excavation Site"]],["redridge",[26,46,"Dorin Songblade (Lakeshire)"]]],
   done:"your group has beaten the last boss, or you've decided to skip it.",
   todo:[
     "Another new dungeon, in the Wetlands. Best at levels 26–29.",
@@ -348,18 +359,36 @@ const STEPS = [
     "Find a group the same way as Hall of Thanes."
   ] },
 
-{ lv:"26", place:"Stormwind (teleport)", title:"Level 26: Cone of Cold and another mage quest", map:[["stormwind",[39,80,"Mage Quarter: trainer and Andromath"]]], learn:["coneofcold"],
-  done:"Cone of Cold is on <kbd>8</kbd> and you're wearing the <b>Astral Knot Garment</b>.",
+{ lv:"26", place:"Stormwind (teleport)", title:"Level 26: Cone of Cold and another mage quest", map:[["stormwind",[49,86,"Jennea Cannon and Andromath (Mage Quarter)"],[51.8,83.5,"Wynne Larson"]],["redridge",[79,49,"Tower of Ilgalar (the book)"]],["duskwood",[20,45,"Raven Hill Cemetery (spiders)"]]], learn:["coneofcold"],
+  done:"Cone of Cold is on <kbd>8</kbd> and you're wearing the <b>Astral Knot Robe</b> or <b>Blouse</b>.",
   todo:[
     "Learn <b>Cone of Cold</b> and put it on key <kbd>8</kbd>. It hits and slows everything in front of you.",
-    "Do the mage quest from <b>High Sorcerer Andromath</b> in Stormwind. The reward is <b>Astral Knot Garment</b> (chest armor)."
+    "Mage quest: <b>Jennea Cannon</b> sends you to <b>High Sorcerer Andromath</b> at the top of the Wizard's Sanctum. <b>Ur's Treatise on Shadow Magic</b>: climb the <b>Tower of Ilgalar</b> in eastern Redridge and take the book. You don't have to fight the elite at the top. Polymorph the gnolls, kill their dogs first and Counterspell the dogs' Mana Burn.",
+    "<b>Pristine Spider Silk</b>: 8 silk from the spiders in and just east of Raven Hill Cemetery, Duskwood. Flying to Sentinel Hill in Westfall and walking east is quickest.",
+    "Give the silk to <b>Wynne Larson</b> and talk to her again to pick the <b>Astral Knot Robe</b> or <b>Astral Knot Blouse</b>."
+  ],
+  tip:"The tower is dangerous alone at this level. If you die inside, you can come back to life anywhere in the tower: next to the book, then grab it and leave." },
+
+{ lv:"27–28", place:"Wetlands", title:"Finish the Wetlands", map:[["wetlands",[10.5,60,"Menethil Harbor"],[48,15,"Dun Modr"]]],
+  done:"you're level 28 and your Wetlands quests are handed in.", stuck:"Fight the crocolisks or gnolls in the Wetlands until you are.",
+  todo:[
+    "Finish your Wetlands quests: the Greenwarden chain, the excavation team and Sida's bag.",
+    "At level 25 Harlo Barnaby in Menethil gives <b>Fall of Dun Modr</b>: find <b>Longbraid the Grim</b> near the ruins of Dun Modr in the north. His next quest is for a group.",
+    "If the north part feels too hard, go to <b>Redridge Mountains</b> or <b>Duskwood</b> (both near Stormwind) for a few levels."
   ] },
 
-{ lv:"27–28", place:"Wetlands", title:"Finish the Wetlands", map:[["wetlands",[10.5,60,"Menethil Harbor"]]],
-  done:"you're level 28.", stuck:"Fight the crocolisks or gnolls in the Wetlands until you are.",
+{ lv:"28", place:"Ironforge (teleport)", title:"Level 28: mana gems", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]], learn:["conjuregem","managem"],
+  done:"your Mana Agate is on <kbd>Shift</kbd> + <kbd>5</kbd>.",
   todo:[
-    "Finish your Wetlands quests.",
-    "If the north part feels too hard, go to <b>Redridge Mountains</b> or <b>Duskwood</b> (both near Stormwind) for a few levels."
+    "Learn new ranks, including <b>Conjure Mana Agate</b>.",
+    "Cast it and put the <b>Mana Agate</b> on <kbd>Shift</kbd> + <kbd>5</kbd>. In a hard fight, press it for instant mana. Conjure a new one after each use."
+  ] },
+
+{ lv:"29", place:"Talents (N)", title:"Level 29: Ice Block", learn:["iceblock"],
+  done:"Ice Block is on key <kbd>9</kbd>.",
+  todo:[
+    "Talent: <b>Ice Block</b>. Put it on key <kbd>9</kbd>.",
+    "When you're about to die, press it: you're frozen in a block of ice and nothing can hurt you for 10 seconds. Press it again to come out early."
   ] },
 
 /* ---------- 28–34: Duskwood, Arathi, Southshore ---------- */
@@ -371,14 +400,14 @@ const STEPS = [
     "Many Duskwood quests lead into one story about <b>Morbent Fel</b>, a necromancer at the Tranquil Gardens Cemetery. Keep following it: it's one of the best stories in the game.",
     "Skip quests marked <b>Elite</b>, like <b>Mor'Ladim</b>, unless you have a group. Move on at level 30."
   ],
-  tip:"Worgen walk in pairs. They're humanoids, so Sap works on them: Sap one, kill the other, then fight the one that wakes up." },
+  tip:"Worgen walk in pairs. They're humanoids, so Polymorph works on them: turn one into a sheep, kill the other, then fight the sheep." },
 
-{ lv:"30", place:"Ironforge (teleport)", title:"Level 30: Ice Armor and the wand quest", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["icearmor"],
-  done:"Ice Armor is on and <b>Journey to the Marsh</b> is in your log.",
+{ lv:"30", place:"Ironforge (teleport)", title:"Level 30: Ice Armor and the wand quest", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["icearmor","water4"],
+  done:"Ice Armor is on, your new water is on <kbd>Alt</kbd> + <kbd>1</kbd>, your talent point is in Fingers of Frost, and <b>Journey to the Marsh</b> is in your log.",
   todo:[
-    "Learn <b>Ice Armor</b>. It replaces Frost Armor and is stronger.",
-    "Keep spending a talent point every level. The Talents tab tells you which one.",
-    "Take <b>Journey to the Marsh</b> from the mage trainer. This starts the quest for the <b>Icefury Wand</b>."
+    "Learn <b>Ice Armor</b> (it replaces Frost Armor and is stronger), <b>Teleport: Darnassus</b> and new ranks, including a new <b>Conjure Water</b>.",
+    "Talent: <b>Fingers of Frost</b>. Sometimes your next spell treats the enemy as frozen: when that happens, cast Ice Lance for triple damage.",
+    "Take <b>Journey to the Marsh</b> from the mage trainer. This starts the quest for the <b>Icefury Wand</b> (see the later step)."
   ] },
 
 { lv:"30–32", place:"Arathi Highlands", title:"Arathi Highlands", map:[["arathi",[44,89,"Thandol Span (from the Wetlands)"],[45.8,47.6,"Refuge Pointe"],[32,28,"Northfold Manor (Syndicate)"],[66,68,"Witherbark Village (trolls)"],[52,50,"Circle of Outer Binding (wand quest)"],[25,30,"Stromgarde Keep (elites)"],[73,33,"Hammerfall (Horde town)"]]],
@@ -387,10 +416,18 @@ const STEPS = [
     "Fly to <b>Menethil Harbor</b> and ride north over the big bridge (Thandol Span) into <b>Arathi Highlands</b>, a wide open grassland.",
     "In the middle is <b>Refuge Pointe</b>, the Alliance camp. Unlock the flight path and make it your home.",
     "Take every quest. Captain Nials's <b>Northfold Manor</b> sends you to the Syndicate in the north-west. Sentinel Glynda Nal'Shea sends you after the Witherbark trolls in the south-east.",
-    "Wand quest: kill Witherbark trolls for 10 Totem Sticks and take them to the stone circle in the middle of the zone (the Circle of Outer Binding).",
+    "Wand quest (<b>Items of Power</b>): kill Witherbark trolls at Witherbark Village for <b>10 Witherbark Totem Sticks</b>. At the <b>Circle of Outer Binding</b> in the middle of the zone, stand on the stone in the centre and use the sticks. After about 10 seconds lightning strikes: loot the <b>Bolt Charged Bramble</b> from the stone. Three elementals guard the circle: pull them one at a time.",
     "Stay out of <b>Stromgarde Keep</b> (west) unless you're in a group: it's full of elite enemies. <b>Hammerfall</b> (east) is a Horde town. Move on at level 32."
   ],
   tip:"The Syndicate are humanoids: when two come at you, Polymorph the second one." },
+
+{ lv:"32", place:"Ironforge (teleport)", title:"Level 32: Cold Snap", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]], learn:["coldsnap","food4"],
+  done:"Cold Snap is on <kbd>Shift</kbd> + <kbd>8</kbd> and your new food is on <kbd>Alt</kbd> + <kbd>2</kbd>.",
+  todo:[
+    "Teleport to Ironforge and learn every new rank, including a new <b>Conjure Food</b> (Conjured Pumpernickel).",
+    "Talent: <b>Cold Snap</b>. Put it on <kbd>Shift</kbd> + <kbd>8</kbd>. It resets your Frost cooldowns, so you get a second Ice Block or Frost Nova.",
+    "Hearth back to Refuge Pointe and carry on."
+  ] },
 
 { lv:"32", place:"Southshore, Hillsbrad", title:"Southshore", map:[["arathi",[20,30,"Gate in Thoradin's Wall (west)"]],["hillsbrad",[50,55,"Southshore"],[40,74,"Murloc beach"]]],
   done:"you're level 33 and have handed in <b>Down the Coast</b> and <b>Syndicate Assassins</b>.", stuck:"Fight the murlocs on the beach south of Southshore until you are.",
@@ -413,20 +450,21 @@ const STEPS = [
   ],
   tip:"Grom'gol, on the west coast, is a Horde camp. Stay away from it." },
 
-{ lv:"33–35", place:"Several places", title:"Finish the wand quest", map:[["needles",[78,77,"Mirage Raceway"]],["tirisfal",[83,33,"Scarlet Monastery"]],["dustwallow",[46,57,"Tabetha"]]],
+{ lv:"33–35", place:"Several places", title:"Finish the wand quest", map:[["dustwallow",[46,57,"Tabetha's hut"]],["needles",[78.3,75.7,"Magus Tirth (Mirage Raceway)"]],["tirisfal",[83,33,"Scarlet Monastery"]]],
   done:"the <b>Icefury Wand</b> is equipped, or you've decided to skip it.",
   todo:[
-    "<b>Thousand Needles</b> (Kalimdor, boat needed): at the Mirage Raceway talk to Magus Tirth, then target the chicken \"Plucky\" Johnson and type <kbd>/beckon</kbd>.",
-    "<b>Scarlet Monastery Library</b> (a dungeon): grab the Rituals of Power book from a side table.",
-    "Bring it all to <b>Tabetha</b> in Dustwallow Marsh and choose the <b>Icefury Wand</b>."
+    "Take <b>Journey to the Marsh</b> to <b>Tabetha</b>, whose hut is in the middle of Dustwallow Marsh (fly to Theramore, follow the road south and cut east into the marsh: the east side has stronger enemies). She gives <b>Hidden Secrets</b> and <b>Items of Power</b>.",
+    "<b>Hidden Secrets</b>: talk to <b>Magus Tirth</b> at the Mirage Raceway in Thousand Needles. <b>Get the Scoop</b>: cross the racetrack to the tower, type <kbd>/target \"Plucky\" Johnson</kbd> to target the little grey chicken, type <kbd>/beckon</kbd>, then talk to him and go back to Tirth.",
+    "<b>Rituals of Power</b> (from Tirth): the book is in the <b>Scarlet Monastery Library</b> (a dungeon, so you need a group). At the start of the long hall before Arcanist Doan, it sticks out of a bookshelf on your left.",
+    "<b>Items of Power</b>: a <b>Jade</b> (auction house) and the <b>Bolt Charged Bramble</b> from Arathi (see the Arathi step). Hand everything to Tabetha, take <b>Mage's Wand</b>, wait for her ritual, and pick the <b>Icefury Wand</b>."
   ],
   tip:"This quest sends you around the world. It's optional. If it feels like too much, skip it." },
 
-{ lv:"34", place:"Trainer + Talents (N)", title:"Level 34: Mage Armor and Cold Snap", learn:["magearmor","coldsnap"],
-  done:"Cold Snap is on <kbd>Shift</kbd> + <kbd>8</kbd> and Mage Armor is on your right bar.",
+{ lv:"34", place:"Ironforge (teleport)", title:"Level 34: Mage Armor", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]], learn:["magearmor"],
+  done:"Mage Armor is on your right bar.",
   todo:[
-    "Learn <b>Mage Armor</b> at the trainer. Keep Ice Armor on while questing; swap to Mage Armor for long dungeon fights.",
-    "Talent: <b>Cold Snap</b>. It resets your Frost cooldowns, so you get a second Ice Block or Frost Nova."
+    "Learn <b>Mage Armor</b> and new ranks at the trainer. Keep Ice Armor on while questing; swap to Mage Armor for long dungeon fights.",
+    "Optional, from level 35: the trainer offers <b>Return to the Marsh</b>, a hard chain from Tabetha (an elite demon and an Uldaman boss) that ends with the <b>Celestial Orb</b>. Do it with friends or later."
   ] },
 
 { lv:"35–37", place:"Booty Bay, Stranglethorn", title:"Stranglethorn: Booty Bay", map:[["stranglethorn",[27,77,"Booty Bay"],[38,3.5,"Rebel Camp"],[35.6,10.6,"Nesingwary's Expedition"]]],
@@ -449,6 +487,13 @@ const STEPS = [
     "Skip it if you'd rather keep questing."
   ],
   tip:"Save Blizzard and Arcane Explosion until the tank has every enemy's attention, or they all run at you." },
+
+{ lv:"36", place:"Ironforge (teleport)", title:"Level 36: new ranks", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]],
+  done:"you've learned every new rank your trainer offers.",
+  todo:[
+    "Teleport to Ironforge and learn every new rank. New ranks replace the old ones on your bars by themselves.",
+    "Hearth back to Booty Bay."
+  ] },
 
 /* ---------- 37–44: Riverglades ---------- */
 { chapter:"Riverglades", lv:"37", place:"Redridge → Riverglades", title:"Travel to the Riverglades", map:[["redridge",[30.6,59.4,"Lakeshire flight path"]],["riverglades"]],
@@ -478,11 +523,11 @@ const STEPS = [
     "Use your Hearthstone to get straight back to Farholde Keep. Start saving gold: your mount costs a lot at level 40."
   ] },
 
-{ lv:"40", place:"Trainer + Dun Morogh", title:"Level 40: your mount!", map:[["dunmorogh",[49.4,48.4,"Steelgrill's Depot (mount vendor)"]]], learn:["mount","frostfire","icebarrier"],
-  done:"you're riding your mechanostrider and Ice Barrier is on <kbd>Shift</kbd> + <kbd>4</kbd>.",
+{ lv:"40", place:"Trainer + Dun Morogh", title:"Level 40: your mount!", map:[["dunmorogh",[49.4,48.4,"Steelgrill's Depot (mount vendor)"]]], learn:["mount","frostfire","icebarrier","water5"],
+  done:"you're riding your mechanostrider, Ice Barrier is on <kbd>Shift</kbd> + <kbd>4</kbd> and your new water is on <kbd>Alt</kbd> + <kbd>1</kbd>.",
   todo:[
-    "Learn riding and buy a <b>mechanostrider</b> (gnome mount) at <b>Steelgrill's Depot</b> in Dun Morogh. Start saving gold around level 30.",
-    "Learn <b>Frostfire Bolt</b> and <b>Portals</b> at the trainer.",
+    "Learn riding and buy a <b>mechanostrider</b> (gnome mount) at <b>Steelgrill's Depot</b> in Dun Morogh. Right-click the mount item to learn it, then drag it from your spellbook to the right bar.",
+    "At the trainer, learn <b>Frostfire Bolt</b>, <b>Teleport: Dalaran</b>, the <b>Portals</b> to Stormwind and Ironforge, and a new <b>Conjure Water</b> (Mineral Water).",
     "Talent: <b>Ice Barrier</b>, a shield that absorbs damage. Use it before every fight."
   ] },
 
@@ -508,7 +553,8 @@ const STEPS = [
   done:"the new food is on <kbd>Alt</kbd> + <kbd>2</kbd>.",
   todo:[
     "Learn new ranks, including a new rank of <b>Conjure Food</b> (Conjured Sourdough). Put it on <kbd>Alt</kbd> + <kbd>2</kbd>.",
-    "From level 41, your talent points go into the <b>Arcane</b> tab. The Talents tab shows which one to pick each level."
+    "Talent: <b>Winter's Chill</b> (Frost tab). The Talents tab shows which one to pick each level.",
+    "Optional mage quest: <b>Garon Wendell</b> in the Stormwind Mage Quarter gives <b>A Lesson in Literacy</b> for the <b>Personal Spellbook</b>. You need a Pristine Owlbeast Quill (owlbeasts in the Hinterlands), 5 Zukk'ash Resin (Feralas) and 8 Farraki Papyrus (zombies inside Zul'Farrak)."
   ] },
 
 /* ---------- 43–50: Tanaris, Feralas, Hinterlands ---------- */
@@ -529,6 +575,20 @@ const STEPS = [
     "Gadgetzan also has quests for <b>Zul'Farrak</b>, the dungeon in the north-west. Move on at about level 46."
   ],
   tip:"Bandits run away at low health and come back with friends. Frost Nova them before they get away." },
+
+{ lv:"44", place:"Ironforge (teleport)", title:"Level 44: new ranks", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]],
+  done:"you've learned every new rank your trainer offers.",
+  todo:[
+    "Teleport to Ironforge and learn every new rank.",
+    "Hearth back to Gadgetzan."
+  ] },
+
+{ lv:"46", place:"Ironforge (teleport)", title:"Level 46: new ranks", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]],
+  done:"you've learned every new rank your trainer offers.",
+  todo:[
+    "Teleport to Ironforge and learn every new rank.",
+    "Then travel on to Feralas (next step). Teleport: Darnassus and the flight to Feathermoon is a quick way there once you've been to Feathermoon."
+  ] },
 
 { lv:"44–48", place:"Tanaris", title:"Dungeon: Zul'Farrak (optional)", map:[["tanaris",[39,20,"Zul'Farrak"],[51,28,"Gadgetzan"]]],
   done:"your group has finished, or you've decided to skip it.",
@@ -582,19 +642,20 @@ const STEPS = [
     "Take every quest. <b>Crystals of Power</b> from J.D. Collie: grab the red, green, blue and yellow crystals lying around the whole crater. Karna Remtravel's <b>Chasing A-Me 01</b> sends you to walk a lost robot home.",
     "Watch out for <b>Devilsaurs</b>: huge dinosaurs that walk around and hit very hard. Stay out of their way. Move on at level 52."
   ],
-  tip:"Devilsaurs can't see you in Stealth. If one comes your way, Stealth and step aside." },
+  tip:"Devilsaurs walk the open ground and see you from far away. If one comes your way, get out of its path; if it reaches you, Frost Nova, Blink away and run." },
 
 { lv:"50", place:"Ironforge (teleport)", title:"Level 50: Sparkling Water", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["water6"],
   done:"the new water is on <kbd>Alt</kbd> + <kbd>1</kbd>.",
   todo:[
     "Learn new ranks, including a new rank of <b>Conjure Water</b> (Conjured Sparkling Water). Put it on <kbd>Alt</kbd> + <kbd>1</kbd>.",
-    "At 51 you get the <b>Missile Barrage</b> talent: when Arcane Missiles lights up, press it (<kbd>=</kbd>) for a free, fast cast."
+    "Learn <b>Portal: Darnassus</b> too. Other players often pay a little gold for a portal.",
+    "Optional mage chain: the trainer gives <b>Magecraft</b>. It sends you to Archmage Xylem in Azshara and ends in the Sunken Temple dungeon (group needed). Rewards: Glacial Spike, Arcane Crystal Pendant and Fire Ruby."
   ] },
 
 { lv:"52", place:"Ironforge (teleport)", title:"Level 52: Sweet Rolls", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["food6"],
   done:"the new food is on <kbd>Alt</kbd> + <kbd>2</kbd>.",
   todo:[
-    "Learn new ranks, including a new rank of <b>Conjure Food</b> (Conjured Sweet Roll)."
+    "Learn new ranks, including a new rank of <b>Conjure Food</b> (Conjured Sweet Roll). Put it on <kbd>Alt</kbd> + <kbd>2</kbd>."
   ] },
 
 { lv:"52–54", place:"Felwood", title:"Felwood", map:[["felwood",[51,82,"Emerald Sanctuary"],[37,60,"Jaedenar (Shadow Council)"],[62.5,24.5,"Talonbranch Glade"],[64.5,8,"Timbermaw Hold (tunnel to Winterspring)"]]],
@@ -616,6 +677,14 @@ const STEPS = [
   ],
   tip:"WoW Forever adds new dungeons for these levels too: <b>Blackmaw Hold</b> (55–60) and <b>Shaper's Terrace</b> (58–60). Look for them in the Looking For Group tool." },
 
+{ lv:"54", place:"Ironforge (teleport)", title:"Level 54: new ranks", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]],
+  done:"you've learned every new rank your trainer offers and your talent point is in Arcane Resilience.",
+  todo:[
+    "Teleport to Ironforge and learn every new rank.",
+    "Talent: Frost is finished. Your last points go into the <b>Arcane</b> tab, starting with <b>Arcane Resilience</b>.",
+    "Hearth back and carry on."
+  ] },
+
 { lv:"55–57", place:"Chillwind Camp, Western Plaguelands", title:"Western Plaguelands", map:[["wpl",[43,84,"Chillwind Camp"],[37,57,"Felstone Field"],[46,52,"Dalson's Tears"],[53,66,"Writhing Haunt"],[62,58,"Gahrron's Withering"],[43,70,"Andorhal"]]],
   done:"you're level 57 and all four cauldrons are done.", stuck:"Fight the undead around Andorhal until you are.",
   todo:[
@@ -625,6 +694,13 @@ const STEPS = [
     "Move on at level 57."
   ],
   tip:"Undead can't be Polymorphed. Use Frost Nova and step back instead." },
+
+{ lv:"56", place:"Ironforge (teleport)", title:"Level 56: new ranks", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]],
+  done:"you've learned every new rank your trainer offers.",
+  todo:[
+    "Teleport to Ironforge and learn every new rank.",
+    "Fly back to Chillwind Camp and carry on."
+  ] },
 
 { lv:"56–58", place:"Light's Hope, Eastern Plaguelands", title:"Eastern Plaguelands", map:[["epl",[81.5,59,"Light's Hope Chapel"],[36,90,"Darrowshire"],[7,43,"Tirion Fordring's house"],[27,11,"Stratholme"]]],
   done:"you're level 58.", stuck:"Fight the undead near Light's Hope Chapel until you are.",
@@ -650,11 +726,12 @@ const STEPS = [
     "For the last bars of XP, run end-game dungeons with groups: Blackrock Depths, Lower Blackrock Spire, Dire Maul, Stratholme and Scholomance."
   ] },
 
-{ lv:"60", place:"Ironforge (teleport)", title:"Level 60: the last ranks", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["water7","food7"],
-  done:"the new water and food are on <kbd>Alt</kbd> + <kbd>1</kbd> and <kbd>Alt</kbd> + <kbd>2</kbd> and all 51 talent points are spent.",
+{ lv:"60", place:"Ironforge (teleport)", title:"Level 60: the last ranks", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["food7"],
+  done:"the new food is on <kbd>Alt</kbd> + <kbd>2</kbd> and all 51 talent points are spent.",
   todo:[
-    "Learn the last ranks, including <b>Conjured Crystal Water</b> and <b>Conjured Cinnamon Rolls</b>.",
-    "Spend your last talent point. That's all 51."
+    "Learn the last ranks, including a new <b>Conjure Food</b> (Conjured Cinnamon Rolls). Put it on <kbd>Alt</kbd> + <kbd>2</kbd>.",
+    "Spend your last talent point on <b>Arcane Subtlety</b>. That's all 51.",
+    "The best water, <b>Conjured Crystal Water</b>, doesn't come from the trainer: it's the reward for <b>Arcane Refreshment</b>, a quest from Lorekeeper Lydros in Dire Maul (a group dungeon)."
   ] },
 
 { lv:"60", place:"Mount Hyjal", title:"You made it to 60!", map:[["hyjal"]],
@@ -666,47 +743,41 @@ const STEPS = [
 
 /* Talent points: which talent to click at each level. */
 const TALENTS = [
-  ["10–14", "Improved Frostbolt", "Click it 5 times (once per level)", "Frostbolt casts faster."],
-  ["15–19", "Ice Shards", "5 times", "Your Frost spells hit harder on critical hits."],
+  ["10–11", "Precision (Frost tab)", "Click it 2 times (once per level)", "Your spells miss less often."],
+  ["12–14", "Improved Frostbolt", "3 times", "Frostbolt casts faster."],
+  ["15–17", "Frostbite", "3 times", "Your slowing spells can freeze enemies by themselves."],
+  ["18–19", "Improved Frostbolt", "2 more times (5 of 5)", ""],
   ["20", "Ice Lance", "Once", "Triple damage to frozen enemies. Your best new trick."],
-  ["21–23", "Frostbite", "3 times", "Frostbolt can freeze enemies by itself."],
-  ["24", "Improved Frost Nova", "Once", "Frost Nova comes back sooner."],
-  ["25", "Ice Block", "Once", "Your \"don't die\" button."],
-  ["26", "Improved Frost Nova", "Once more (2 of 2)", ""],
-  ["27–29", "Shatter", "3 times", "More critical hits on frozen enemies."],
-  ["30–31", "Arctic Reach", "2 times", "Longer range."],
-  ["32–33", "Fingers of Frost", "2 times", "Enemies count as frozen more often, so more Ice Lances."],
-  ["34", "Cold Snap", "Once", "Resets your Frost cooldowns, so you can Ice Block twice."],
-  ["35–39", "Winter's Chill", "5 times", "Makes Cone of Cold stronger."],
-  ["40", "Ice Barrier", "Once", "A damage-absorbing shield."],
-  ["41–45", "Improved Channeling (Arcane tab)", "5 times", "Switch to the Arcane tab now."],
-  ["46–50", "Arcane Concentration", "5 times", "Sometimes your next spell is free."],
-  ["51–52", "Missile Barrage", "2 times", "Sometimes gives a free, fast Arcane Missiles. Press it when it lights up."],
-  ["53–54", "Arcane Subtlety", "2 times", ""],
-  ["55–56", "Arcane Impact", "2 times", ""],
-  ["57", "Arcane Blast", "Once", ""],
-  ["58–60", "Arcane Meditation", "3 times", "Better mana regeneration. That's all 51 points."]
+  ["21–24", "Ice Shards", "4 times", "Your Frost critical hits do more damage."],
+  ["25–27", "Shatter", "3 times", "Many more critical hits on frozen enemies."],
+  ["28", "Ice Shards", "Once more (5 of 5)", ""],
+  ["29", "Ice Block", "Once", "Your \"don't die\" button."],
+  ["30–31", "Fingers of Frost", "2 times", "Sometimes your next spell treats the enemy as frozen: cast Ice Lance."],
+  ["32", "Cold Snap", "Once", "Resets your Frost cooldowns, so you can Ice Block or Frost Nova again."],
+  ["33–35", "Improved Cone of Cold", "3 times", "Cone of Cold hits harder."],
+  ["36–38", "Frost Channeling", "3 times", "Frost spells cost less mana."],
+  ["39", "Improved Blizzard", "Once", "Blizzard slows the enemies in it."],
+  ["40", "Ice Barrier", "Once", "A damage-absorbing shield. Use it before every fight."],
+  ["41", "Precision", "Once more (3 of 3)", ""],
+  ["42–46", "Winter's Chill", "5 times", "Frostbolt and empowered Ice Lance sometimes make the enemy easier to crit."],
+  ["47–48", "Arctic Reach", "2 times", "Longer range for Frostbolt, Ice Lance and Blizzard."],
+  ["49–50", "Permafrost", "2 times", "Your slows last longer and are stronger."],
+  ["51–52", "Improved Blizzard", "2 more times (3 of 3)", ""],
+  ["53", "Frost Warding", "Once", "Ice Armor gives more armor."],
+  ["54–56", "Arcane Resilience (Arcane tab)", "3 times", "Switch to the Arcane tab now. More armor from your Intellect."],
+  ["57–58", "Wand Specialization", "2 times", "Your wand hits harder."],
+  ["59–60", "Arcane Subtlety", "2 times", "Enemies resist your spells less. That's all 51 points."]
 ];
 
 /* Words a new player won't know. Matching is case-insensitive. */
 const WORDS = {
   "buff": "A good effect on you, like Frost Armor. Its icon shows at the top right of your screen.",
-  "elite": "A much stronger enemy. Its portrait has a golden dragon border. Skip these alone.",
-  "dungeon": "A private area for a group of 5 players, with bosses and better loot.",
   "flight path": "Talk to a flight master (the person with a gryphon) once to unlock that place. Then you can fly between any places you've unlocked.",
-  "hearthstone": "A stone in your bag that teleports you to the inn you set as home. Usable once an hour.",
-  "rested xp": "Bonus XP you build up while logged out in an inn or city. Your XP bar turns blue while you have it.",
-  "talent": "One point per level from 10. You spend it in the talent window (N) to make yourself stronger.",
   "trainer": "An NPC who teaches you new spells for gold. Mages need one every 2 levels.",
-  "tank": "The group member (often a warrior) whose job is to make enemies attack them, not you.",
   "frozen": "Can't move. Frost Nova and Frostbite freeze enemies. Ice Lance does triple damage to frozen enemies.",
   "pull": "Starting a fight with an enemy, usually by hitting it from a distance.",
-  "cooldown": "Waiting time before you can use an ability again. The button shows a clock-style sweep.",
-  "elites": "Much stronger enemies with a golden dragon border on their portrait. Skip them alone.",
-  "legacy": "A Forever system: you earn points across your whole account and spend them on bonuses. Press Y.",
   "reagent vendor": "A shop NPC who sells things your spells use up, like Runes of Teleportation.",
-  "auction house": "Where players buy and sell items. In Ironforge it's near the bank.",
-  "pvp": "Fighting other players. On PvP servers, the other faction can attack you in some zones."
+  "auction house": "Where players buy and sell items. In Ironforge it's near the bank."
 };
 
 /* ---------------------------------------------------------
@@ -739,13 +810,13 @@ const SPELLBOOK = {
   frostnova:     { name:"Frost Nova", lv:10, school:"frost", icon:"snow", text:"Freezes every enemy next to you. Then step away." },
   icelance:      { name:"Ice Lance", lv:20, school:"frost", icon:"wand", talent:true, text:"Triple damage on a frozen enemy. Press right after Frost Nova." },
   polymorph:     { name:"Polymorph", lv:8, school:"arcane", icon:"sheep", text:"Turns an extra enemy into a sheep for a while. Don't hit the sheep." },
-  shoot:         { name:"Shoot (wand)", lv:5, school:"item", icon:"wand", text:"Free damage with your wand. Use it to finish enemies. Needs a wand equipped." },
+  shoot:         { name:"Shoot (wand)", lv:10, school:"item", icon:"wand", text:"Free damage with your wand. Use it to finish enemies. Needs a wand equipped." },
   blink:         { name:"Blink", lv:20, school:"arcane", icon:"arrow", text:"Teleports you a short way forward. Your escape button." },
   coneofcold:    { name:"Cone of Cold", lv:26, school:"frost", icon:"snow", text:"Hits and slows everything in front of you." },
-  iceblock:      { name:"Ice Block", lv:25, school:"frost", icon:"cube", talent:true, text:"Nothing can hurt you for a few seconds. Press it when you're about to die." },
+  iceblock:      { name:"Ice Block", lv:29, school:"frost", icon:"cube", talent:true, text:"Nothing can hurt you for a few seconds. Press it when you're about to die." },
   eureka:        { name:"Eureka!", lv:1, school:"racial", icon:"bulb", text:"Gnome racial. For 8 sec your spells cost 10% less mana and hit 10% harder. 2 min cooldown." },
   counterspell:  { name:"Counterspell", lv:24, school:"arcane", icon:"slash", text:"Stops an enemy's spell while they're casting it." },
-  arcanemissiles:{ name:"Arcane Missiles", lv:8, school:"arcane", icon:"dots", text:"Channels a stream of arcane bolts. Mostly for later: from level 51 (Missile Barrage talent), press it when it lights up, because then it's free and fast." },
+  arcanemissiles:{ name:"Arcane Missiles", lv:8, school:"arcane", icon:"dots", text:"Channels a stream of arcane bolts. Costs more mana than Frostbolt, so as Frost you rarely need it. Handy against enemies that resist Frost." },
 
   arcaneexplosion:{ name:"Arcane Explosion", lv:14, school:"arcane", icon:"burst", text:"Hits every enemy around you. Costs a lot of mana. For groups of enemies." },
   blizzard:      { name:"Blizzard", lv:20, school:"frost", icon:"snow", text:"Ice rains on an area for a few seconds. For big groups of enemies." },
@@ -762,7 +833,7 @@ const SPELLBOOK = {
   water4: { name:"Conjured Spring Water", lv:30, school:"item", icon:"drop", text:"Better water from Conjure Water (rank 4)." },
   water5: { name:"Conjured Mineral Water", lv:40, school:"item", icon:"drop", text:"Better water from Conjure Water (rank 5)." },
   water6: { name:"Conjured Sparkling Water", lv:50, school:"item", icon:"drop", text:"Better water from Conjure Water (rank 6)." },
-  water7: { name:"Conjured Crystal Water", lv:60, school:"item", icon:"drop", text:"Best water from Conjure Water (rank 7)." },
+  water7: { name:"Conjured Crystal Water", lv:60, school:"item", icon:"drop", text:"Best water from Conjure Water (rank 7). You learn that rank from the Dire Maul quest Arcane Refreshment, not from the trainer." },
   food1:  { name:"Conjured Muffin", lv:6, school:"item", icon:"bread", text:"Eat it after a fight to refill health. Made by Conjure Food." },
   food2:  { name:"Conjured Bread", lv:12, school:"item", icon:"bread", text:"Better food from Conjure Food (rank 2)." },
   food3:  { name:"Conjured Rye", lv:22, school:"item", icon:"bread", text:"Better food from Conjure Food (rank 3)." },
@@ -772,7 +843,7 @@ const SPELLBOOK = {
   food7:  { name:"Conjured Cinnamon Roll", lv:60, school:"item", icon:"bread", text:"Best food from Conjure Food (rank 7)." },
   evocation:     { name:"Evocation", lv:20, school:"arcane", icon:"swirl", text:"Channels to refill a big chunk of mana. Use after a hard fight." },
   escape:        { name:"Escape Artist", lv:1, school:"racial", icon:"chain", text:"Gnome racial. Breaks roots and slows on you." },
-  coldsnap:      { name:"Cold Snap", lv:34, school:"frost", icon:"clock", talent:true, text:"Resets your Frost cooldowns, so you can use Ice Block or Frost Nova again." },
+  coldsnap:      { name:"Cold Snap", lv:32, school:"frost", icon:"clock", talent:true, text:"Resets your Frost cooldowns, so you can use Ice Block or Frost Nova again." },
   removecurse:   { name:"Remove Lesser Curse", lv:18, school:"arcane", icon:"cross", text:"Removes a curse from you or a party member." },
   frostfire:     { name:"Frostfire Bolt", lv:40, school:"frost", icon:"flame", text:"A big hit plus damage over time. Optional for a Frost mage." },
   manashield:    { name:"Mana Shield", lv:20, school:"arcane", icon:"shield", text:"Damage takes your mana instead of your health. Emergency only." },
@@ -830,10 +901,10 @@ const BARS = [
       ["3", [[10,"frostnova"]]],
       ["4", [[20,"icelance"]]],
       ["5", [[8,"polymorph"]]],
-      ["6", [[5,"shoot"]]],
+      ["6", [[10,"shoot"]]],
       ["7", [[20,"blink"]]],
       ["8", [[26,"coneofcold"]]],
-      ["9", [[25,"iceblock"]]],
+      ["9", [[29,"iceblock"]]],
       ["0", [[1,"eureka"]]],
       ["-", [[24,"counterspell"]]],
       ["=", [[8,"arcanemissiles"]]]
@@ -847,7 +918,7 @@ const BARS = [
       ["S5", [[28,"managem"],[38,"managem2"],[48,"managem3"],[58,"managem4"]]],
       ["S6", [[20,"evocation"]]],
       ["S7", [[1,"escape"]]],
-      ["S8", [[34,"coldsnap"]]],
+      ["S8", [[32,"coldsnap"]]],
       ["S9", [[18,"removecurse"]]],
       ["S0", [[40,"frostfire"]]],
       ["S-", [[4,"fireball"]]],

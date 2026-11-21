@@ -4,8 +4,8 @@ Step-by-step beginner guides for WoW: Forever, styled like the in-game UI.
 
 | Character | Leveling | Professions | Addons |
 |---|---|---|---|
-| Gnome Mage | [Guide](Mage%20Gnome/Gnome-Mage-WoW-Guide.html) | [Professions](Mage%20Gnome/Gnome-Mage-Professions.html) | [Addons](Mage%20Gnome/Gnome-Mage-Addons.html) |
-| Night Elf Rogue | [Guide](Rogue%20Night%20Elf/NightElf-Rogue-WoW-Guide.html) | [Professions](Rogue%20Night%20Elf/NightElf-Rogue-Professions.html) | [Addons](Rogue%20Night%20Elf/NightElf-Rogue-Addons.html) |
+| Gnome Mage | [Guide](Mage%20Gnome/Gnome-Mage-WoW-Guide.html) | [Professions](professions.html?c=gnome-mage) | [Addons](addons.html?c=gnome-mage) |
+| Night Elf Rogue | [Guide](Rogue%20Night%20Elf/NightElf-Rogue-WoW-Guide.html) | [Professions](professions.html?c=nightelf-rogue) | [Addons](addons.html?c=nightelf-rogue) |
 
 `index.html` at the root is the landing page.
 
@@ -25,7 +25,7 @@ Step-by-step beginner guides for WoW: Forever, styled like the in-game UI.
   "is this better?" example, and how to compare items in game.
 - **How to Play** and **Profession Basics** are picture cards with a "jump to" row, an enemy level-colour scale,
   the class combo as real ability icons, and a skill-up chance bar for recipe colours.
-- **Professions** and **Addons** pages for each character.
+- One shared **Professions** page (Tailoring, Enchanting, Leatherworking, Skinning, with a Skinning route per race) and one shared **Addons** page (tips for each class, and a Dungeons list).
 - **Help button (?)** on every page: how the page works, keyboard keys, and answers for when you're stuck.
 - **First-visit welcome and a short guided tour** that points at each part of the page.
 - **Settings (gear button)**: bigger text, high contrast, an easy-read font, animations on/off, floating embers on/off.
@@ -38,6 +38,11 @@ Step-by-step beginner guides for WoW: Forever, styled like the in-game UI.
 
 ```
 index.html                 landing page (cards are built from the character registry)
+professions.html           professions page, shared by every character
+addons.html                addons page, shared by every character
+                           (?c=<id> on both says whose guide linked there, for the back link)
+data/professions.js        profession routes
+data/addons.js             addon list with "why you want it" text and class tips
 404.html                   "page not found" for GitHub Pages
 site.webmanifest           app name/icon when saved to a phone home screen
 assets/
@@ -57,11 +62,7 @@ assets/
   img/favicon.svg
 <Character folder>/
   <Name>-WoW-Guide.html    page text (How to Play, etc.) + links to the shared files
-  <Name>-Professions.html
-  <Name>-Addons.html
   data/guide.js            steps, talents, words, zones, spells, action bars
-  data/professions.js      profession routes
-  data/addons.js           addon list with "why you want it" text
 ```
 
 The **engines are shared**: fixing a bug in `assets/js/guide.js` fixes it for every character.

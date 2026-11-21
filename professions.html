@@ -4,32 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#14110e">
-<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
-<title>Night Elf Rogue — professions (WoW: Forever)</title>
-<link rel="stylesheet" href="../assets/css/core.css">
-<link rel="stylesheet" href="../assets/css/professions.css">
-<link rel="stylesheet" href="../assets/css/fx.css">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<title>Professions — WoW: Forever beginner guides</title>
+<link rel="stylesheet" href="assets/css/core.css">
+<link rel="stylesheet" href="assets/css/professions.css">
+<link rel="stylesheet" href="assets/css/fx.css">
 </head>
-<body data-page="professions" data-character="nightelf-rogue">
+<body data-page="professions">
 
 <!-- ===== TOP FRAME ===== -->
 <header class="top">
   <div class="top-inner">
-    <div class="portrait"><img src="../assets/icons/classicon_rogue.jpg" alt="" onerror="WF.iconErr(this)"><span>⚒</span></div>
+    <div class="portrait"><img src="assets/icons/trade_tailoring.jpg" alt="" onerror="WF.iconErr(this)"><span>⚒</span></div>
     <div class="titleplate">
-      <h1>Night Elf Rogue</h1>
-      <p>Professions guide · WoW: Forever</p>
+      <h1>Professions</h1>
+      <p>For every character · WoW: Forever</p>
     </div>
   </div>
   <nav class="tabs">
-    <a class="tablink" href="NightElf-Rogue-WoW-Guide.html">‹ Rogue Guide</a>
+    <a class="tablink" id="backlink" href="index.html">‹ All guides</a>
     <button type="button" class="on" data-tab="overview">Basics</button>
-    <button type="button" data-tab="leatherworking">Leatherworking</button>
-    <button type="button" data-tab="skinning">Skinning</button>
     <button type="button" data-tab="tailoring">Tailoring</button>
     <button type="button" data-tab="enchanting">Enchanting</button>
+    <button type="button" data-tab="leatherworking">Leatherworking</button>
+    <button type="button" data-tab="skinning">Skinning</button>
     <button type="button" data-tab="notes">Notes</button>
-    <a class="tablink" href="NightElf-Rogue-Addons.html">Addons ›</a>
+    <a class="tablink" href="addons.html" data-carry>Addons ›</a>
   </nav>
 </header>
 
@@ -47,12 +47,12 @@
           <li>You can have <b>2 main jobs</b>. Cooking, First Aid and Fishing are extras anyone can learn. They don't count toward your 2.</li>
           <li>Each job has a <b>skill number</b> that starts at 1 and goes up to <b>300</b>. It goes up by 1 when you make or collect something.</li>
           <li>If you drop a job, its skill goes back to 0. Choose carefully.</li>
-          <li><b>Rogues: learn First Aid.</b> You can't heal yourself, so bandages are your best friend. Learn it in Darnassus at level 10 and make bandages from the cloth humanoids drop.</li>
+          <li><b>Rogues: learn First Aid.</b> You can't heal yourself, so bandages are your best friend. Learn it in your capital city at level 10 and make bandages from the cloth humanoids drop. It helps every class, so mages can learn it too.</li>
         </ul>
 
         <h3>How to start one</h3>
         <ol>
-          <li>Go to a big city (Darnassus for Night Elves). Ask any <b>guard</b> about professions and pick the one you want. The guard marks the trainer on your map.</li>
+          <li>Go to a big city (Ironforge for Gnomes, Darnassus for Night Elves). Ask any <b>guard</b> about professions and pick the one you want. The guard marks the trainer on your map.</li>
           <li>Talk to the <b>trainer</b> and learn the profession. It costs almost nothing.</li>
           <li>Open your <b>spellbook</b> (<kbd>P</kbd>) and click the profession's icon. Drag the icon to your action bar so it's easy to open next time.</li>
           <li>Pick a recipe. If you have the materials in your bags, click <b>Create</b>.</li>
@@ -88,16 +88,16 @@
         <h3>Pairs that work well</h3>
         <dl class="glossary">
           <div>
+            <dt>Tailoring + Enchanting</dt>
+            <dd><span class="sub">Best for a mage · no gathering needed</span>
+              Mages wear cloth, so Tailoring makes your own gear. Cloth drops from humanoid enemies. Enchanting breaks your extra Tailoring items into enchanting materials, so the two feed each other.
+              <span class="btns"><button class="wowbtn small" data-go="tailoring">Tailoring</button><button class="wowbtn small" data-go="enchanting">Enchanting</button></span></dd>
+          </div>
+          <div>
             <dt>Skinning + Leatherworking</dt>
             <dd><span class="sub">Best for a rogue · gathering feeds crafting</span>
               Rogues wear leather, so Leatherworking makes your own armor and armor kits. It needs well over 1,000 pieces of leather to reach 300. Skinning gets it for free while you quest.
               <span class="btns"><button class="wowbtn small" data-go="skinning">Skinning</button><button class="wowbtn small" data-go="leatherworking">Leatherworking</button></span></dd>
-          </div>
-          <div>
-            <dt>Tailoring + Enchanting</dt>
-            <dd><span class="sub">No gathering needed</span>
-              Cloth drops from humanoid enemies. Enchanting breaks your extra Tailoring items into enchanting materials, so the two feed each other. Tailoring makes cloth gear, so it's less useful for a rogue, but Enchanting helps every class.
-              <span class="btns"><button class="wowbtn small" data-go="tailoring">Tailoring</button><button class="wowbtn small" data-go="enchanting">Enchanting</button></span></dd>
           </div>
           <div>
             <dt>Herbalism + Alchemy</dt>
@@ -128,10 +128,10 @@
   </section>
 
   <!-- ===== ROUTES (filled by the script) ===== -->
-  <section class="panel" id="panel-leatherworking"></section>
-  <section class="panel" id="panel-skinning"></section>
   <section class="panel" id="panel-tailoring"></section>
   <section class="panel" id="panel-enchanting"></section>
+  <section class="panel" id="panel-leatherworking"></section>
+  <section class="panel" id="panel-skinning"></section>
 
   <!-- ===== NOTES ===== -->
   <section class="panel" id="panel-notes">
@@ -152,7 +152,7 @@
           <li>The Venomspew patterns from Mishta may need Cenarion Circle reputation.</li>
           <li>Enchanting: the first step (Runed Copper Rod) is marked as not yet checked on a live realm.</li>
           <li>Skinning: the route was written during the WoW Forever beta. The leather types per level are general Classic knowledge, not from that guide.</li>
-          <li>Skinning: the Teldrassil, Darkshore and Ashenvale steps for Night Elves were added from general Classic knowledge (which beasts live there and their levels), not from the WoW Forever guide.</li>
+          <li>Skinning: the Teldrassil, Darkshore and Ashenvale steps for Night Elves, and Dun Morogh for Gnomes, were added from general Classic knowledge (which beasts live there and their levels), not from the WoW Forever guide.</li>
           <li>The new campfire recipes aren't covered here.</li>
         </ul>
 
@@ -172,9 +172,9 @@
   <p class="foot">Fan-made guide for World of Warcraft: Forever. Icons © Blizzard Entertainment, from the game files.</p>
 </main>
 
-<script src="../assets/js/characters.js"></script>
+<script src="assets/js/characters.js"></script>
 <script src="data/professions.js"></script>
-<script src="../assets/js/professions.js"></script>
-<script src="../assets/js/site.js"></script>
+<script src="assets/js/professions.js"></script>
+<script src="assets/js/site.js"></script>
 </body>
 </html>

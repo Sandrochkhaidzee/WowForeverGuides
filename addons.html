@@ -4,28 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#14110e">
-<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
-<title>Night Elf Rogue — addons (WoW: Forever)</title>
-<link rel="stylesheet" href="../assets/css/core.css">
-<link rel="stylesheet" href="../assets/css/addons.css">
-<link rel="stylesheet" href="../assets/css/fx.css">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<title>Addons — WoW: Forever beginner guides</title>
+<link rel="stylesheet" href="assets/css/core.css">
+<link rel="stylesheet" href="assets/css/addons.css">
+<link rel="stylesheet" href="assets/css/fx.css">
 </head>
-<body data-page="addons" data-character="nightelf-rogue">
+<body data-page="addons">
 
 <!-- ===== TOP FRAME ===== -->
 <header class="top">
   <div class="top-inner">
-    <div class="portrait"><img src="../assets/icons/classicon_rogue.jpg" alt="" onerror="WF.iconErr(this)"><span>⚙</span></div>
+    <div class="portrait"><img src="assets/icons/trade_engineering.jpg" alt="" onerror="WF.iconErr(this)"><span>⚙</span></div>
     <div class="titleplate">
-      <h1>Night Elf Rogue</h1>
-      <p>Addons guide · WoW: Forever</p>
+      <h1>Addons</h1>
+      <p>For every character · WoW: Forever</p>
     </div>
   </div>
   <nav class="tabs">
-    <a class="tablink" href="NightElf-Rogue-WoW-Guide.html">‹ Rogue Guide</a>
+    <a class="tablink" id="backlink" href="index.html">‹ All guides</a>
     <button type="button" class="on" data-tab="list">Addon List</button>
     <button type="button" data-tab="install">How to Install</button>
     <button type="button" data-tab="notes">Notes</button>
+    <a class="tablink" href="professions.html" data-carry>Professions ›</a>
   </nav>
 </header>
 
@@ -34,14 +35,14 @@
   <!-- ===== ADDON LIST ===== -->
   <section class="panel on" id="panel-list">
     <div class="frame">
-      <div class="frame-title">Addons for a Night Elf Rogue</div>
+      <div class="frame-title">Addons for WoW: Forever</div>
       <div class="frame-body">
-        <p class="lead">Addons are small free add-ons that change or improve the game's interface. You don't need any to play. Start with the <b>must-haves</b>, then add others when you want them. Every addon here has a version made for <b>WoW Forever</b> (checked on CurseForge, Nov 21, 2026).</p>
+        <p class="lead">Addons are small free add-ons that change or improve the game's interface. You don't need any to play, and the same addons work for every race and class. Start with the <b>must-haves</b>, then add others when you want them. Every addon here has a version made for <b>WoW Forever</b> (checked on CurseForge, Nov 22, 2026).</p>
         <p class="quality">
           <span><b style="color: var(--q-legendary)">Must-have</b> install first</span>
           <span><b style="color: var(--q-rare)">Recommended</b> very useful</span>
           <span><b style="color: var(--q-uncommon)">Optional</b> nice to have</span>
-          <span><b style="color: var(--q-poor)">Don't install</b> no Forever version, or not needed</span>
+          <span><b style="color: var(--wow-yellow)">Dungeons</b> its own list for group runs</span>
         </p>
         <p class="hint">New to addons? Read <a href="#install" data-tab-link="install">How to Install</a> first. Press <b>Scan</b> after you add or remove addons, and the list shows which ones you have.</p>
 
@@ -95,6 +96,7 @@
           <li>Turn all addons off on the character screen, then turn them back on one at a time to find the one causing trouble.</li>
           <li>Update the addon. Most errors are fixed within a few days of a patch.</li>
           <li>Too many buttons around your minimap? <b>MinimapButtonButton</b> (Optional list) tucks them into one.</li>
+          <li>Install <b>BugSack</b> (Optional list). When something goes wrong, it shows which addon caused the error.</li>
         </ul>
       </div>
     </div>
@@ -107,8 +109,10 @@
       <div class="frame-body">
         <h3>How this list was made</h3>
         <ul>
-          <li>Every addon was checked on its CurseForge page on <b>Nov 21, 2026</b>. All of them list <b>Forever</b> under Flavors, except the ones marked "Don't install".</li>
-          <li>"Also install … It won't work without it" comes from each addon's <b>Required dependency</b> list on CurseForge. The DBM and BigWigs boss modules are separate projects, so the app doesn't add those for you.</li>
+          <li>Every addon was checked on its CurseForge page on <b>Nov 22, 2026</b>. All of them list <b>Forever</b> under Flavors.</li>
+          <li>The list was picked from the most downloaded addons with a Forever version, plus a few smaller ones made just for WoW Forever.</li>
+          <li>Addons without a Forever version (WeakAuras, OmniCC, Postal) aren't listed. Use <b>ForeverAuras</b> instead of WeakAuras.</li>
+          <li>"Also install … It won't work without it" comes from each addon's <b>Required dependency</b> list on CurseForge. DBM's boss modules (DBM - Dungeons) are a separate project, so the app doesn't add those for you.</li>
           <li>The descriptions of what each addon does are based on its CurseForge page.</li>
         </ul>
 
@@ -117,6 +121,7 @@
           <li>Questie's quest data for WoW Forever's <b>new</b> quests: some guide sites say parts are missing or wrong. Questie's own page doesn't say. If a marker looks off, trust the game's quest objectives.</li>
           <li>RestedXP: whether its WoW Forever guides are free or paid wasn't checked.</li>
           <li>Leatrix Plus and Leatrix Maps: the settings named here are the usual ones. Look through the settings window yourself, there are many more.</li>
+          <li>Nova Instance Tracker: the "5 dungeons an hour, 30 a day" limit is what the addon tracks. That WoW Forever uses the same limit wasn't checked.</li>
           <li>Spoken: the voice-over packs it uses are separate downloads on CurseForge. Check its page for which ones you need.</li>
           <li>The CurseForge app's own screens weren't checked, so its buttons may be named a little differently from the steps above.</li>
           <li>Addons change fast. An addon without a Forever version today may get one later, so check its page.</li>
@@ -139,9 +144,9 @@
   <p class="foot">Fan-made guide for World of Warcraft: Forever. Addon icons belong to their authors, shown from CurseForge.</p>
 </main>
 
-<script src="../assets/js/characters.js"></script>
+<script src="assets/js/characters.js"></script>
 <script src="data/addons.js"></script>
-<script src="../assets/js/addons.js"></script>
-<script src="../assets/js/site.js"></script>
+<script src="assets/js/addons.js"></script>
+<script src="assets/js/site.js"></script>
 </body>
 </html>

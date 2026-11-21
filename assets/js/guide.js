@@ -14,25 +14,7 @@ function persist() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(saved))
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
 
-/* Game words every beginner meets, whatever the class. A character's own WORDS
-   (in its data/guide.js) win when both explain the same word. */
-const COMMON_WORDS = {
-  "xp": "Experience points. Quests and kills give XP. Fill the bar at the bottom of your screen to reach the next level.",
-  "npc": "A character run by the game, not by a player: quest givers, trainers, vendors, guards.",
-  "quest log": "Your list of quests. Press L. Click a quest to read what to do and where.",
-  "spellbook": "Every ability you've learned. Press P, then drag an ability from it onto your action bar.",
-  "action bar": "The row of buttons at the bottom of your screen. Each button has a key: 1 uses the first button, 2 the second, and so on.",
-  "vendor": "An NPC who sells things and buys your junk. While talking to one, right-click an item in your bags to sell it.",
-  "humanoid": "Enemies shaped like people: humans, trolls, furbolgs, gnolls and so on. They often drop cloth and coins.",
-  "escort": "A quest where you walk with an NPC and keep them alive until they're safe. Stay close and don't run ahead.",
-  "inn": "Every town's inn has an innkeeper. Make it your home for your Hearthstone, and log out there for bonus XP.",
-  "graveyard": "Where you appear as a ghost when you die. Run back to your body and click Resurrect.",
-  "racial": "An ability you get from your race, not your class.",
-  "rank": "A stronger version of an ability you already have. Learn it at your trainer; it replaces the old one in your spellbook.",
-  "zone": "A big area of the world with its own name, like Darkshore or Dun Morogh. Its name shows above your minimap.",
-  "critical": "A critical hit (\"crit\") does about double damage. Its number pops up bigger.",
-  "respawn": "Enemies come back a few minutes after you kill them, so don't rest too long in a camp you cleared."
-};
+/* Shared game words live in data/words.js (COMMON_WORDS). A character's own WORDS win. */
 for (const k in COMMON_WORDS) if (!(k in WORDS)) WORDS[k] = COMMON_WORDS[k];
 
 /* Wrap known words with a clickable explanation (first match per step line only).

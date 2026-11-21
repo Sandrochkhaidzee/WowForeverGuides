@@ -1,31 +1,30 @@
 # Adding a new character
 
 Everything shared (look, behaviour, help, effects) lives in `assets/`. A character is just
-three pages of text plus three data files. Example: adding a **Dwarf Hunter**.
+one guide page plus one data file. The Professions page (`professions.html`), the Addons page
+(`addons.html`) and the common game words (`data/words.js`) are shared by everyone.
+Example: adding a **Dwarf Hunter**.
 
 ## 1. Copy a folder
 
 Copy the character folder closest to the new one (a ranged class → `Mage Gnome`, melee → `Rogue Night Elf`)
-and rename it and its pages:
+and rename it and its page:
 
 ```
 Hunter Dwarf/
   Dwarf-Hunter-WoW-Guide.html
-  Dwarf-Hunter-Professions.html
-  Dwarf-Hunter-Addons.html
   data/guide.js
-  data/professions.js
-  data/addons.js
 ```
 
-## 2. Edit the pages
+## 2. Edit the page
 
-In each `.html` file:
+In the `.html` file:
 
 - `<title>`, the `<h1>` name, and the class icon URL in the portrait (`classicon_hunter.jpg`).
 - `data-character="dwarf-hunter"` on `<body>`. It must match the registry `id` in step 4.
-- Links between the three pages (`Dwarf-Hunter-Addons.html`, etc.).
-- The written text: *How to Play*, *Action Bars → How to set this up*, profession basics, addon notes.
+- The Professions and Addons links: `../professions.html?c=dwarf-hunter` and `../addons.html?c=dwarf-hunter`.
+  The `?c=` makes the shared page's "‹ Guide" tab and Switch menu point back to this character.
+- The written text: *How to Play*, *Action Bars → How to set this up*.
 
 Don't change the `<link>` / `<script>` tags at the bottom; they load the shared engines.
 
@@ -38,7 +37,7 @@ doesn't mix with another character:
 const GUIDE_PAGE = {
   character: "dwarf-hunter",
   saveKey: "dwarfHunterBeginner.v1",
-  addonsHref: "Dwarf-Hunter-Addons.html",
+  addonsHref: "../addons.html?c=dwarf-hunter",
   abilityWord: "Ability",          // tooltip label: "Spell" for casters
   abilitiesWord: "abilities",
   itemNote: { test: /^(food|arrow)/, text: "Food and arrows are items: …" }
@@ -46,10 +45,17 @@ const GUIDE_PAGE = {
 ```
 
 Then rewrite `STEPS`, `TALENTS`, `WORDS`, `ZONES`, `SPELLBOOK`, `ICONS` and `BARS`.
-Each section has a comment explaining its fields.
+Each section has a comment explaining its fields. `WORDS` only needs the class's own words
+(energy, combo points, …): words every player meets come from `data/words.js`. A word in
+`WORDS` replaces the shared one, for a class-flavored version.
 
-`data/professions.js` and `data/addons.js` have the same kind of settings block at the top
-(`PROF_PAGE`, `ADDONS_PAGE`). Give them new keys too.
+Shared pages, in the site root:
+
+- **Professions** (`data/professions.js`): add the class to the "Pairs that work well" list in
+  `professions.html` if it has a best pair. For a new race, add its starting zone to the Skinning
+  1–75 row, its capital to `PROF_PAGE.city`, and its own early Skinning rows with `race: "Dwarf"`.
+- **Addons** (`data/addons.js`): if an addon needs a line for the new class, add it to that addon's
+  `tips` (`tips: { Hunter: "…" }`), or `only: ["Hunter"]` for a class-only addon.
 
 Spell icons that don't exist yet in the shared `GLYPH` list (`assets/js/action-bars.js`) can be
 added there; they're only shown when the real Wowhead icon can't load.
@@ -73,12 +79,8 @@ Add one entry to `assets/js/characters.js`:
   role: "Ranged hunter with a pet",
   blurb: "Tame a beast, let it hold the enemy, and shoot from a distance.",
   perks: ["Has a pet that fights for you", "Fights from far away", "Very forgiving"],
-  pages: {
-    guide: "Dwarf-Hunter-WoW-Guide.html",
-    professions: "Dwarf-Hunter-Professions.html",
-    addons: "Dwarf-Hunter-Addons.html",
-  },
-  saveKeys: { guide: "dwarfHunterBeginner.v1", professions: "dwarfHunterProfessions.v1", addons: "dwarfHunterAddons.scan.v1" },
+  pages: { guide: "Dwarf-Hunter-WoW-Guide.html" },
+  saveKeys: { guide: "dwarfHunterBeginner.v1" },
 },
 ```
 

@@ -1,0 +1,174 @@
+/* Settings the shared addons engine (assets/js/addons.js) reads.
+   oldScanKeys: scans saved by the old per-character addons pages, still read once. */
+const ADDONS_PAGE = { scanKey: "wfAddons.scan.v1", dbName: "wfAddons", oldScanKeys: ["nelfRogueAddons.scan.v1", "gnomeMageAddons.scan.v1"] };
+
+/* =========================================================
+   One addon list for every character.
+   tier:  must / rec / opt, and dmust / drec / dopt for Dungeons.
+   why:   for everyone. tips: { Class: "..." } extra line per class
+          (class names as in assets/js/characters.js, cls).
+   only:  ["Mage"] = hidden when another class is picked.
+   needs: other addons it requires ([slug, name]).
+   ========================================================= */
+
+const CF = "https://www.curseforge.com/wow/addons/";
+const ICON = (path) => `https://media.forgecdn.net/avatars/thumbnails/${path}`;
+
+const TIERS = [
+  { id: "must", title: "Must-have", quality: "legendary", note: "Install these first. Together they show you where to go, what to train and what to wear." },
+  { id: "rec", title: "Recommended", quality: "rare", note: "Very useful while you level. Add them once the must-haves work." },
+  { id: "opt", title: "Optional", quality: "uncommon", note: "Nice to have. Add them when you want them." },
+  { id: "dmust", group: "Dungeons", title: "Dungeon must-have", quality: "legendary", note: "Install these before your first dungeon.",
+    groupNote: "Addons for group runs, from your first dungeon at about level 13. You don't need any of them while questing alone." },
+  { id: "drec", group: "Dungeons", title: "Dungeon recommended", quality: "rare", note: "Make dungeons smoother: finding a group, staying alive, checking your damage." },
+  { id: "dopt", group: "Dungeons", title: "Dungeon optional", quality: "uncommon", note: "Nice to have for planning your runs." }
+];
+
+const ADDONS = [
+  /* ---------- must-have ---------- */
+  { slug: "questie", name: "Questie", tier: "must", tag: "Quests", dl: "229M", icon: "351/162/256/256/637505206198965674.png",
+    what: "Shows quests on your map and minimap: where quests start, where to hand them in, and the area for each objective.",
+    why: "Your guide tells you which quests to do. Questie shows exactly where they are.",
+    needs: [["questiedb", "QuestieDB"]],
+    warn: "WoW Forever's brand-new quests may be missing or slightly off for a while. If a marker looks wrong, trust the game's own objective markers." },
+  { slug: "tomtom", name: "TomTom", tag: "Map", dl: "93M", tier: "must", icon: "1495/687/256/256/638971692093458734.png",
+    what: "A floating arrow that points to any spot and counts down the distance.",
+    why: "Every pin on the guide's maps has a Copy /way button. Paste it in chat and follow the arrow." },
+  { slug: "leatrix-plus", name: "Leatrix Plus", tag: "Quality of life", dl: "80M", tier: "must", icon: "483/32/256/256/637782408501667202.png",
+    what: "Lots of small time savers in one addon. Turn on the ones you like in its settings.",
+    why: "Good ones to switch on: sell junk automatically, repair automatically and faster looting.",
+    warn: "Install the one by Leatrix called \"Leatrix Plus (USE THIS ONE)\". The button below goes to the right page." },
+  { slug: "whats-training", name: "What's Training?", tag: "Class", dl: "16M", tier: "must", icon: "2111/909/256/256/639273738232522114.png",
+    what: "Adds a list to your spellbook of the spells your class trainer can teach you.",
+    why: "You train every 2 levels. This shows what's waiting, so you know when the trip is worth it." },
+  { slug: "pawn", name: "Pawn", tag: "Gear", dl: "133M", tier: "must", icon: "320/97/256/256/637427080899696008.jpeg",
+    what: "Marks items that are an upgrade for you, so you know what to wear.",
+    why: "Gear has lots of different stats, and which ones matter depends on your class. Pawn does the maths for you.",
+    tips: { Rogue: "Rogue gear mixes Agility, Strength, Attack Power and weapon speed. Pawn weighs them all." } },
+
+  /* ---------- recommended ---------- */
+  { slug: "leatrix-maps", name: "Leatrix Maps", tag: "Map", dl: "46M", tier: "rec", icon: "483/28/256/256/637782408015473073.png",
+    what: "Improves the world map, for example by showing areas you haven't explored yet and coordinates.",
+    why: "Handy next to the guide's map coordinates.",
+    warn: "Like Leatrix Plus, pick the one called \"(USE THIS ONE)\"." },
+  { slug: "auctionator", name: "Auctionator", tag: "Gold", dl: "216M", tier: "rec", icon: "1403/232/256/256/638909541952729618.png",
+    what: "Makes the auction house easy: a simple search, quick selling and price history.",
+    why: "Buy upgrades cheaply, and sell what you collect while questing.",
+    tips: { Rogue: "Buy better weapons and sharpening stones, and sell the leather and lockbox loot you collect.",
+            Mage: "The Mage guide sends you to buy a wand at the auction house (step 21). Sell your spare cloth there too." } },
+  { slug: "talents-forever", name: "Talents Forever", tag: "Class", dl: "1M", tier: "rec", icon: "2053/786/256/256/639252886267507017.png",
+    what: "Plan your talents in game without spending a point (type /tf). It can place your points for you as you level. Made for WoW Forever.",
+    why: "Set up the build from your guide's Talents tab once, and you never put a point in the wrong place." },
+  { slug: "gearquest-forever", name: "GearQuest Forever", tag: "Gear", dl: "4.7M", tier: "rec", icon: "2051/657/256/256/639251946520387830.png",
+    what: "Right-click a gear slot to see the best upgrades for your class and level, and where they come from. You can track one like a quest. Made for WoW Forever.",
+    why: "Pawn tells you if an item is better. This tells you which item to go and get." },
+  { slug: "glowing-bars", name: "Glowing Bars", tag: "Class", dl: "1.9M", tier: "rec", icon: "2133/294/256/256/639280456378931134.png",
+    what: "Makes a button on your action bars glow when you forgot something: a missing buff, a weapon buff, a cooldown that's ready, or low reagents. Made for WoW Forever.",
+    why: "Buffs wear off and are easy to forget. The right button glows when it's time to use it again.",
+    tips: { Rogue: "It glows when your poisons wear off your weapons.",
+            Mage: "It glows when Arcane Intellect or your armor spell runs out." } },
+  { slug: "baganator", name: "Baganator", tag: "Bags", dl: "46M", tier: "rec", icon: "956/327/256/256/638449029664561508.png",
+    what: "All your bags in one window, with a search box and optional sorting into groups.",
+    why: "Easier to find things once your bags fill up.",
+    tips: { Rogue: "Poisons, poison ingredients, bandages, food, stones and lockboxes add up fast.",
+            Mage: "Conjured water, food, gems and quest items add up fast." } },
+
+  /* ---------- optional ---------- */
+  { slug: "shortest-path-forever", name: "Shortest Path Forever", tag: "Map", dl: "2.1M", tier: "opt", icon: "2065/656/256/256/639257694521434842.png",
+    what: "Shift-click the map, or pick a quest, and it plans the trip there, with directions in your quest tracker and on the map. Made for WoW Forever.",
+    why: "Saves you working out how to get somewhere far away.",
+    needs: [["forevercore", "ForeverCore"]] },
+  { slug: "forever-quest-tint", name: "Forever Quest Tint", tag: "Quests", dl: "836K", tier: "opt", icon: "2058/444/256/256/639254681449159717.png",
+    what: "Gives quests that are new in WoW Forever a teal background and a small ∞ mark in your quest log.",
+    why: "Handy to know when Questie might not have the quest yet." },
+  { slug: "forever-loot-sparkles", name: "Forever Loot Sparkles", tag: "Quests", dl: "1.6M", tier: "opt", icon: "2098/80/256/256/639269174187288257.png",
+    what: "Keeps the sparkle on quest items you can pick up, even when a graphics setting turns it off.",
+    why: "You stop walking past the quest item you're looking for. Nothing to set up." },
+  { slug: "rarescanner", name: "RareScanner", tag: "Map", dl: "148M", tier: "opt", icon: "58/841/256/256/636141449063964125.PNG",
+    what: "Alerts you when a rare enemy, event or treasure shows up near you.",
+    why: "Rares often drop nice gear for your level." },
+  { slug: "openmap", name: "OpenMap", tag: "Map", dl: "6M", tier: "opt", icon: "2166/401/256/256/639291472015127682.png",
+    what: "A seamless world map you can zoom and drag, in the original Vanilla art style. Made for WoW Forever.",
+    why: "Like the big map (press M) in the guide, but in game." },
+  { slug: "handynotes", name: "HandyNotes", tag: "Map", dl: "62M", tier: "opt", icon: "63/413/256/256/636142354843381360.jpg",
+    what: "Lets you put your own notes on the map. Other addons can add notes through it too.",
+    why: "Mark trainers, vendors or that quest giver you keep forgetting." },
+  { slug: "bugsack", name: "BugSack", tag: "Interface", dl: "18M", tier: "opt", icon: "62/762/256/256/636142192560849763.jpg",
+    what: "Catches addon error messages quietly instead of popping them up, and shows which addon caused them.",
+    why: "When something breaks, you can see which addon to update or turn off.",
+    needs: [["bug-grabber", "BugGrabber"]] },
+  { slug: "blizzmove", name: "BlizzMove", tag: "Interface", dl: "13M", tier: "opt", icon: "62/300/256/256/636142137694139375.jpg",
+    what: "Lets you drag the game's windows (bags, character, quest log) wherever you want.",
+    why: "Put the windows where they don't cover what you're doing." },
+  { slug: "minimapbuttonbutton", name: "MinimapButtonButton", tag: "Interface", dl: "19M", tier: "opt", icon: "374/842/256/256/637549050606191177.png",
+    what: "Collects all the addon buttons around your minimap into a single button.",
+    why: "Once you have several addons, the minimap gets crowded." },
+  { slug: "skillup-forever", name: "SkillUp Forever", tag: "Professions", dl: "2.8M", tier: "opt", icon: "2061/393/256/256/639255818157177083.png",
+    what: "Shows the chance of a skill point on each recipe, what it costs, a leveling route and a shopping list, right in the Professions window. Made for WoW Forever.",
+    why: "Goes well with your guide's Professions page.",
+    tips: { Rogue: "Use it for Leatherworking.", Mage: "Use it for Tailoring and Enchanting." },
+    needs: [["forevercore", "ForeverCore"]] },
+  { slug: "gathermate2", name: "GatherMate2", tag: "Professions", dl: "37M", tier: "opt", icon: "2204/622/256/256/639302390070923019.png",
+    what: "Remembers where you found herbs, ore and fishing spots and shows them on your map.",
+    why: "Only useful with Herbalism, Mining or Fishing.",
+    tips: { Rogue: "Skinning doesn't need it, because beasts walk around.", Mage: "Tailoring and Enchanting don't need it." } },
+  { slug: "restedxp-guide", name: "RestedXP Guide", tag: "Leveling", dl: "31M", tier: "opt", icon: "2066/254/256/256/639257936596340972.png",
+    what: "A step-by-step leveling guide inside the game, with arrows.",
+    why: "Does the same job as the guides on this site, but in game. Use one or the other so they don't send you two ways." },
+  { slug: "spoken", name: "Spoken", tag: "Fun", dl: "4M", tier: "opt", icon: "2123/272/256/256/639277523184843230.png",
+    what: "Reads quest text and NPC dialogue aloud with AI voices.",
+    why: "Enjoy the story without reading every quest window." },
+  { slug: "bartender4", name: "Bartender4", tag: "Action bars", dl: "83M", tier: "opt", icon: "64/267/256/256/636151513516385958.png",
+    what: "Lets you move, resize and change all your action bars.",
+    why: "Only if you know what you're doing. The guide's Action Bars tab uses the normal game bars." },
+  { slug: "foreverauras", name: "ForeverAuras", tag: "Advanced", dl: "1.5M", tier: "opt", icon: "2094/896/256/256/639268148488579112.png",
+    what: "Custom on-screen alerts for buffs, cooldowns and procs. A WeakAuras copy made for WoW Forever.",
+    why: "For later, once you know your spells well. Use this one: WeakAuras itself has no WoW Forever version." },
+  { slug: "tradeskill-master", name: "TradeSkillMaster", tag: "Gold", dl: "65M", tier: "opt", icon: "298/657/256/256/637350051034612516.png",
+    what: "A big, powerful tool for making gold with crafting and the auction house.",
+    why: "Too much for a beginner. Auctionator is enough until level 60." },
+
+  /* ---------- dungeons: must-have ---------- */
+  { slug: "threatclassic2", name: "ThreatClassic2", tag: "Threat", dl: "14M", tier: "dmust", icon: "2075/356/256/256/639261378617413269.png",
+    what: "A small meter that shows how close you are to pulling an enemy off the tank.",
+    why: "Damage dealers easily steal enemies from the tank. When you're near the top, slow down for a moment.",
+    tips: { Rogue: "Press Feint to drop your threat." } },
+  { slug: "deadly-boss-mods", name: "Deadly Boss Mods (DBM)", tag: "Bosses", dl: "644M", tier: "dmust", icon: "199/661/256/256/636908483866103322.png",
+    what: "Warns you before a boss does something dangerous, with timers and big text on your screen.",
+    why: "Fewer surprise deaths.",
+    tips: { Rogue: "Rogues stand right next to the boss, where most dangerous things happen.",
+            Mage: "Mages have little health, so knowing what's coming matters." },
+    plugins: [["deadly-boss-mods-dbm-dungeons", "DBM - Dungeons"], ["dbm-vanilla", "DBM - Forever and Vanilla (raids, for later)"]] },
+  { slug: "dungeonjournal", name: "DungeonJournal", tag: "Quests", dl: "20M", tier: "dmust", icon: "2218/764/256/256/639306029966247610.png",
+    what: "Lists every dungeon's quests, where they start, and what the bosses drop. Made for WoW Forever.",
+    why: "Collect all the quests before you go in. Most dungeon XP comes from quests." },
+
+  /* ---------- dungeons: recommended ---------- */
+  { slug: "lfg-forever", name: "LFG Forever", tag: "Groups", dl: "808K", tier: "drec", icon: "2064/447/256/256/639257111682997778.png",
+    what: "Adds filters to the game's Group Finder (type /lfg), by role, class and level, so you don't scroll through a hundred groups. Made for WoW Forever.",
+    why: "Find a group that still needs a damage dealer for the dungeon you want." },
+  { slug: "plater-nameplates", name: "Plater Nameplates", tag: "Nameplates", dl: "106M", tier: "drec", icon: "185/556/256/256/636828401320016782.png",
+    what: "Health bars above enemies' heads with threat colors and your debuffs on them. Has lots of settings if you want them.",
+    why: "In a big pull you see at once which enemy is about to come for you. It works fine without changing any settings." },
+  { slug: "details", name: "Details! Damage Meter", tag: "Combat", dl: "377M", tier: "drec", icon: "109/996/256/256/636383851490858804.png",
+    what: "Shows how much damage you and your group do in each fight.",
+    why: "Check that your rotation works, and compare after you change talents or gear.",
+    tips: { Rogue: "Shows if Slice and Dice and your poisons are doing their part.",
+            Mage: "Shows if your Frostbolt combo is working." } },
+  { slug: "gtfo", name: "GTFO", tag: "Survival", dl: "101M", tier: "drec", icon: "1807/708/256/256/639143702054586117.png",
+    what: "Plays a warning sound when you stand in fire or other bad stuff.",
+    why: "Move when you hear it.",
+    tips: { Rogue: "Rogues fight up close, right where the bad stuff lands.", Mage: "Mages have little health and die fast." } },
+  { slug: "nova-instance-tracker", name: "Nova Instance Tracker", tag: "Lockouts", dl: "19M", tier: "drec", icon: "1756/773/256/256/639117773807124014.png",
+    what: "Counts the dungeons you've entered and shows when you can enter a new one (the game allows 5 an hour, 30 a day). Also tells your group when you reset a dungeon.",
+    why: "Running the same dungeon a few times in a row? It tells you before you get the \"too many instances\" message." },
+  { slug: "decursive", name: "Decursive", tag: "Groups", dl: "34M", tier: "drec", only: ["Mage"], icon: "62/280/256/256/636142135345575340.jpg",
+    what: "Shows when someone in your group has a curse, so you can remove it with one click.",
+    why: "From level 18 mages have Remove Lesser Curse. Groups love mages who use it." },
+
+  /* ---------- dungeons: optional ---------- */
+  { slug: "atlasloot-forever", name: "AtlasLoot Classic Forever", tag: "Loot", dl: "12M", tier: "dopt", icon: "2052/544/256/256/639252407863198425.png",
+    what: "Loot tables for every boss, plus best-gear lists for each class.",
+    why: "See which dungeon drops the gear you want before you go.",
+    tips: { Rogue: "Look for rogue weapons and leather gear." } }
+];

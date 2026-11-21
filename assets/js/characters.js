@@ -29,12 +29,8 @@ WF.characters = [
     role: "Ranged caster",
     blurb: "Freeze enemies, blast them from afar, and conjure your own food and water.",
     perks: ["Fights from far away", "Makes free food & water", "Can teleport to cities"],
-    pages: {
-      guide: "Gnome-Mage-WoW-Guide.html",
-      professions: "Gnome-Mage-Professions.html",
-      addons: "Gnome-Mage-Addons.html",
-    },
-    saveKeys: { guide: "gnomeMageBeginner.v1", professions: "mageProfessions.v1", addons: "gnomeMageAddons.scan.v1" },
+    pages: { guide: "Gnome-Mage-WoW-Guide.html" },
+    saveKeys: { guide: "gnomeMageBeginner.v1" },
   },
   {
     id: "nightelf-rogue",
@@ -52,12 +48,8 @@ WF.characters = [
     role: "Melee assassin",
     blurb: "Sneak in stealth, open with a big hit, and finish with combo points.",
     perks: ["Sneaks past enemies", "Never needs to drink", "Hits hard up close"],
-    pages: {
-      guide: "NightElf-Rogue-WoW-Guide.html",
-      professions: "NightElf-Rogue-Professions.html",
-      addons: "NightElf-Rogue-Addons.html",
-    },
-    saveKeys: { guide: "nelfRogueBeginner.v1", professions: "nelfRogueProfessions.v1", addons: "nelfRogueAddons.scan.v1" },
+    pages: { guide: "NightElf-Rogue-WoW-Guide.html" },
+    saveKeys: { guide: "nelfRogueBeginner.v1" },
   },
 ];
 
@@ -74,9 +66,36 @@ WF.iconErr = (img) => {
 /* <img> for a game icon by name, e.g. WF.icon("inv_misc_note_01", "gi") */
 WF.icon = (name, cls) => `<img${cls ? ` class="${cls}"` : ""} src="${WF.ICON_URL}${name}.jpg" alt="" draggable="false" onerror="WF.iconErr(this)">`;
 
-/* Page link for a character, relative to the site root. */
-WF.href = (c, page) => encodeURI(`${c.folder}/${c.pages[page || "guide"]}`);
+/* Page link for a character, relative to the site root. Professions and Addons are
+   one page each for everyone, in the site root; ?c= says whose guide linked there. */
+WF.SHARED = { professions: "professions.html", addons: "addons.html" };
+WF.href = (c, page) => WF.SHARED[page]
+  ? `${WF.SHARED[page]}?c=${encodeURIComponent(c.id)}`
+  : encodeURI(`${c.folder}/${c.pages[page || "guide"]}`);
 WF.byId = (id) => WF.characters.find((c) => c.id === id);
+
+/* Shared pages (addons.html, professions.html) serve every character. The ?c=<id> in
+   the link says whose guide the visitor came from: it becomes the page's character, so
+   the Switch menu, the class glow and the "‹ Guide" tab point back there. */
+(() => {
+  const b = document.body;
+  if (!b || b.dataset.character) return;
+  const id = new URLSearchParams(location.search).get("c");
+  if (id && WF.byId(id)) b.dataset.character = id;
+})();
+
+/* On a shared page: the tab with id="backlink" goes back to that character's guide,
+   or to the landing page when the visitor didn't come from one. Links marked
+   data-carry (to the other shared page) keep the ?c=. Shared pages sit in the site root. */
+WF.backLink = () => {
+  const c = WF.byId(document.body.dataset.character);
+  const a = document.getElementById("backlink");
+  if (a) {
+    a.href = c ? WF.href(c, "guide") : "index.html";
+    a.textContent = c ? `‹ ${c.cls} Guide` : "‹ All guides";
+  }
+  if (c) document.querySelectorAll("a[data-carry]").forEach((l) => { l.href = l.getAttribute("href") + "?c=" + encodeURIComponent(c.id); });
+};
 
 /* Did this visitor use this character's pages before? Checked here, before the
    page engines run, because the guide engine saves its state as soon as it starts. */

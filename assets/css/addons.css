@@ -88,6 +88,16 @@ p { margin: 8px 0; }
 .tier[hidden] { display: none; }
 .tier-note { margin: 0 0 10px; font-size: 15.5px; color: var(--muted); }
 
+/* class tip under an addon's "why" line */
+.atip { margin: 4px 0 0; padding-left: 10px; border-left: 2px solid var(--c); font-size: 15.5px; }
+.atip b { color: var(--c); font-weight: normal; }
+
+/* a group of tiers (Dungeons) gets its own heading under a divider */
+.tgroup { margin: 30px 0 4px; padding-top: 16px; border-top: 1px solid var(--stone-light); }
+.tgroup[hidden] { display: none; }
+.tgroup h2 { margin: 0 0 4px; font-size: 24px; color: var(--wow-yellow); font-weight: normal; }
+.tgroup p { margin: 0; font-size: 15.5px; color: var(--muted); }
+
 .addons { display: grid; gap: 10px; }
 
 /* one addon, drawn like a tooltip/loot card */
