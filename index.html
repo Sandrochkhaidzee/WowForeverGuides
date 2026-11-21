@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WoW: Forever — Beginner Guides</title>
+<meta name="description" content="Beginner leveling, professions and addon guides for WoW: Forever — Gnome Mage and Night Elf Rogue.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet">
+<style>
+/* Same look as the guide pages: dark stone frames, gold trim, red buttons. */
+@font-face {
+  font-family: "WowDigits";
+  src: local("Palatino Linotype"), local("Palatino"), local("Book Antiqua"), local("Times New Roman");
+  unicode-range: U+0030-0039;
+}
+
+:root {
+  --wow-yellow: #ffd100;
+  --gold: #c8a24a;
+  --gold-dark: #7a5c1e;
+  --stone-light: #4a443c;
+  --frame-bg: #14110e;
+  --text: #e8e0cc;
+  --muted: #a99d84;
+  --font: "Friz Quadrata TT", "Friz Quadrata", WowDigits, Marcellus, Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 18px;
+  line-height: 1.6;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(90, 70, 40, .35), transparent 60%),
+    radial-gradient(ellipse at 50% 120%, rgba(20, 40, 80, .45), transparent 60%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.012) 0 2px, transparent 2px 6px),
+    #0c0a08;
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--wow-yellow); text-underline-offset: 3px; }
+a:hover { color: #fff3a0; }
+:focus-visible { outline: 2px solid var(--wow-yellow); outline-offset: 2px; }
+::selection { background: rgba(255, 209, 0, .35); color: #fff; }
+
+/* ---------- header ---------- */
+
+header {
+  text-align: center;
+  padding: 56px 16px 12px;
+}
+header h1 {
+  margin: 0;
+  font-size: clamp(30px, 6vw, 46px);
+  font-weight: normal;
+  color: var(--wow-yellow);
+  letter-spacing: .04em;
+  text-shadow: 0 2px 2px #000, 0 0 24px rgba(255, 180, 0, .3);
+}
+header p { margin: 6px auto 0; max-width: 560px; color: var(--muted); font-size: 16px; }
+.rule {
+  width: min(420px, 80%);
+  height: 1px;
+  margin: 22px auto 0;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  position: relative;
+}
+.rule::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -5px;
+  width: 9px;
+  height: 9px;
+  margin-left: -5px;
+  background: var(--gold);
+  border: 1px solid #000;
+  transform: rotate(45deg);
+}
+
+/* ---------- character cards ---------- */
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 36px 16px 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: 36px 28px;
+}
+
+.frame {
+  position: relative;
+  background: linear-gradient(#1c1915, var(--frame-bg));
+  border: 3px solid var(--stone-light);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 0 0 1px var(--gold-dark),
+    inset 0 0 0 3px #000,
+    0 0 0 1px #000,
+    0 10px 30px rgba(0, 0, 0, .7);
+  display: flex;
+  flex-direction: column;
+  transition: transform .2s, box-shadow .2s;
+}
+.frame:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 0 0 1px var(--gold),
+    inset 0 0 0 3px #000,
+    0 0 0 1px #000,
+    0 14px 34px rgba(0, 0, 0, .8),
+    0 0 26px var(--glow);
+}
+.frame::before, .frame::after {
+  content: "";
+  position: absolute;
+  top: -7px;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle at 35% 35%, #ffe9a3, var(--gold) 45%, var(--gold-dark));
+  border: 1px solid #000;
+  transform: rotate(45deg);
+}
+.frame::before { left: -7px; }
+.frame::after { right: -7px; }
+
+.mage  { --class: #69ccf0; --glow: rgba(105, 204, 240, .18); --orb: radial-gradient(circle at 40% 35%, #6aa6d8, #234a7a 60%, #0d1b33); }
+.rogue { --class: #fff569; --glow: rgba(255, 245, 105, .14); --orb: radial-gradient(circle at 40% 35%, #7a6a8a, #2f2440 60%, #120c1a); }
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 26px 24px 8px;
+}
+.portrait {
+  width: 76px;
+  height: 76px;
+  flex: none;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+  box-shadow: 0 0 0 2px #000, inset 0 0 12px rgba(0, 0, 0, .9);
+  background: var(--orb);
+  position: relative;
+  overflow: hidden;
+}
+.portrait img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.12);
+}
+.portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, .85), inset 0 2px 3px rgba(255, 255, 255, .15);
+}
+.card-head h2 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: normal;
+  line-height: 1.15;
+  color: var(--class);
+  text-shadow: 0 2px 2px #000;
+}
+.card-head .race { margin: 2px 0 0; font-size: 14px; color: var(--muted); }
+
+.card-body { padding: 6px 24px 24px; display: flex; flex-direction: column; flex: 1; }
+.card-body > p { margin: 8px 0 18px; font-size: 16px; }
+
+.links { margin-top: auto; display: grid; gap: 10px; }
+.wowbtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: var(--font);
+  font-size: 17px;
+  padding: 9px 18px;
+  color: var(--wow-yellow);
+  text-decoration: none;
+  text-shadow: 0 1px 1px #000;
+  background: linear-gradient(#b11f13, #6b0c06 55%, #4a0703);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px #000, inset 0 1px 0 rgba(255, 255, 255, .25);
+  transition: filter .15s, transform .08s;
+}
+.wowbtn:hover { filter: brightness(1.25); color: var(--wow-yellow); }
+.wowbtn:active { transform: translateY(1px); filter: brightness(.9); }
+.wowbtn small { font-size: 13px; color: #f3d9a0; opacity: .85; }
+.wowbtn.alt {
+  background: linear-gradient(#2d2823, #1a1714);
+  border-color: var(--stone-light);
+  color: var(--gold);
+}
+.wowbtn.alt small { color: var(--muted); }
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  padding: 0 16px 40px;
+}
+
+@media (max-width: 480px) {
+  header { padding-top: 36px; }
+  .card-head { padding: 22px 18px 6px; gap: 14px; }
+  .card-body { padding: 6px 18px 20px; }
+  .portrait { width: 62px; height: 62px; }
+  .card-head h2 { font-size: 23px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame, .wowbtn { transition: none; }
+  .frame:hover { transform: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>WoW: Forever</h1>
+  <p>Step-by-step beginner guides — leveling, professions and addons. Pick your character.</p>
+  <div class="rule"></div>
+</header>
+
+<main>
+
+  <article class="frame mage">
+    <div class="card-head">
+      <div class="portrait"><img src="https://wow.zamimg.com/images/wow/icons/large/classicon_mage.jpg" alt="" onerror="this.remove()"></div>
+      <div>
+        <h2>Mage</h2>
+        <p class="race">Gnome · Alliance</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>Ranged caster. Freeze enemies, blast them from afar, and conjure your own food and water.</p>
+      <div class="links">
+        <a class="wowbtn" href="Mage%20Gnome/Gnome-Mage-WoW-Guide.html">Leveling Guide <small>start here ›</small></a>
+        <a class="wowbtn alt" href="Mage%20Gnome/Gnome-Mage-Professions.html">Professions <small>›</small></a>
+        <a class="wowbtn alt" href="Mage%20Gnome/Gnome-Mage-Addons.html">Addons <small>›</small></a>
+      </div>
+    </div>
+  </article>
+
+  <article class="frame rogue">
+    <div class="card-head">
+      <div class="portrait"><img src="https://wow.zamimg.com/images/wow/icons/large/classicon_rogue.jpg" alt="" onerror="this.remove()"></div>
+      <div>
+        <h2>Rogue</h2>
+        <p class="race">Night Elf · Alliance</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>Melee assassin. Sneak in stealth, open with a big hit, and finish with combo points.</p>
+      <div class="links">
+        <a class="wowbtn" href="Rogue%20Night%20Elf/NightElf-Rogue-WoW-Guide.html">Leveling Guide <small>start here ›</small></a>
+        <a class="wowbtn alt" href="Rogue%20Night%20Elf/NightElf-Rogue-Professions.html">Professions <small>›</small></a>
+        <a class="wowbtn alt" href="Rogue%20Night%20Elf/NightElf-Rogue-Addons.html">Addons <small>›</small></a>
+      </div>
+    </div>
+  </article>
+
+</main>
+
+<footer>Fan-made guides for WoW: Forever. Not affiliated with Blizzard Entertainment.</footer>
+
+</body>
+</html>

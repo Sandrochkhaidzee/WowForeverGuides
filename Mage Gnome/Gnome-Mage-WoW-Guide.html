@@ -1,0 +1,2881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gnome Mage — beginner guide (WoW: Forever)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   Gnome Mage beginner guide — WoW-style interface
+   Dark stone frames with gold trim, parchment quest paper,
+   red buttons with yellow text, square action-bar slots.
+   ========================================================= */
+
+/* Marcellus only has small old-style numbers ("1" looks like "i").
+   Borrow just the digits from a classic serif that has full-height ones. */
+@font-face {
+  font-family: "WowDigits";
+  src: local("Palatino Linotype"), local("Palatino"), local("Book Antiqua"), local("Times New Roman");
+  unicode-range: U+0030-0039;
+}
+
+:root {
+  --wow-yellow: #ffd100;
+  --gold: #c8a24a;
+  --gold-dark: #7a5c1e;
+  --stone: #2b2722;
+  --stone-light: #4a443c;
+  --frame-bg: #14110e;
+  --text: #e8e0cc;
+  --muted: #a99d84;
+  --parch: #ead9b1;
+  --parch-dark: #cdb47f;
+  --ink: #2a1a08;
+  --tip-bg: rgba(8, 10, 28, .95);
+  --font: "Friz Quadrata TT", "Friz Quadrata", WowDigits, Marcellus, Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 18px;
+  line-height: 1.6;
+  /* dark world background with a soft vignette */
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(90, 70, 40, .35), transparent 60%),
+    radial-gradient(ellipse at 50% 120%, rgba(20, 40, 80, .45), transparent 60%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.012) 0 2px, transparent 2px 6px),
+    #0c0a08;
+  background-attachment: fixed;
+  padding-bottom: 150px; /* room for the action bar */
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--wow-yellow); text-underline-offset: 3px; }
+a:hover { color: #fff3a0; }
+b, strong { color: #fff; }
+
+::selection { background: rgba(255, 209, 0, .35); color: #fff; }
+
+/* gold focus ring for keyboard users */
+:focus-visible { outline: 2px solid var(--wow-yellow); outline-offset: 2px; }
+.slot:focus-visible { outline-offset: 1px; }
+
+/* dark stone scrollbars */
+html { scrollbar-color: var(--gold-dark) #0c0a08; }
+::-webkit-scrollbar { width: 12px; height: 10px; }
+::-webkit-scrollbar-track { background: #0c0a08; }
+::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #5a4520, var(--gold-dark), #5a4520); border: 2px solid #0c0a08; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+kbd {
+  display: inline-block;
+  min-width: 24px;
+  text-align: center;
+  font-family: Consolas, monospace;
+  font-size: 14px;
+  padding: 0 6px;
+  color: #fff;
+  background: linear-gradient(#3a3a3a, #1c1c1c);
+  border: 1px solid #777;
+  border-bottom-color: #222;
+  border-radius: 4px;
+  box-shadow: 0 1px 0 #000;
+}
+
+/* ---------- top frame ---------- */
+
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: linear-gradient(#24201b, #15120f);
+  border-bottom: 2px solid var(--gold);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .7);
+}
+.top-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 12px 20px 8px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* round portrait with level number, like the player frame */
+.portrait {
+  width: 58px;
+  height: 58px;
+  flex: none;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+  box-shadow: 0 0 0 2px #000, inset 0 0 12px rgba(0, 0, 0, .9);
+  background: radial-gradient(circle at 40% 35%, #6aa6d8, #234a7a 60%, #0d1b33);
+  position: relative;
+}
+/* mage class icon inside the round frame (falls back to the blue orb offline) */
+.portrait img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  transform: scale(1.12);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, .9);
+}
+.portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, .85), inset 0 2px 3px rgba(255, 255, 255, .15);
+  pointer-events: none;
+}
+.portrait span {
+  position: absolute;
+  right: -8px;
+  bottom: -6px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 4px;
+  border-radius: 13px;
+  background: #1a1410;
+  border: 2px solid var(--gold);
+  color: var(--wow-yellow);
+  font-size: 13px;
+  font-weight: bold;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+  box-shadow: 0 0 0 1px #000;
+}
+
+.titleplate h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: normal;
+  color: var(--wow-yellow);
+  text-shadow: 0 2px 2px #000, 0 0 18px rgba(255, 180, 0, .25);
+  letter-spacing: .03em;
+}
+.titleplate p { margin: 0; font-size: 14px; color: var(--muted); }
+
+/* tabs, like the tabs under a character window */
+.tabs {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  margin-bottom: -2px; /* active tab sits on top of the gold line */
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button, .tabs .tablink {
+  font-family: var(--font);
+  font-size: 15px;
+  padding: 7px 16px 6px;
+  color: var(--muted);
+  background: linear-gradient(#2d2823, #1a1714);
+  border: 1px solid var(--stone-light);
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .2s, background .2s;
+}
+.tabs button:hover, .tabs .tablink:hover { color: var(--text); background: linear-gradient(#3a332b, #221e19); }
+/* link to the separate Professions page, drawn like a tab */
+.tabs .tablink { text-decoration: none; line-height: inherit; color: var(--gold); }
+.tabs button.on {
+  color: var(--wow-yellow);
+  background: linear-gradient(#4a3d26, #2b2318);
+  border-color: var(--gold);
+  border-bottom: 2px solid #2b2318; /* opens the tab into the page below */
+  text-shadow: 0 1px 1px #000;
+  box-shadow: inset 0 1px 0 rgba(255, 233, 163, .25), 0 -2px 10px rgba(255, 190, 60, .15);
+}
+
+/* ---------- page and frames ---------- */
+
+main { max-width: 860px; margin: 0 auto; padding: 26px 20px 20px; }
+
+.panel { display: none; }
+.panel.on { display: block; animation: frameIn .25s ease; }
+@keyframes frameIn { from { opacity: 0; transform: scale(.985); } }
+
+/* the stone window with gold trim */
+.frame {
+  position: relative;
+  background: linear-gradient(#1c1915, var(--frame-bg));
+  border: 3px solid var(--stone-light);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 0 0 1px var(--gold-dark),
+    inset 0 0 0 3px #000,
+    0 0 0 1px #000,
+    0 10px 30px rgba(0, 0, 0, .7);
+}
+/* gold corner studs */
+.frame::before, .frame::after {
+  content: "";
+  position: absolute;
+  top: -7px;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle at 35% 35%, #ffe9a3, var(--gold) 45%, var(--gold-dark));
+  border: 1px solid #000;
+  transform: rotate(45deg);
+}
+.frame::before { left: -7px; }
+.frame::after { right: -7px; }
+
+/* the title plaque on top of each window */
+.frame-title {
+  position: relative;
+  top: -15px;
+  margin: 0 auto -6px;
+  width: max-content;
+  padding: 3px 26px;
+  font-size: 17px;
+  color: var(--wow-yellow);
+  text-shadow: 0 1px 2px #000;
+  background: linear-gradient(#5a1610, #2e0906);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px #000, inset 0 1px 0 rgba(255, 200, 120, .25), 0 3px 6px rgba(0, 0, 0, .6);
+  letter-spacing: .03em;
+}
+/* small gold diamonds either side of the plaque */
+.frame-title::before, .frame-title::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin-top: -4px;
+  background: var(--gold);
+  border: 1px solid #000;
+  transform: rotate(45deg);
+}
+.frame-title::before { left: 8px; }
+.frame-title::after { right: 8px; }
+.frame-body { padding: 4px 26px 26px; }
+
+h2, h3, h4 { font-weight: normal; }
+h3 {
+  color: var(--wow-yellow);
+  font-size: 21px;
+  margin: 28px 0 8px;
+  padding-bottom: 4px;
+  text-shadow: 0 1px 1px #000;
+  border-bottom: 1px solid;
+  border-image: linear-gradient(90deg, var(--gold-dark), transparent 70%) 1;
+}
+.frame-body > h3:first-child { margin-top: 8px; }
+ul, ol { padding-left: 24px; }
+li { margin: 6px 0; }
+
+.lead { margin-top: 4px; }
+.hint, .keys, .foot { color: var(--muted); font-size: 15px; }
+.foot { text-align: center; margin-top: 24px; }
+.yel { color: var(--wow-yellow); font-size: 20px; }
+
+/* ---------- quest paper (the step) ---------- */
+
+.questpaper {
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgba(120, 80, 20, .35) 100%),
+    linear-gradient(#f0e2bf, var(--parch));
+  border: 1px solid #000;
+  border-radius: 3px;
+  padding: 22px 28px 20px;
+  box-shadow: inset 0 0 0 2px var(--parch-dark), inset 0 0 30px rgba(110, 70, 10, .35);
+}
+.questpaper b, .questpaper strong { color: #000; }
+.questpaper.slide-next { animation: pageNext .35s ease; }
+.questpaper.slide-back { animation: pageBack .35s ease; }
+@keyframes pageNext { from { opacity: 0; transform: translateX(20px); } }
+@keyframes pageBack { from { opacity: 0; transform: translateX(-20px); } }
+
+.meta { margin: 0; font-size: 14px; color: #6b4e22; }
+.meta span { margin: 0 4px; }
+.questpaper h2 { margin: 2px 0 10px; font-size: 28px; color: #000; line-height: 1.2; }
+.questpaper h4 { margin: 14px 0 0; font-size: 18px; color: #000; border-bottom: 1px solid rgba(80, 50, 10, .35); padding-bottom: 2px; }
+.todo { font-size: 19px; margin: 8px 0 0; }
+.todo li { margin: 9px 0; padding-left: 4px; }
+.todo li::marker { color: #6b4e22; font-weight: bold; }
+.tip {
+  margin: 18px 0 0;
+  padding: 10px 14px;
+  font-size: 16.5px;
+  color: #3b2a12;
+  font-style: italic;
+  background: rgba(120, 80, 20, .1);
+  border-left: 3px solid #a07a35;
+  border-radius: 0 3px 3px 0;
+}
+.tip:empty { display: none; }
+.tip b { font-style: normal; }
+.questpaper kbd { color: #fff; }
+
+/* ---------- WoW red buttons ---------- */
+
+.wowbtn {
+  font-family: var(--font);
+  font-size: 17px;
+  min-width: 140px;
+  padding: 8px 20px;
+  color: var(--wow-yellow);
+  text-shadow: 0 1px 1px #000;
+  background: linear-gradient(#b11f13, #6b0c06 55%, #4a0703);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px #000, inset 0 1px 0 rgba(255, 255, 255, .25);
+  cursor: pointer;
+  transition: filter .15s, transform .08s;
+}
+.wowbtn:hover { filter: brightness(1.25); }
+.wowbtn:active { transform: translateY(1px); filter: brightness(.9); }
+.wowbtn:disabled { color: #8a8a8a; background: linear-gradient(#4a4a4a, #262626); border-color: #666; cursor: default; filter: none; }
+.wowbtn.small { min-width: 0; padding: 4px 12px; }
+
+/* Back / Next sit above the quest paper so they don't move when a step is longer or shorter */
+.nav { display: flex; justify-content: space-between; gap: 12px; margin: 16px 0 14px; }
+/* links written on the parchment: dark ink instead of UI yellow */
+.questpaper a { color: #8a2a00; font-weight: bold; }
+.questpaper a:hover { color: #b33a00; }
+
+/* list of all steps */
+details { margin-top: 22px; border-top: 1px solid var(--stone-light); padding-top: 10px; }
+summary { cursor: pointer; color: var(--wow-yellow); list-style: none; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before {
+  content: "";
+  display: inline-block;
+  margin-right: 10px;
+  border: 6px solid transparent;
+  border-left: 8px solid var(--gold);
+  border-right: 0;
+  vertical-align: 1px;
+  transition: transform .15s;
+}
+details[open] > summary::before { transform: rotate(90deg); }
+summary:hover { color: #fff3a0; }
+#steplist { list-style: none; padding: 0; margin: 8px 0 0; max-height: 420px; overflow-y: auto; }
+#steplist li { margin: 0; }
+#steplist button {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  padding: 5px 10px;
+  font-family: var(--font);
+  font-size: 15.5px;
+  color: var(--wow-yellow);
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+#steplist button:hover { background: rgba(255, 209, 0, .08); }
+#steplist .n { width: 28px; color: var(--muted); }
+#steplist .t { flex: 1; }
+#steplist .l { color: var(--muted); font-size: 13px; }
+#steplist li.done .t { color: #7d7563; }
+#steplist li.done .n { color: #40bf40; }
+#steplist li.done .n::before { content: "✓"; }
+#steplist li.done .n span { display: none; }
+#steplist li.current button { background: rgba(255, 209, 0, .16); color: #fff; box-shadow: inset 3px 0 0 var(--wow-yellow); }
+
+/* ---------- clickable words + tooltips ---------- */
+
+.word {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  border-bottom: 1px dotted currentColor;
+  cursor: help;
+}
+.questpaper .word { color: #5a2a00; }
+
+.wordpop, .spelltip {
+  position: absolute;
+  z-index: 50;
+  max-width: 300px;
+  padding: 9px 11px;
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--wow-yellow);
+  background: var(--tip-bg);
+  border: 1px solid #8a8a8a;
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px #000, 0 6px 18px rgba(0, 0, 0, .6);
+}
+.wordpop b { display: block; color: #fff; font-size: 16px; text-transform: capitalize; margin-bottom: 2px; }
+.wordpop.show { animation: tipIn .15s ease; }
+.spelltip { position: fixed; pointer-events: none; animation: tipIn .12s ease; }
+@keyframes tipIn { from { opacity: 0; } }
+.tt-name { color: #fff; font-size: 16px; }
+.tt-sub { color: #b9b9b9; font-size: 13px; margin-bottom: 4px; }
+
+/* ---------- action bar slots (built like the game's action buttons) ---------- */
+
+.bar { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+
+.slot {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: #0a0908;
+  box-shadow: 0 0 0 1px #000;
+  cursor: pointer;
+  overflow: hidden;
+}
+.slot svg {
+  position: absolute;
+  inset: 9px;
+  width: 28px;
+  height: 28px;
+  color: #fff;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .8));
+}
+/* real icon picture, cropped like the game does to hide its baked-in edge */
+.slot .ico {
+  position: absolute;
+  top: -8%;
+  left: -8%;
+  width: 116%;
+  height: 116%;
+  max-width: none;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+.tt-ico {
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+  margin-right: 8px;
+  border: 1px solid #000;
+  box-shadow: 0 0 0 1px #6b6358;
+}
+/* bevelled button edge: black rim, light top-left, shaded bottom-right */
+.slot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .12), transparent 30%, transparent 68%, rgba(0, 0, 0, .3));
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, .9),
+    inset 1px 1px 0 1px rgba(255, 255, 255, .1),
+    inset 0 0 7px rgba(0, 0, 0, .65);
+}
+/* mouse-over highlight and pushed state, like in game */
+.slot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  background: rgba(255, 255, 255, .1);
+  box-shadow: inset 0 0 0 2px rgba(255, 244, 200, .85), inset 0 0 10px 2px rgba(255, 236, 170, .5);
+  transition: opacity .1s;
+}
+.slot[data-spell]:hover::before { opacity: 1; }
+.slot[data-spell]:active::before {
+  opacity: 1;
+  background: rgba(0, 0, 0, .25);
+  box-shadow: inset 0 0 0 2px var(--wow-yellow), inset 0 0 12px 3px rgba(255, 209, 0, .55);
+}
+
+/* empty button: dark socket with a faint winged emblem */
+.slot.empty {
+  cursor: default;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.07' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M20 33C14 25 8 21 4 11c6 4 11 6 16 13'/%3E%3Cpath d='M20 33c6-8 12-12 16-22-6 4-11 6-16 13'/%3E%3Cpath d='M12 19c2 2 5 4 8 8M28 19c-2 2-5 4-8 8M20 33V14'/%3E%3C/g%3E%3C/svg%3E") center / 78% no-repeat,
+    radial-gradient(circle at 50% 42%, #29231c, #100d0a 75%);
+}
+.slot.empty::after {
+  background: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .9), inset 0 0 10px rgba(0, 0, 0, .9);
+}
+
+/* keybind in the corner */
+.hk {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  z-index: 4;
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  color: #d8d8d8;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+}
+.slot.empty .hk { color: #8f8a82; }
+
+/* icon colours by school (only seen if the real icon can't load) */
+.sc-frost  { background: radial-gradient(circle at 35% 30%, #a9e4ff, #2f79c2 55%, #0c2a55); }
+.sc-fire   { background: radial-gradient(circle at 35% 30%, #ffe08a, #e2621b 55%, #5a1300); }
+.sc-arcane { background: radial-gradient(circle at 35% 30%, #e6c9ff, #8a4fd6 55%, #2a0d55); }
+.sc-racial { background: radial-gradient(circle at 35% 30%, #fff2b0, #c8962b 55%, #4a3006); }
+.sc-item   { background: radial-gradient(circle at 35% 30%, #d8cdb6, #7d6a4c 55%, #2a2014); }
+
+/* just-learned: golden spell-alert glow around the button */
+.slot.fresh, .mainbar .slot.fresh, .bar.main .slot.fresh {
+  box-shadow: 0 0 0 1px #000, 0 0 0 2px #ffd100, 0 0 10px 3px rgba(255, 190, 0, .8);
+  animation: glow 1s ease-in-out infinite;
+}
+@keyframes glow { 50% { box-shadow: 0 0 0 1px #000, 0 0 0 2px #fff2a8, 0 0 16px 6px rgba(255, 200, 40, .95); } }
+
+/* cooldown sweep when you click a button */
+.cd {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+}
+.cd.run {
+  animation: sweep 1.5s linear forwards;
+  background: conic-gradient(rgba(0, 0, 0, .7) var(--a, 360deg), transparent 0);
+}
+@property --a { syntax: "<angle>"; inherits: false; initial-value: 360deg; }
+@keyframes sweep { 0% { opacity: 1; --a: 360deg; } 99% { opacity: 1; --a: 0deg; } 100% { opacity: 0; } }
+
+/* ---------- the main bar's bronze frame (bottom HUD and Action Bars tab) ---------- */
+
+.mb-frame {
+  background:
+    linear-gradient(rgba(255, 220, 150, .06), transparent 45%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, .12) 0 1px, transparent 1px 5px),
+    linear-gradient(#33281b, #18120c);
+  border: 1px solid #000;
+  box-shadow: inset 0 1px 0 #9a7a40, inset 0 2px 0 #000, inset 0 -1px 0 #4a3820, 0 4px 12px rgba(0, 0, 0, .6);
+}
+/* each button sits in a recessed bronze socket */
+.mainbar .slot, .bar.main .slot {
+  box-shadow: 0 0 0 1px #000, 0 0 0 3px #22190f, 0 0 0 4px #6b5230;
+}
+
+/* ---------- "Action bar" box on a quest step ---------- */
+
+.stepbars {
+  margin: 16px 0 0;
+  padding: 10px 12px 8px;
+  background: linear-gradient(#1b1712, #0e0c09);
+  border: 1px solid #000;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px #7a6440, inset 0 0 12px rgba(0, 0, 0, .8);
+  color: #e6e0d4;
+  font-size: 16px;
+}
+.stepbars .sb-head { color: var(--wow-yellow); font-size: 18px; margin-bottom: 6px; }
+.stepbars ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.stepbars li { display: grid; grid-template-columns: 40px minmax(110px, 180px) 1fr; align-items: center; gap: 10px; }
+.stepbars .slot { width: 38px; height: 38px; }
+.stepbars .slot svg { inset: 7px; width: 24px; height: 24px; }
+.stepbars .sb-name { color: #fff; }
+.stepbars .sb-where { color: var(--wow-yellow); }
+.stepbars .sb-where small { color: #9c9484; font-size: 13px; margin-left: 4px; }
+.stepbars .sb-where em { display: block; color: #ff8d6b; font-size: 13.5px; font-style: normal; }
+.stepbars b { color: #fff; }
+.stepbars a { color: #7fc8ff; }
+.stepbars .sb-lv { display: block; color: #9c9484; font-size: 13px; font-style: normal; }
+.stepbars .sb-note { margin: 8px 0 0; font-size: 14px; color: #a9a196; }
+
+/* ---------- "Where to go" map on a quest step ---------- */
+
+.mapbox {
+  margin: 16px 0 0;
+  padding: 8px 10px 9px;
+  color: #e6e0d4;
+  background: linear-gradient(#1b1712, #0e0c09);
+  border: 1px solid #000;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px #7a6440, inset 0 0 12px rgba(0, 0, 0, .8);
+}
+.map-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-bottom: 7px; }
+.map-title { margin-right: auto; color: var(--wow-yellow); font-size: 18px; }
+.map-title small { color: #9c9484; font-size: 14px; margin-left: 6px; }
+.map-zones { display: flex; flex-wrap: wrap; gap: 4px; }
+.map-zones button, .map-close {
+  font-family: var(--font);
+  font-size: 13.5px;
+  padding: 2px 10px;
+  color: var(--muted);
+  background: linear-gradient(#2d2823, #1a1714);
+  border: 1px solid var(--stone-light);
+  border-radius: 3px;
+  cursor: pointer;
+}
+.map-zones button:hover, .map-close:hover { color: var(--text); }
+.map-zones button.on { color: var(--wow-yellow); border-color: var(--gold); background: linear-gradient(#4a3d26, #2b2318); }
+.map-close { display: none; color: var(--wow-yellow); }
+
+/* the window onto the zone map: drag to move, scroll or pinch to zoom */
+.mapview {
+  position: relative;
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  background: #0b0a08;
+  border: 1px solid #000;
+  box-shadow: 0 0 0 1px #5a4429;
+  cursor: grab;
+  touch-action: pan-y;          /* until you tap it, a swipe still scrolls the page */
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+}
+.mapview.active { touch-action: none; box-shadow: 0 0 0 1px var(--gold); }
+.mapview.dragging { cursor: grabbing; }
+.mapview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, .8);
+}
+.mapview img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  transform-origin: 0 0;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+.mapbox.nomap .mapview { aspect-ratio: auto; min-height: 90px; cursor: default; }
+.mapbox.nomap .map-ctrls, .mapbox.nomap .map-cursor { display: none; }
+.map-none {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  text-align: center;
+  font-size: 15px;
+  color: #a9a196;
+  background: radial-gradient(circle, #1d1a16, #0b0a08);
+}
+.map-none[hidden], .map-tip[hidden], .map-hint[hidden] { display: none; }
+
+/* marching-ants route between this step's places, in order */
+.map-route { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.map-route polyline { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.map-route .under { stroke: rgba(0, 0, 0, .65); stroke-width: 5; }
+.map-route .over { stroke: #ffd100; stroke-width: 2.5; stroke-dasharray: 7 7; animation: march 1s linear infinite; }
+@keyframes march { to { stroke-dashoffset: -14; } }
+
+.map-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+
+/* gold quest marker with a pulsing ring, and a tooltip-style label */
+.pin {
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.pin::before {
+  content: "";
+  position: absolute;
+  left: -17px;
+  top: -17px;
+  width: 30px;
+  height: 30px;
+  border: 2px solid rgba(255, 209, 0, .85);
+  border-radius: 50%;
+  animation: ping 1.8s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes ping { from { transform: scale(.4); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
+.pin i {
+  position: absolute;
+  left: -11px;
+  top: -11px;
+  width: 22px;
+  height: 22px;
+  font: bold 11px/18px Arial, sans-serif;
+  font-style: normal;
+  text-align: center;
+  color: #2a1a00;
+  background: radial-gradient(circle at 35% 35%, #fff6c0, #ffd100 45%, #b07a00);
+  border: 2px solid #2a1a00;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #ffe98a, 0 0 8px 2px rgba(255, 200, 0, .7);
+  transition: transform .12s;
+}
+.pin span {
+  position: absolute;
+  left: 15px;
+  top: -11px;
+  white-space: nowrap;
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 1px 6px;
+  color: var(--wow-yellow);
+  text-shadow: 0 1px 1px #000;
+  background: rgba(8, 10, 28, .9);
+  border: 1px solid #6b6358;
+  border-radius: 3px;
+}
+.pin.flip span { left: auto; right: 15px; }
+.pin:hover, .pin.hot, .pin.sel { z-index: 2; }
+.pin:hover i, .pin.hot i, .pin.sel i { transform: scale(1.25); }
+.pin.sel span, .pin.hot span { color: #fff; border-color: var(--gold); }
+.pin:focus-visible { outline: none; }
+.pin:focus-visible i { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* places from other steps: small silver dots, click to see which step */
+.pin.ghost::before { display: none; }
+.pin.ghost i {
+  left: -6px;
+  top: -6px;
+  width: 12px;
+  height: 12px;
+  font-size: 0;
+  background: radial-gradient(circle at 35% 35%, #fff, #b9b9b9 50%, #5a5a5a);
+  border: 1px solid #000;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .4);
+}
+.pin.ghost span { display: none; }
+/* bigger invisible click target around the small dot */
+.pin.ghost::after { content: ""; position: absolute; left: -13px; top: -13px; width: 26px; height: 26px; border-radius: 50%; }
+.pin.ghost:hover span, .pin.ghost.sel span { display: block; left: 10px; top: -10px; color: #ddd; }
+
+/* WoW tooltip that opens on a clicked pin */
+.map-tip {
+  position: absolute;
+  z-index: 5;
+  width: max-content;
+  max-width: 250px;
+  padding: 8px 10px 9px;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--wow-yellow);
+  background: var(--tip-bg);
+  border: 1px solid #8a8a8a;
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px #000, 0 6px 18px rgba(0, 0, 0, .6);
+  cursor: default;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.map-tip .tt-name { font-size: 15px; }
+.map-tip .tt-sub { margin: 1px 0 6px; }
+.map-tip input {
+  width: 100%;
+  margin: 0 0 6px;
+  padding: 3px 6px;
+  font: 12.5px Consolas, monospace;
+  color: #fff;
+  background: #000;
+  border: 1px solid #555;
+  border-radius: 3px;
+}
+.map-tip .row { display: flex; gap: 6px; flex-wrap: wrap; }
+.map-tip button {
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 2px 9px;
+  color: var(--wow-yellow);
+  text-shadow: 0 1px 1px #000;
+  background: linear-gradient(#b11f13, #6b0c06 55%, #4a0703);
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  cursor: pointer;
+}
+.map-tip button:hover { filter: brightness(1.25); }
+.map-tip small { display: block; margin-top: 5px; color: #8f8a82; font-size: 12px; }
+.map-tip a, .map-help a { color: #7fc8ff; font-weight: normal; }
+.map-tip a:hover, .map-help a:hover { color: #b5e0ff; }
+
+/* round minimap-style zoom buttons */
+.map-ctrls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.map-ctrls button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: var(--wow-yellow);
+  background: radial-gradient(circle at 40% 35%, #3a332b, #14110e);
+  border: 2px solid var(--gold-dark);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #000, 0 2px 4px rgba(0, 0, 0, .7);
+  cursor: pointer;
+}
+.map-ctrls button:hover { border-color: var(--gold); color: #fff3a0; }
+.map-ctrls button:active { transform: scale(.92); }
+.map-ctrls svg { width: 16px; height: 16px; }
+
+/* cursor coordinates, like a map addon */
+.map-cursor {
+  position: absolute;
+  left: 8px;
+  bottom: 6px;
+  z-index: 4;
+  font: 12px Arial, sans-serif;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+  pointer-events: none;
+}
+.map-cursor:empty { display: none; }
+.map-hint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #fff;
+  background: rgba(0, 0, 0, .78);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* list of places under the map (click one to fly there) */
+.map-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin-top: 7px; }
+.map-list { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 0; padding: 0; list-style: none; flex: 1; }
+.map-list li { margin: 0; }
+.map-list button {
+  font-family: var(--font);
+  font-size: 13.5px;
+  padding: 2px 8px 2px 4px;
+  color: #e6e0d4;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid #3a342c;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.map-list button:hover, .map-list button.sel { border-color: var(--gold); background: rgba(255, 209, 0, .08); }
+.map-list i {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  margin-right: 4px;
+  font: bold 10px/15px Arial, sans-serif;
+  font-style: normal;
+  text-align: center;
+  color: #2a1a00;
+  background: #ffd100;
+  border: 1px solid #2a1a00;
+  border-radius: 50%;
+}
+.map-list span { color: #9c9484; font-size: 12.5px; margin-left: 4px; }
+.map-all { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--muted); cursor: pointer; white-space: nowrap; }
+.map-all input { accent-color: var(--gold); margin: 0; }
+.map-help { width: 100%; margin: 0; font-size: 12.5px; color: #7d7563; }
+
+/* big map (press M), like the in-game world map */
+.mapbox.big {
+  position: fixed;
+  inset: 3vh 3vw;
+  z-index: 60;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 0 1px #7a6440, 0 0 0 100vmax rgba(0, 0, 0, .75);
+}
+.mapbox.big .mapview { flex: 1; aspect-ratio: auto; touch-action: none; }
+.mapbox.big .map-close { display: inline-block; }
+.mapbox.big .map-title { font-size: 21px; }
+.mapbox b { color: #fff; }
+.mapview:focus-visible { box-shadow: 0 0 0 2px var(--wow-yellow); }
+.map-veil { position: fixed; inset: 0; z-index: 59; background: rgba(0, 0, 0, .75); }
+.map-veil[hidden] { display: none; }
+@media (max-width: 640px) {
+  .stepbars li { grid-template-columns: 40px 1fr; }
+  .stepbars .sb-where { grid-column: 2; }
+  .stepbars .slot { width: 38px; height: 38px; }
+}
+
+/* ---------- action bars tab ---------- */
+
+.levelpick {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 8px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, .35);
+  border: 1px solid var(--stone-light);
+  border-radius: 4px;
+}
+.levelpick label { white-space: nowrap; color: var(--muted); }
+.levelpick label b { color: var(--wow-yellow); font-size: 22px; display: inline-block; min-width: 28px; text-align: center; }
+.levelpick input { flex: 1; min-width: 0; accent-color: var(--gold); cursor: pointer; }
+/* gold-gem slider like an in-game options slider */
+.levelpick input[type="range"] { -webkit-appearance: none; appearance: none; height: 22px; background: transparent; }
+.levelpick input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px; border: 1px solid #000; border-radius: 4px;
+  background: linear-gradient(#0b0907, #2a241d); box-shadow: 0 0 0 1px var(--stone-light);
+}
+.levelpick input[type="range"]::-moz-range-track {
+  height: 8px; border: 1px solid #000; border-radius: 4px;
+  background: linear-gradient(#0b0907, #2a241d); box-shadow: 0 0 0 1px var(--stone-light);
+}
+.levelpick input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 18px; height: 18px; margin-top: -6px;
+  background: radial-gradient(circle at 35% 35%, #ffe9a3, var(--gold) 45%, var(--gold-dark));
+  border: 1px solid #000; transform: rotate(45deg); box-shadow: 0 0 6px rgba(255, 209, 0, .5);
+}
+.levelpick input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 0;
+  background: radial-gradient(circle at 35% 35%, #ffe9a3, var(--gold) 45%, var(--gold-dark));
+  border: 1px solid #000; transform: rotate(45deg); box-shadow: 0 0 6px rgba(255, 209, 0, .5);
+}
+
+.barblock { margin-top: 18px; }
+.barhead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 6px; }
+.barhead span { color: var(--wow-yellow); font-size: 17px; }
+.barhead small { color: var(--muted); font-size: 14px; }
+.barblock .bar {
+  justify-content: flex-start;
+  width: max-content;
+  max-width: 100%;
+}
+/* main bar: bronze strip with sockets */
+.barblock .bar.main { padding: 11px 13px; gap: 9px; }
+/* the extra bars float on screen with no frame, like in game */
+.barblock .bar.multi { padding: 2px; gap: 5px; }
+.bar.multi .slot.empty {
+  background: rgba(0, 0, 0, .4);
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16), 0 0 0 1px rgba(0, 0, 0, .7);
+}
+.bar.multi .slot.empty::after { display: none; }
+
+.changes {
+  margin-top: 22px;
+  padding: 12px 18px;
+  background: rgba(255, 209, 0, .06);
+  border: 1px solid var(--gold-dark);
+  border-radius: 4px;
+}
+.changes h4 { margin: 0 0 4px; color: var(--wow-yellow); font-size: 17px; }
+.changes ul { margin: 0; }
+.changes li.none { list-style: none; margin-left: -24px; color: var(--muted); }
+
+/* ---------- bottom HUD: the main action bar ---------- */
+
+.hud {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+.mainbar {
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 72px;
+  pointer-events: auto;
+}
+.mb-body {
+  position: relative;
+  padding: 0 18px 7px;
+  border-bottom: 0;
+  box-shadow: inset 0 1px 0 #9a7a40, inset 0 2px 0 #000, 0 -4px 18px rgba(0, 0, 0, .75);
+}
+.mb-row { display: flex; align-items: center; gap: 10px; }
+.mainbar .bar { gap: 9px; flex-wrap: nowrap; }
+
+/* action page arrows with the page number */
+.pager {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 16px;
+  font: bold 12px/1 Arial, sans-serif;
+  color: var(--wow-yellow);
+  text-shadow: 0 1px 1px #000;
+}
+.pager i { width: 0; height: 0; border: 5px solid transparent; }
+.pager .up { border-top: 0; border-bottom: 6px solid var(--gold); }
+.pager .down { border-bottom: 0; border-top: 6px solid var(--gold); }
+
+/* winged statues at each end of the bar */
+.cap {
+  position: absolute;
+  bottom: 0;
+  z-index: 2;
+  width: 94px;
+  height: 110px;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .85));
+}
+.cap-l { left: -4px; }
+.cap-r { right: -4px; transform: scaleX(-1); }
+
+/* the bars tab has its own big bars, so hide the HUD there */
+body[data-tab="bars"] .hud { display: none; }
+
+/* segmented XP-style bar across the top of the main bar (shows guide progress) */
+.xp {
+  position: relative;
+  height: 13px;
+  margin: 0 -18px 8px;
+  background: linear-gradient(#07070d, #12121f);
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  box-shadow: 0 1px 0 #6b5230, 0 -1px 0 #6b5230, inset 0 0 4px #000;
+  overflow: hidden;
+}
+.xp i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: linear-gradient(#7fa8ff, #2d5ee8 45%, #133a9e);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35);
+  transition: width .5s ease;
+}
+.xp::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 calc(5% - 2px), #000 calc(5% - 2px) calc(5% - 1px), rgba(154, 122, 64, .55) calc(5% - 1px) 5%);
+}
+.xp span {
+  position: relative;
+  z-index: 1;
+  display: block;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  line-height: 13px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+  opacity: 0;
+  transition: opacity .15s;
+}
+/* like in game, the numbers show when you point at the bar */
+.mainbar:hover .xp span { opacity: 1; }
+
+/* ---------- tables ---------- */
+
+table { width: 100%; border-collapse: collapse; font-size: 16.5px; }
+th { text-align: left; color: var(--wow-yellow); font-weight: normal; font-size: 15px; padding: 6px 10px; border-bottom: 1px solid var(--gold-dark); }
+td { padding: 9px 10px; border-bottom: 1px solid #2f2a24; vertical-align: top; }
+.talents tbody tr:nth-child(even) { background: rgba(255, 255, 255, .025); }
+.talents tbody tr:hover { background: rgba(255, 209, 0, .07); }
+.talents tbody tr:hover b { color: #fff3a0; }
+.talents b { color: var(--wow-yellow); }
+.talents .lv { white-space: nowrap; color: #fff; }
+.talents .how { font-size: 14px; color: var(--muted); }
+.keys-table td { border: 0; padding: 4px 8px; }
+
+.c-grey { color: #9d9d9d; }
+.c-green { color: #40bf40; }
+.c-yellow { color: #ffff00; }
+.c-orange { color: #ff8040; }
+.c-red { color: #ff2020; }
+
+/* glossary entries as small dark cards, two per row on wide screens */
+.glossary { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; margin: 8px 0 0; }
+.glossary div {
+  padding: 10px 14px 12px;
+  background: linear-gradient(rgba(255, 255, 255, .03), rgba(0, 0, 0, .2));
+  border: 1px solid #2f2a24;
+  border-left: 3px solid var(--gold-dark);
+  border-radius: 3px;
+}
+.glossary dt { color: var(--wow-yellow); font-size: 18px; }
+.glossary dd { margin: 2px 0 0; font-size: 16.5px; }
+
+/* ---------- phones ---------- */
+
+@media (max-width: 640px) {
+  body { font-size: 16.5px; padding-bottom: 130px; }
+  .frame-body { padding: 4px 14px 18px; }
+  .questpaper { padding: 16px; }
+  .questpaper h2 { font-size: 23px; }
+  .todo { font-size: 17px; }
+  .wowbtn { min-width: 110px; }
+  /* bottom bar shrinks to fit a phone: no statues or page arrows */
+  .mainbar { padding: 0; }
+  .cap, .pager { display: none; }
+  .mb-body { padding: 0 6px 5px; }
+  .xp { margin: 0 -6px 6px; }
+  .mainbar .bar { gap: 4px; }
+  .mainbar .slot { width: 25px; height: 25px; box-shadow: 0 0 0 1px #000, 0 0 0 2px #6b5230; }
+  .mainbar .slot svg { inset: 4px; width: 17px; height: 17px; }
+  .mainbar .hk { font-size: 9px; top: 1px; right: 2px; }
+  .barblock .slot { width: 40px; height: 40px; }
+  .barblock .slot svg { inset: 8px; width: 24px; height: 24px; }
+  .barblock .bar.main { padding: 9px; }
+  /* map: taller window, numbered pins only (names are in the list under the map) */
+  .mapbox { padding: 7px 7px 8px; }
+  .mapview { aspect-ratio: 4 / 3; }
+  .pin span { display: none; }
+  .pin.sel span { display: block; }
+  .map-ctrls button { width: 28px; height: 28px; }
+  .mapbox.big { inset: 0; border-radius: 0; }
+  .top-inner { padding: 10px 16px 6px; gap: 14px; }
+  .portrait { width: 48px; height: 48px; }
+  .titleplate h1 { font-size: 23px; }
+  .titleplate p { font-size: 13px; }
+  .tabs { padding: 0 12px; }
+  .tabs button, .tabs .tablink { padding: 7px 12px 6px; font-size: 14.5px; }
+  main { padding: 26px 12px 20px; }
+  .glossary { grid-template-columns: 1fr; }
+  .levelpick { gap: 8px; padding: 8px 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ===== TOP FRAME ===== -->
+<header class="top">
+  <div class="top-inner">
+    <div class="portrait"><img src="https://wow.zamimg.com/images/wow/icons/large/classicon_mage.jpg" alt="" onerror="this.remove()"><span>1</span></div>
+    <div class="titleplate">
+      <h1>Gnome Mage</h1>
+      <p>Beginner's leveling guide · WoW: Forever</p>
+    </div>
+  </div>
+  <nav class="tabs">
+    <button type="button" class="on" data-tab="steps">Quest Guide</button>
+    <button type="button" data-tab="bars">Action Bars</button>
+    <button type="button" data-tab="basics">How to Play</button>
+    <button type="button" data-tab="talents">Talents</button>
+    <button type="button" data-tab="words">Words</button>
+    <a class="tablink" href="Gnome-Mage-Professions.html">Professions ›</a>
+    <a class="tablink" href="Gnome-Mage-Addons.html">Addons ›</a>
+    <a class="tablink" href="../index.html">All Guides ⌂</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===== QUEST GUIDE ===== -->
+  <section class="panel on" id="panel-steps">
+    <div class="frame">
+      <div class="frame-title">Quest Guide</div>
+      <div class="frame-body">
+        <p class="lead">Do one step, then press <b>Next Step</b>. The guide remembers where you stopped. New to the game? Read <a href="#" data-goto="basics">How to Play</a> first.</p>
+
+        <div class="nav">
+          <button type="button" id="back" class="wowbtn">‹ Back</button>
+          <button type="button" id="next" class="wowbtn">Next Step</button>
+        </div>
+
+        <article class="questpaper" id="card">
+          <p class="meta" id="stepmeta"></p>
+          <h2 id="steptitle"></h2>
+          <h4>Objectives</h4>
+          <ol class="todo" id="steptodo"></ol>
+          <div class="map-veil" id="mapveil" hidden></div>
+          <div class="mapbox" id="mapbox" hidden>
+            <div class="map-head">
+              <span class="map-title" id="maptitle"></span>
+              <div class="map-zones" id="mapzones"></div>
+              <button type="button" class="map-close" id="mapclose">Close (Esc)</button>
+            </div>
+            <div class="mapview" id="mapview" tabindex="0" aria-label="Zone map. Drag to move it, scroll or pinch to zoom.">
+              <img id="mapimg" alt="" draggable="false">
+              <svg class="map-route" id="maproute" aria-hidden="true"><polyline class="under"/><polyline class="over"/></svg>
+              <div class="map-layer" id="mappins"></div>
+              <div class="map-tip" id="maptip" hidden></div>
+              <div class="map-ctrls">
+                <button type="button" data-act="in" title="Zoom in" aria-label="Zoom in"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg></button>
+                <button type="button" data-act="out" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 8h10"/></svg></button>
+                <button type="button" data-act="fit" title="Show this step's places" aria-label="Show this step's places"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="5"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/><path d="M8 0v3M8 13v3M0 8h3M13 8h3"/></svg></button>
+                <button type="button" data-act="zone" title="Whole zone" aria-label="Whole zone"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M1 3l4.5-1.5 5 2L15 2v11l-4.5 1.5-5-2L1 14z"/><path d="M5.5 1.5v11M10.5 3.5v11"/></svg></button>
+                <button type="button" data-act="big" title="Big map (M)" aria-label="Big map"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg></button>
+              </div>
+              <div class="map-cursor" id="mapcursor"></div>
+              <div class="map-hint" id="maphint" hidden></div>
+              <p class="map-none" id="mapnone" hidden></p>
+            </div>
+            <div class="map-foot">
+              <ol class="map-list" id="maplist"></ol>
+              <label class="map-all"><input type="checkbox" id="mapall"> Show places from other steps</label>
+              <p class="map-help">Drag to move · scroll or pinch to zoom · click a pin for its <b>/way</b> command (needs the <a href="https://www.curseforge.com/wow/addons/tomtom" target="_blank" rel="noopener">TomTom addon</a>, <a href="Gnome-Mage-Addons.html#install">how to install</a>) · <kbd>M</kbd> big map. Pins are approximate.</p>
+            </div>
+          </div>
+          <div class="stepbars" id="stepbars" hidden></div>
+          <div class="tip" id="steptip"></div>
+        </article>
+
+        <p class="keys">Arrow keys <kbd>←</kbd> <kbd>→</kbd> also work. Words with a dotted line, like <button type="button" class="word" data-word="talent">talent</button>, explain themselves when clicked. Your action bar for this step is at the bottom of the screen.</p>
+
+        <details id="allsteps">
+          <summary>All steps (click to jump)</summary>
+          <ol id="steplist"></ol>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ACTION BARS ===== -->
+  <section class="panel" id="panel-bars">
+    <div class="frame">
+      <div class="frame-title">Action Bars</div>
+      <div class="frame-body">
+        <p>Where every spell should go, level by level. The main bar has what you press in every fight, on keys you reach without looking. Rarer and emergency spells go on <kbd>Shift</kbd> + number. Things you only use between fights go on the right bar, to click with the mouse. Hover over or tap a button to see what it does.</p>
+
+        <div class="levelpick">
+          <button type="button" class="wowbtn small" id="barsminus">−</button>
+          <label for="barslider">Level <b id="barslevel">1</b></label>
+          <input type="range" id="barslider" min="1" max="60" value="1">
+          <button type="button" class="wowbtn small" id="barsplus">+</button>
+        </div>
+
+        <div id="bars"></div>
+
+        <div class="changes">
+          <h4>What to change at this level</h4>
+          <ul id="barchanges"></ul>
+        </div>
+
+        <h3>How to set this up in game</h3>
+        <ol>
+          <li>Press <kbd>Esc</kbd> → <b>Interface</b> → <b>Action Bars</b>. Turn on the <b>Bottom Left Bar</b>, the <b>Bottom Right Bar</b> and the <b>Right Bar</b>.</li>
+          <li>Press <kbd>Esc</kbd> → <b>Key Bindings</b>. Find <b>Bottom Left Action Button 1</b> to <b>12</b> and set them to <kbd>Shift</kbd> + <kbd>1</kbd> … <kbd>Shift</kbd> + <kbd>=</kbd>. Then set <b>Bottom Right Action Button 1</b> and <b>2</b> to <kbd>Alt</kbd> + <kbd>1</kbd> and <kbd>Alt</kbd> + <kbd>2</kbd>.</li>
+          <li>Open your spellbook (<kbd>P</kbd>) and drag each spell to its place. Water, food and mana gems are items: drag them from your bags (<kbd>B</kbd>) instead.</li>
+          <li>Turn on <b>Lock Action Bars</b> in the same Action Bars menu so you can't drag spells off by accident.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW TO PLAY ===== -->
+  <section class="panel" id="panel-basics">
+    <div class="frame">
+      <div class="frame-title">How to Play</div>
+      <div class="frame-body">
+        <h3>Quests</h3>
+        <ul>
+          <li>A yellow <b class="yel">!</b> over someone's head means they have a quest for you. Click them and press Accept.</li>
+          <li>A yellow <b class="yel">?</b> means you can hand in a finished quest there.</li>
+          <li>Press <kbd>L</kbd> to see your quests. Each one says what to do and where.</li>
+          <li>Most of your XP comes from quests, so do every one you find.</li>
+        </ul>
+
+        <h3>Fighting</h3>
+        <ul>
+          <li>Click an enemy to target it, stand still, and press your attack key.</li>
+          <li>Fight one enemy at a time. Mages hit hard but break easily.</li>
+          <li>Enemy level colours: <b class="c-grey">grey</b> gives no XP, <b class="c-green">green</b> is easy, <b class="c-yellow">yellow</b> is a fair fight, <b class="c-orange">orange</b> is hard and <b class="c-red">red</b> means run.</li>
+          <li>A golden dragon border on the portrait means <b>elite</b>. Don't fight those alone.</li>
+        </ul>
+
+        <h3>After every fight</h3>
+        <ul>
+          <li>Health low? Eat (<kbd>Alt</kbd> + <kbd>2</kbd>). Mana low? Drink (<kbd>Alt</kbd> + <kbd>1</kbd>). You sit down by yourself while eating or drinking. Don't move until the bars are full.</li>
+          <li>You make your own food and water with Conjure Food and Conjure Water.</li>
+        </ul>
+
+        <h3>Getting stronger</h3>
+        <ul>
+          <li><b>Every 2 levels</b>, visit a mage trainer and learn everything you can afford.</li>
+          <li><b>Every level from 10</b>, press <kbd>N</kbd> and spend a talent point. See the <a href="#" data-goto="talents">Talents</a> tab.</li>
+          <li>New spells go into your spellbook (<kbd>P</kbd>). The <a href="#" data-goto="bars">Action Bars</a> tab shows where to put them.</li>
+        </ul>
+
+        <h3>Getting around</h3>
+        <ul>
+          <li>Talk to the innkeeper in each new town and choose "Make this inn your home". Your Hearthstone then brings you back there.</li>
+          <li>Talk to every flight master (the person with a gryphon) you pass, so you can fly there later.</li>
+          <li>If you die, you appear as a ghost at a graveyard. Run back to your body and click "Resurrect".</li>
+          <li>Log out inside an inn to get bonus XP next time.</li>
+        </ul>
+
+        <h3>Addons</h3>
+        <p>Addons are free extras that improve the game's interface. You don't need any, but a few make leveling much easier. The <a href="Gnome-Mage-Addons.html">Addons page</a> lists which ones to get (must-have, recommended, optional), which to skip, and how to install them.</p>
+        <p><b>Waypoint arrow:</b> with the <b>TomTom</b> addon, click a pin on any Quest Guide map and press <b>Copy /way</b>. In game, press <kbd>Enter</kbd>, paste with <kbd>Ctrl</kbd> + <kbd>V</kbd> and press <kbd>Enter</kbd> again. An arrow points the way. <b>/way reset all</b> clears it.</p>
+
+        <h3>Useful keys</h3>
+        <table class="keys-table">
+          <tr><td><kbd>L</kbd></td><td>Quest log</td><td><kbd>M</kbd></td><td>Map</td></tr>
+          <tr><td><kbd>P</kbd></td><td>Spellbook</td><td><kbd>N</kbd></td><td>Talents</td></tr>
+          <tr><td><kbd>C</kbd></td><td>Your character</td><td><kbd>B</kbd></td><td>Bags</td></tr>
+          <tr><td><kbd>X</kbd></td><td>Sit down</td><td><kbd>Y</kbd></td><td>Legacy (from about level 25)</td></tr>
+        </table>
+
+        <h3>The one combo to learn</h3>
+        <ol>
+          <li>Frostbolt the enemy from far away, and keep casting while it walks to you.</li>
+          <li>When it reaches you: <b>Frost Nova</b>. It freezes in place.</li>
+          <li>Walk a few steps away.</li>
+          <li><b>Ice Lance</b> (from level 20) or Fire Blast.</li>
+          <li>Back to Frostbolt until it's dead.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TALENTS ===== -->
+  <section class="panel" id="panel-talents">
+    <div class="frame">
+      <div class="frame-title">Talents</div>
+      <div class="frame-body">
+        <p>From level 10 you get one talent point each level. Press <kbd>N</kbd>, pick the <b>Frost</b> tab, and click the talent from this list. If one is greyed out, take the next one and come back.</p>
+        <table class="talents">
+          <thead><tr><th>Level</th><th>Click this</th><th>What it does</th></tr></thead>
+          <tbody id="talentrows"></tbody>
+        </table>
+        <p class="hint">Made a mistake? Any mage trainer can reset your talents for a little gold.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WORDS ===== -->
+  <section class="panel" id="panel-words">
+    <div class="frame">
+      <div class="frame-title">Words Explained</div>
+      <div class="frame-body">
+        <dl class="glossary" id="glossary"></dl>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">Fan-made guide for World of Warcraft: Forever. Spell icons and maps © Blizzard Entertainment, shown from Wowhead.</p>
+</main>
+
+<!-- ===== BOTTOM HUD: XP bar + main action bar ===== -->
+<div class="hud">
+  <div class="mainbar">
+    <svg class="cap cap-l" viewBox="0 0 80 94" aria-hidden="true"><use href="#gryphon"/></svg>
+    <div class="mb-body mb-frame">
+      <div class="xp"><i id="bar"></i><span id="xptext"></span></div>
+      <div class="mb-row">
+        <div class="pager" aria-hidden="true"><i class="up"></i><b>1</b><i class="down"></i></div>
+        <div class="bar" id="hudbar"></div>
+      </div>
+    </div>
+    <svg class="cap cap-r" viewBox="0 0 80 94" aria-hidden="true"><use href="#gryphon"/></svg>
+  </div>
+</div>
+
+<!-- winged statue drawn once, used at both ends of the main bar -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="brz" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6dc95"/>
+      <stop offset=".35" stop-color="#c99a45"/>
+      <stop offset=".72" stop-color="#7d5420"/>
+      <stop offset="1" stop-color="#3a230b"/>
+    </linearGradient>
+    <symbol id="gryphon" viewBox="0 0 80 94">
+      <g fill="url(#brz)" stroke="#1a0f05" stroke-width="1.3" stroke-linejoin="round">
+        <!-- raised wing -->
+        <path d="M46 60C36 52 24 40 14 26 10 20 7 13 6 6c6 4 10 6 14 7-2-4-2-8-1-11 5 5 9 8 13 10-1-4 0-7 2-10 4 6 7 11 10 16 1-3 3-6 5-8 2 8 3 18 3 28 0 8-2 16-6 22z"/>
+        <!-- seated body -->
+        <path d="M14 82c-4-10 0-22 12-26 12-4 26-2 34 4 6 5 8 14 6 22z"/>
+        <!-- neck and head with hooked beak -->
+        <path d="M54 66c-3-8-2-18 4-24l2-2c-1-7 3-12 9-12 5 0 8 3 10 7 1 3 1 6-1 8l-3 1c1 3 0 5-2 6-2-3-5-3-8-1 1 6 0 12-3 18z"/>
+        <path d="M62 31l-5-8 8 6z"/>
+        <!-- front leg -->
+        <path d="M60 82l1-15c1-4 6-4 7 0v15z"/>
+        <!-- pedestal -->
+        <path d="M4 94v-8c0-3 2-4 5-4h62c3 0 5 1 5 4v8z"/>
+      </g>
+      <circle cx="70" cy="35" r="1.6" fill="#1a0e04"/>
+      <g fill="none" stroke="#fbe7a6" stroke-opacity=".45" stroke-width=".9" stroke-linecap="round">
+        <path d="M44 55C34 45 22 31 10 13M46 49C38 39 30 27 22 10M48 43C44 33 38 23 34 7M50 37c-1-8-3-16-4-24"/>
+        <path d="M8 86h64M20 70c4-6 12-9 20-8"/>
+      </g>
+      <path d="M14 78c-8-2-10-10-6-14" fill="none" stroke="#1a0f05" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M14 78c-8-2-10-10-6-14" fill="none" stroke="#c99a45" stroke-width="1.2" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wordpop" id="wordpop" hidden></div>
+<div class="spelltip" id="spelltip" hidden></div>
+
+<script>
+/* =========================================================
+   Gnome Mage — beginner guide
+   Part 1: content (steps, talents, words)
+   Part 2: page behaviour
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   PART 1 — CONTENT
+   Each step: lv = your level, place = where, title,
+   todo = list of things to do, tip = optional extra help.
+   --------------------------------------------------------- */
+
+const STEPS = [
+
+/* ---------- Coldridge Valley, levels 1–6 ---------- */
+{ lv:"1", place:"Coldridge Valley", title:"Before you do anything", map:[["dunmorogh",[29.9,71.2,"You start here, outside Anvilmar"]]], learn:["fireball","frostarmor","arcaneint","eureka","escape","hearth"],
+  todo:[
+    "Press <kbd>P</kbd> to open your spellbook.",
+    "Drag each spell from your spellbook to the key shown in the <b>Action bar</b> box below. If the extra bars aren't showing yet, see <b>How to set this up in game</b> on the Action Bars tab.",
+    "Click each one to cast it on yourself. These are your buffs. Recast them whenever their icons disappear from the top right of your screen."
+  ],
+  tip:"Fireball is already on key <kbd>1</kbd>. That's your attack for now." },
+
+{ lv:"1", place:"Coldridge Valley", title:"Your first quest", map:[["dunmorogh",[29.9,71.2,"Sten Stoutarm"],[26.5,75.5,"Wolves"]]],
+  todo:[
+    "Talk to <b>Sten Stoutarm</b>, the dwarf right in front of you. He has a yellow <b>!</b> over his head. Accept <b>Dwarven Outfitters</b>.",
+    "Walk southwest and kill wolves until you have 8 Tough Wolf Meat.",
+    "Go back to Sten. He now has a yellow <b>?</b>. Talk to him to turn in the quest."
+  ],
+  tip:"How to fight: click a wolf to target it, then press <kbd>1</kbd> while standing still. Start casting before it reaches you." },
+
+{ lv:"1–2", place:"Coldridge Valley", title:"Meet your trainer", map:[["dunmorogh",[28.7,66.4,"Marryk Nurribit (inside Anvilmar)"],[29.9,71.2,"Sten and Balir"],[28,79,"Troggs"]]],
+  todo:[
+    "Sten gives you a letter called <b>Glyphic Memorandum</b>. Take it to <b>Marryk Nurribit</b>, the mage trainer in the valley.",
+    "Also take <b>Coldridge Valley Mail Delivery</b> from Sten and <b>A New Threat</b> from Balir Frosthammer.",
+    "For A New Threat, kill the troggs to the south, then go back to Balir."
+  ],
+  tip:"After every fight, if your health or mana is low, sit and eat or drink before the next one. It saves you from dying." },
+
+{ lv:"3–5", place:"Coldridge Valley", title:"Deliver the mail", map:[["dunmorogh",[22.6,71.4,"Talin Keeneye"],[25.1,75.7,"Grelin Whitebeard's camp"],[26.8,79.2,"Troll cave"]]],
+  todo:[
+    "Walk west along the road to <b>Talin Keeneye</b> and give him the mail. Take his quest <b>The Boar Hunter</b> and kill boars nearby.",
+    "Take the next mail to <b>Grelin Whitebeard</b>'s camp to the south. Take <b>The Troll Cave</b> and kill the young trolls.",
+    "Then <b>The Stolen Journal</b>: kill the troll leader, Grik'nir the Cold, at the back of the cave."
+  ],
+  tip:"In caves, enemies stand close together. Fight them one at a time: target the closest one and step back so you don't pull its friends." },
+
+{ lv:"4", place:"Marryk Nurribit (trainer)", title:"Level 4: your main spell", map:[["dunmorogh",[28.7,66.4,"Marryk Nurribit (mage trainer)"]]], learn:["frostbolt","fireball","conjurewater","water1"],
+  todo:[
+    "Go back to Marryk and learn <b>Frostbolt</b> and <b>Conjure Water</b>.",
+    "Put Frostbolt on key <kbd>1</kbd> and move Fireball to <kbd>Shift</kbd> + <kbd>-</kbd>. Frostbolt slows the enemy, so it takes longer to reach you.",
+    "Cast Conjure Water a few times. It makes <b>Conjured Water</b> in your bags. Drag that water onto <kbd>Alt</kbd> + <kbd>1</kbd> and drink it (press <kbd>Alt</kbd> + <kbd>1</kbd>) whenever your mana is low."
+  ] },
+
+{ lv:"5", place:"Anvilmar", title:"Free bag", map:[["dunmorogh",[28.7,66.4,"Anvilmar"]]],
+  todo:[
+    "Find <b>Grund Drokda</b> at Anvilmar (the building where you started) and do <b>Grund and Gozwin</b>.",
+    "The reward is a 6-slot bag. Right-click it to equip it in a free bag slot."
+  ],
+  tip:"If he doesn't have a quest yet, come back a level later." },
+
+{ lv:"5–6", place:"Coldridge Valley", title:"Finish the valley", map:[["dunmorogh",[28.7,66.4,"Anvilmar"]]],
+  todo:[
+    "Take <b>Scalding Mornbrew Delivery</b> at Anvilmar and run it straight to its destination before it goes cold, then bring the mug back.",
+    "Turn in everything you've finished."
+  ] },
+
+{ lv:"6", place:"Marryk Nurribit (trainer)", title:"Level 6: train again", map:[["dunmorogh",[28.7,66.4,"Marryk Nurribit (mage trainer)"]]], learn:["fireblast","conjurefood","comprehend","food1"],
+  todo:[
+    "Learn <b>Fire Blast</b>, <b>Conjure Food</b> and <b>Comprehend Scroll</b>.",
+    "Cast Conjure Food. It makes <b>Conjured Muffins</b> in your bags. Drag them onto <kbd>Alt</kbd> + <kbd>2</kbd> and eat (press <kbd>Alt</kbd> + <kbd>2</kbd>) whenever your health is low.",
+    "Put Fire Blast on key <kbd>2</kbd>. It hits instantly. Use it whenever it's ready.",
+    "Visit the junior gathering trainers nearby and take the free gathering book."
+  ],
+  tip:"Comprehend Scroll is a mage-only skill in Forever. Monsters sometimes drop odd scrolls; use it on them to get free buffs and small spells." },
+
+{ lv:"6", place:"Coldridge Pass", title:"Leave the valley", map:[["dunmorogh",[33.9,72.2,"Hands Springsprocket, Coldridge Pass"],[46.7,53,"Kharanos"]]],
+  todo:[
+    "Take <b>Supplies to Tannok</b> from Hands Springsprocket.",
+    "Walk through the tunnel (Coldridge Pass) to the town of <b>Kharanos</b>."
+  ] },
+
+/* ---------- Kharanos, levels 6–11 ---------- */
+{ lv:"6", place:"Kharanos", title:"Make Kharanos your home", map:[["dunmorogh",[47.3,52.4,"Thunderbrew Distillery (inn)"]]],
+  todo:[
+    "Find the innkeeper in the Thunderbrew Distillery (the big inn) and choose <b>Make this inn your home</b>.",
+    "Your <b>Hearthstone</b> (in your bag) now teleports you back here. It has a 1 hour cooldown.",
+    "Turn in <b>Supplies to Tannok</b>."
+  ],
+  tip:"Always log out inside an inn. You'll get bonus XP (called rested XP) when you come back." },
+
+{ lv:"6", place:"Kharanos", title:"Learn Cooking", map:[["dunmorogh",[47.3,52.4,"Thunderbrew Distillery"]]],
+  todo:[
+    "Find the cooking trainer in Kharanos and learn Cooking.",
+    "Do <b>Beer Basted Boar Ribs</b> from Ragnar Thunderbrew. It teaches you a recipe.",
+    "Cooked food gives the <b>Well Fed</b> buff: 5% more XP from kills."
+  ] },
+
+{ lv:"6–7", place:"Kharanos", title:"Grab every quest in town", map:[["dunmorogh",[46.7,53,"Kharanos"],[49.4,48.4,"Steelgrill's Depot"],[42.5,53,"The Grizzled Den"]]],
+  todo:[
+    "Walk around Kharanos and take every yellow <b>!</b> you see. You should get about 8 quests.",
+    "Press <kbd>L</kbd> to open your quest log. Each quest tells you where to go.",
+    "Start with the easy ones close to town: <b>Stocking Jetsteam</b> (boars and bears) and <b>The Grizzled Den</b> (wendigos in a cave)."
+  ] },
+
+{ lv:"7–8", place:"West of Kharanos", title:"Gnome quest: fix the machines", map:[["dunmorogh",[45.9,49.4,"Razzle Sprysprocket"],[25.5,41.5,"Leper Gnomes"]]],
+  todo:[
+    "For <b>Operation Recombobulation</b>, go west toward Gnomeregan and kill the Leper Gnomes for gears and cogs.",
+    "Bring them back to Razzle Sprysprocket in Kharanos."
+  ] },
+
+{ lv:"8", place:"Magis Sparkmantle (trainer, Kharanos)", title:"Level 8: Polymorph", map:[["dunmorogh",[47.3,52.4,"Magis Sparkmantle (Kharanos)"]]], learn:["polymorph","arcanemissiles"],
+  todo:[
+    "Kharanos has its own mage trainer, <b>Magis Sparkmantle</b>. Learn <b>Polymorph</b> and <b>Arcane Missiles</b>.",
+    "Put Polymorph on key <kbd>5</kbd> and Arcane Missiles on key <kbd>=</kbd>."
+  ],
+  tip:"If two enemies attack you, cast Polymorph on one of them. It turns into a sheep and can't fight for a while. Kill the other one, then deal with the sheep. Don't hit the sheep, or it wakes up." },
+
+{ lv:"8–9", place:"Around Kharanos", title:"Trolls and stout", map:[["dunmorogh",[40,43,"Shimmer Ridge"],[25,51,"Frostmane Hold"],[40.6,65.1,"Hunter camp"],[47.3,52.4,"Kharanos inn"]]],
+  todo:[
+    "<b>The Perfect Stout</b> / <b>Shimmer Stout</b>: kill the troll casters at Shimmer Ridge for Shimmerweed.",
+    "<b>Frostmane Hold</b>: explore the troll camp and kill the headhunters.",
+    "<b>Bitter Rivals</b> leads into the inn's cellar. <b>Ammo for Rumbleshot</b> sends you to a hunter's camp south of town.",
+    "If you see a new quest about <b>snow leopards</b> or <b>wendigos</b>, take it too. Forever added a new chain around this level."
+  ],
+  tip:"Trolls come in groups. Pull one at a time with Frostbolt from far away." },
+
+{ lv:"10", place:"Magis Sparkmantle (trainer, Kharanos)", title:"Level 10: Frost Nova and your first talent", map:[["dunmorogh",[47.3,52.4,"Magis Sparkmantle (Kharanos)"]]], learn:["frostnova"],
+  todo:[
+    "Learn <b>Frost Nova</b>. Put it on key <kbd>3</kbd>.",
+    "Press <kbd>N</kbd> to open talents. Click the <b>Frost</b> tab and put your point into <b>Improved Frostbolt</b>.",
+    "Magis also gives you <b>Speak with Bink</b>, a mage quest in Ironforge. Keep it for later."
+  ],
+  tip:"The combo to learn now: Frostbolt the enemy. When it reaches you, press Frost Nova. It freezes in place. Walk a few steps away and keep casting Frostbolt." },
+
+{ lv:"10", place:"Gol'Bolar Quarry (east)", title:"The quarry", map:[["dunmorogh",[68.9,56,"Gol'Bolar Quarry"],[74,53,"Dark Iron Spies"]]],
+  todo:[
+    "Follow the road east to Gol'Bolar Quarry.",
+    "Take <b>Those Blasted Troggs!</b> and <b>The Public Servant</b> and kill troggs in and around the mine.",
+    "Talk to <b>Earthseer Farsen</b> and take <b>Nip 'Em in the Bud</b>: kill 10 Dark Iron Spies east of the quarry.",
+    "One spy drops a <b>Dark Iron Map</b>. Right-click it, bring it to Farsen and take <b>Old Ironforge Incursion</b>. That's a dungeon quest for later."
+  ] },
+
+{ lv:"10–11", place:"Dun Morogh", title:"Wrap up Dun Morogh", map:[["dunmorogh",[46.7,53,"Kharanos"]]],
+  todo:[
+    "Turn in everything in Kharanos.",
+    "Skip <b>Protecting the Herd</b>. Its boss is an <b>elite</b>, too strong to fight alone.",
+    "From Rejold Barleybrew, take <b>Stout to Kadrell</b>. It points you to the next zone."
+  ] },
+
+/* ---------- Ironforge ---------- */
+{ lv:"10–11", place:"Ironforge", title:"Visit Ironforge", map:[["dunmorogh",[53.5,34.9,"Gates of Ironforge"]],["ironforge",[15,85,"You come in here"],[55.5,47.7,"Gryphon master"]]],
+  todo:[
+    "Follow the road north from Kharanos to the big gate of <b>Ironforge</b>.",
+    "Inside, find the gryphon master and talk to him to unlock the <b>flight path</b>.",
+    "Find the Tailoring and Enchanting trainers and learn both. Tailoring lets you make your own clothes from the cloth enemies drop. Step-by-step leveling routes are on the <a href=\"Gnome-Mage-Professions.html\">Professions page</a>."
+  ],
+  tip:"Lost in Ironforge? Ask any guard. Click them and they'll mark the place on your map." },
+
+{ lv:"10–11", place:"Ironforge, Mystic Ward", title:"Mage quest: Bink", map:[["ironforge",[26.5,8.5,"Bink (Hall of Mysteries)"]],["dunmorogh",[23,40,"Huts outside Gnomeregan"]]],
+  todo:[
+    "Go to the Mystic Ward and find <b>Bink</b> in the Hall of Mysteries. Turn in Speak with Bink.",
+    "She gives <b>Mage-tastic Gizmonitor</b>. It's in one of the huts outside Gnomeregan, in the far west of Dun Morogh.",
+    "Search the huts but <b>don't go inside Gnomeregan</b>. Everything there is much too strong for you."
+  ] },
+
+{ lv:"10–12", place:"Ironforge", title:"Get a wand and a dungeon quest", map:[["ironforge",[25,74,"Auction house"],[39,55,"Thom Filch (below the High Seat)"]]], learn:["shoot"],
+  todo:[
+    "Buy a <b>Lesser Magic Wand</b> from the auction house, or ask an enchanter to make you one.",
+    "Put your wand's <b>Shoot</b> on key <kbd>6</kbd>. Use it to finish enemies that are almost dead. It costs no mana.",
+    "Find <b>Thom Filch</b> near the bridge under the king's throne room and take <b>Important Heirlooms</b>. It's for the Hall of Thanes dungeon later."
+  ] },
+
+/* ---------- Loch Modan, levels 11–19 ---------- */
+{ lv:"11", place:"Road to Loch Modan", title:"Move to Loch Modan", map:[["dunmorogh",[46.7,53,"Kharanos"],[87.5,50,"Tunnel to Loch Modan"]],["lochmodan",[23.3,74,"Guard tower"]]],
+  todo:[
+    "From Kharanos, follow the road east through the mountain tunnel into <b>Loch Modan</b>.",
+    "At the first guard tower, take <b>The Trogg Threat</b> and <b>In Defense of the King's Lands</b>."
+  ] },
+
+{ lv:"12", place:"Thelsamar", title:"Your new home: Thelsamar", map:[["lochmodan",[35,47,"Thelsamar"]]],
+  todo:[
+    "Follow the road to the town of <b>Thelsamar</b>.",
+    "Make the inn your home. Unlock the flight path. Turn in <b>Stout to Kadrell</b>.",
+    "Take every quest in town: <b>Rat Catching</b>, <b>Thelsamar Blood Sausages</b>, <b>Mountaineer Stormpike's Task</b>, <b>Ironband's Excavation</b>."
+  ],
+  tip:"There's no mage trainer here. Every two levels, fly to Ironforge to train. It's a short flight." },
+
+{ lv:"12", place:"Ironforge (fly)", title:"Level 12: train", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["slowfall"],
+  todo:[
+    "Fly to Ironforge, open the mage trainer, and learn everything you can afford.",
+    "Spend your talent point (<kbd>N</kbd>): Improved Frostbolt again."
+  ],
+  tip:"From now on, train every even level and spend a talent point every level. The Talents tab of this guide tells you which one." },
+
+{ lv:"12–14", place:"Loch Modan", title:"Kobolds and the excavation", map:[["lochmodan",[24.8,18.4,"Mountaineer Stormpike"],[35,19,"Silver Stream Mine"],[65,65,"Ironband's Excavation"]]],
+  todo:[
+    "<b>Mountaineer Stormpike's Task</b> → <b>Filthy Paws</b> → <b>Stormpike's Order</b>: kobolds in the Silver Stream Mine.",
+    "<b>Ironband's Excavation</b>: go to the dig site in the southeast and follow the chain.",
+    "Take any new quests you see. Loch Modan has 11 new ones in Forever."
+  ] },
+
+{ lv:"13–18", place:"Under Ironforge", title:"Your first dungeon: Hall of Thanes", map:[["ironforge"]],
+  todo:[
+    "A dungeon is a private area for a group of 5 players. Hall of Thanes is new in Forever and sits under Ironforge.",
+    "Before going, have these quests: <b>Important Heirlooms</b> (Thom Filch) and <b>Old Ironforge Incursion</b> (from the quarry). Two more start inside.",
+    "Find a group: open the Looking For Group tool or ask in chat (\"LFG Hall of Thanes\").",
+    "Inside, stay behind the tank (the player the enemies attack), use Frostbolt, and don't attack before the tank does."
+  ],
+  tip:"The 5 quests here give about one whole level of XP. Most dungeon XP in Forever comes from quests, not kills." },
+
+{ lv:"14", place:"Ironforge (fly)", title:"Level 14: your first area spell", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["arcaneexplosion"],
+  todo:[
+    "Learn <b>Arcane Explosion</b>. It hits every enemy around you, but costs a lot of mana.",
+    "You don't need it much while questing alone. It's for later, when you fight groups."
+  ] },
+
+{ lv:"15", place:"Stormwind", title:"Mage quest: a free robe", map:[["ironforge",[76.5,51,"Deeprun Tram"]],["stormwind",[64,8,"The tram arrives here"],[39,80,"Jennea Cannon (Mage Quarter)"],[66.3,62.1,"Flight master"]]],
+  todo:[
+    "In Ironforge, go to Tinker Town and take the <b>Deeprun Tram</b> to Stormwind.",
+    "Find <b>Jennea Cannon</b> in the Mage Quarter and do her chain, ending with <b>Manaweave Robe</b>.",
+    "Unlock Stormwind's flight path while you're there."
+  ] },
+
+{ lv:"15–18", place:"Loch Modan", title:"Finish Loch Modan", map:[["lochmodan",[35,47,"Thelsamar"],[65,65,"Ironband's Excavation"]]],
+  todo:[
+    "Finish your Thelsamar quests: sausages, crocolisks, the excavation chain.",
+    "Skip <b>WANTED: Chok'sul</b>. It's an elite."
+  ],
+  tip:"Running out of quests? Westfall (south of Stormwind) and Redridge Mountains also fit this level." },
+
+{ lv:"16", place:"Ironforge (fly)", title:"Level 16: Flamestrike", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["flamestrike"],
+  todo:[
+    "Fly to Ironforge and learn <b>Flamestrike</b> plus any new ranks.",
+    "Flamestrike burns an area on the ground. Cast it right after Frost Nova when several enemies are frozen together."
+  ] },
+
+{ lv:"18", place:"Ironforge (fly)", title:"Level 18: Remove Lesser Curse", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["removecurse"],
+  todo:[
+    "Learn <b>Remove Lesser Curse</b>.",
+    "In dungeons, when a party member has a curse on them, click them and cast it. Groups love mages who do this."
+  ] },
+
+/* ---------- Level 20 ---------- */
+{ lv:"20", place:"Ironforge", title:"Level 20: the big one", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["blink","blizzard","evocation","manashield","tp_if","tp_sw"],
+  todo:[
+    "Learn everything: <b>Blink</b>, <b>Blizzard</b>, <b>Evocation</b>, <b>Teleport: Ironforge</b>, <b>Teleport: Stormwind</b> and new ranks.",
+    "Buy a few <b>Runes of Teleportation</b> from the reagent vendor. Teleports use them up.",
+    "Put Blink on key <kbd>7</kbd>. It jumps you forward a short distance. Use it to get away."
+  ],
+  tip:"Teleports mean you can leave your Hearthstone set to wherever you're questing and still reach the city whenever you like." },
+
+{ lv:"20", place:"Talents (N)", title:"Level 20: Ice Lance", learn:["icelance"],
+  todo:[
+    "Put this level's talent point into <b>Ice Lance</b>.",
+    "Open your spellbook (<kbd>P</kbd>) and put Ice Lance on key <kbd>4</kbd>."
+  ],
+  tip:"Ice Lance does triple damage to a frozen enemy. New combo: Frostbolt → enemy reaches you → Frost Nova → step back → Ice Lance → Frostbolt." },
+
+{ lv:"20", place:"Loch Modan → Wetlands", title:"Travel to the Wetlands", map:[["lochmodan",[24.8,18.4,"Algaz Station: road north"]],["wetlands",[53,72,"Dun Algaz: you come in here"],[10.5,60,"Menethil Harbor"]]],
+  todo:[
+    "From Loch Modan, take the road north through the pass (Dun Algaz) into the <b>Wetlands</b>.",
+    "Stay on the road. Some enemies along it are stronger than you.",
+    "Follow the road to <b>Menethil Harbor</b> on the west coast."
+  ] },
+
+/* ---------- Wetlands, levels 20–28 ---------- */
+{ lv:"20–22", place:"Menethil Harbor", title:"Settle in Menethil", map:[["wetlands",[10.5,60,"Menethil Harbor"]]],
+  todo:[
+    "Make the inn your home. Unlock the flight path.",
+    "Take every quest in town: <b>Claws from the Deep</b>, <b>Young Crocolisk Skins</b>, <b>Digging Through the Ooze</b>, <b>Daily Delivery</b> and more."
+  ] },
+
+{ lv:"21–24", place:"Wetlands", title:"Quest the Wetlands", map:[["wetlands",[56.4,40.4,"The Greenwarden"],[48,15,"Dun Modr"],[44,25,"Ironbeard's Tomb"]]],
+  todo:[
+    "Do the coast quests first (murlocs, crocolisks), then move inland.",
+    "<b>The Greenwarden</b> → <b>Tramping Paws</b> (gnolls). Then the dwarf ruins in the north: <b>Fall of Dun Modr</b>, <b>Ironbeard's Tomb</b>.",
+    "The Wetlands got 20+ new quests in Forever. Take everything you find."
+  ] },
+
+{ lv:"24", place:"Ironforge (teleport)", title:"Level 24: Counterspell", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["counterspell"],
+  todo:[
+    "Learn <b>Counterspell</b>. When an enemy is casting a spell (you'll see a cast bar under its name), press it to stop the spell."
+  ] },
+
+{ lv:"25", place:"Talents (N)", title:"Level 25: Ice Block and Legacy", learn:["iceblock"],
+  todo:[
+    "Talent: <b>Ice Block</b>. Put it on key <kbd>9</kbd>. When you're about to die, press it: you're frozen in a block of ice and nothing can hurt you for a few seconds.",
+    "Around now you get your first <b>Legacy</b> point. Press <kbd>Y</kbd> and put it in <b>Thrill of Adventure</b>: every kill gives back some health and mana."
+  ] },
+
+{ lv:"24–29", place:"Wetlands", title:"Dungeon: Excavation Site", map:[["wetlands",[10.5,60,"Caitlin Grassman (Menethil)"],[34,42,"Whelgar's Excavation Site"]],["redridge",[26,46,"Dorin Songblade (Lakeshire)"]]],
+  todo:[
+    "Another new dungeon, in the Wetlands. Best at levels 26–29.",
+    "Collect its quests first: <b>Caitlin Grassman</b> in Menethil and <b>Dorin Songblade</b> in Lakeshire (Redridge). Others come from the Wetlands quest chains.",
+    "Find a group the same way as Hall of Thanes."
+  ] },
+
+{ lv:"26", place:"Stormwind (teleport)", title:"Level 26: Cone of Cold and another mage quest", map:[["stormwind",[39,80,"Mage Quarter: trainer and Andromath"]]], learn:["coneofcold"],
+  todo:[
+    "Learn <b>Cone of Cold</b> and put it on key <kbd>8</kbd>. It hits and slows everything in front of you.",
+    "Do the mage quest from <b>High Sorcerer Andromath</b> in Stormwind. The reward is <b>Astral Knot Garment</b> (chest armor)."
+  ] },
+
+{ lv:"27–28", place:"Wetlands", title:"Finish the Wetlands", map:[["wetlands",[10.5,60,"Menethil Harbor"]]],
+  todo:[
+    "Finish your Wetlands quests.",
+    "If the north part feels too hard, go to <b>Redridge Mountains</b> or <b>Duskwood</b> (both near Stormwind) for a few levels."
+  ] },
+
+/* ---------- 28–36 ---------- */
+{ lv:"28–30", place:"Duskwood or Hillsbrad", title:"Two zones to choose from", map:[["duskwood",[73.5,46,"Darkshire"]],["hillsbrad",[50,55,"Southshore"]]],
+  todo:[
+    "<b>Duskwood</b> (town: Darkshire) or <b>Hillsbrad Foothills</b> (town: Southshore). Pick one, or do both.",
+    "In Southshore, talk to <b>Emissary Jacques</b> to start the new <b>City of Dalaran</b> dungeon (levels 28–35)."
+  ],
+  tip:"From Duskwood onward, on PvP servers, Horde players can attack you. Frost Nova and Blink are your escape." },
+
+{ lv:"28", place:"Trainer", title:"Level 28: mana gem", learn:["conjuregem","managem"],
+  todo:[
+    "Learn <b>Conjure Mana Agate</b> and cast it. It makes a <b>Mana Agate</b> in your bags.",
+    "Drag the Mana Agate onto <kbd>Shift</kbd> + <kbd>5</kbd>. In a hard fight, press it to get mana back instantly. Conjure a new one after you use it."
+  ] },
+
+{ lv:"30", place:"Trainer", title:"Level 30: Ice Armor and the wand quest", learn:["icearmor"],
+  todo:[
+    "Learn <b>Ice Armor</b>. It replaces Frost Armor and is stronger.",
+    "Keep spending a talent point every level. The Talents tab tells you which one.",
+    "Take <b>Journey to the Marsh</b> from the mage trainer. This starts the quest for the <b>Icefury Wand</b>."
+  ] },
+
+{ lv:"30–33", place:"Arathi Highlands", title:"Arathi Highlands", map:[["arathi",[44,89,"Thandol Span (from the Wetlands)"],[45.8,47.6,"Refuge Pointe"],[52,50,"Circle of Outer Binding"],[66,68,"Witherbark trolls"]]],
+  todo:[
+    "From the Wetlands, go north over the big bridge (Thandol Span) into <b>Arathi Highlands</b>.",
+    "Make <b>Refuge Pointe</b> your home and unlock the flight path.",
+    "Wand quest: kill Witherbark trolls for 10 Totem Sticks and take them to the stone circle in the middle of the zone (the Circle of Outer Binding)."
+  ] },
+
+{ lv:"32–35", place:"Stranglethorn Vale", title:"Stranglethorn Vale", map:[["stranglethorn",[38,3.5,"Rebel Camp"],[27,77,"Booty Bay"]]],
+  todo:[
+    "A big jungle zone south of Duskwood. Start at <b>Rebel Camp</b> in the north, then <b>Booty Bay</b> in the far south.",
+    "Unlock both flight paths."
+  ] },
+
+{ lv:"33–35", place:"Several places", title:"Finish the wand quest", map:[["needles",[78,77,"Mirage Raceway"]],["tirisfal",[83,33,"Scarlet Monastery"]],["dustwallow",[46,57,"Tabetha"]]],
+  todo:[
+    "<b>Thousand Needles</b> (Kalimdor, boat needed): at the Mirage Raceway talk to Magus Tirth, then target the chicken \"Plucky\" Johnson and type <kbd>/beckon</kbd>.",
+    "<b>Scarlet Monastery Library</b> (a dungeon): grab the Rituals of Power book from a side table.",
+    "Bring it all to <b>Tabetha</b> in Dustwallow Marsh and choose the <b>Icefury Wand</b>."
+  ],
+  tip:"This quest sends you around the world. It's optional. If it feels like too much, skip it." },
+
+{ lv:"34", place:"Trainer + Talents (N)", title:"Level 34: Mage Armor and Cold Snap", learn:["magearmor","coldsnap"],
+  todo:[
+    "Learn <b>Mage Armor</b> at the trainer. Keep Ice Armor on while questing; swap to Mage Armor for long dungeon fights.",
+    "Talent: <b>Cold Snap</b>. It resets your Frost cooldowns, so you get a second Ice Block or Frost Nova."
+  ] },
+
+/* ---------- 35–60 ---------- */
+{ lv:"35–40", place:"Riverglades (new zone)", title:"Riverglades", map:[["riverglades"]],
+  todo:[
+    "A brand new zone for levels 35–45. From Redridge, take the road toward Burning Steppes, turn right into the hills, and follow the road south to <b>Farholde Keep</b>.",
+    "Make it your home and unlock the flight path. It flies straight back to Redridge.",
+    "Quest here until about 42. There are 150+ quests."
+  ] },
+
+{ lv:"40", place:"Trainer + Dun Morogh", title:"Level 40: your mount!", map:[["dunmorogh",[49.4,48.4,"Steelgrill's Depot (mount vendor)"]]], learn:["mount","frostfire","icebarrier"],
+  todo:[
+    "Learn riding and buy a <b>mechanostrider</b> (gnome mount) at <b>Steelgrill's Depot</b> in Dun Morogh. Start saving gold around level 30.",
+    "Learn <b>Frostfire Bolt</b> and <b>Portals</b> at the trainer.",
+    "Talent: <b>Ice Barrier</b>, a shield that absorbs damage. Use it before every fight."
+  ] },
+
+{ lv:"40–45", place:"Riverglades, Tanaris", title:"Riverglades to Tanaris", map:[["riverglades"],["tanaris",[51,28,"Gadgetzan"]]],
+  todo:[
+    "Finish Riverglades. Its dungeon is <b>Krol'dok Stronghold</b>.",
+    "Take the boat from Powderfuse Port (in Riverglades) to <b>Tanaris</b>, a desert in Kalimdor. Town: <b>Gadgetzan</b>."
+  ] },
+
+{ lv:"45–50", place:"Several zones", title:"Pick two zones", map:[["tanaris",[51,28,"Gadgetzan"]],["feralas",[30.5,43.5,"Feathermoon Stronghold"]],["hinterlands",[14,46,"Aerie Peak"]],["searing",[38,27,"Thorium Point"]]],
+  todo:[
+    "Choose from <b>Tanaris</b>, <b>Feralas</b>, <b>The Hinterlands</b> and <b>Searing Gorge</b>.",
+    "Do the zones where you have the most quests. Move on when the quests turn green."
+  ],
+  tip:"From level 48, most quests also give gold." },
+
+{ lv:"50–55", place:"Several zones", title:"Un'Goro and Felwood", map:[["ungoro",[43.5,8.5,"Marshal's Refuge"]],["felwood",[62.5,24.5,"Talonbranch Glade"]],["burning",[84,68,"Morgan's Vigil"]],["wpl",[43,84,"Chillwind Camp"]]],
+  todo:[
+    "<b>Un'Goro Crater</b> (a dinosaur jungle) and <b>Felwood</b> (a poisoned forest).",
+    "Also <b>Burning Steppes</b> and <b>Western Plaguelands</b> if you run out."
+  ] },
+
+{ lv:"55–60", place:"Several zones", title:"The last levels", map:[["epl",[81.5,59,"Light's Hope Chapel"]],["winterspring",[61,38.5,"Everlook"]]],
+  todo:[
+    "<b>Eastern Plaguelands</b> and <b>Winterspring</b>.",
+    "Run dungeons with groups. Their quests give big XP."
+  ] },
+
+{ lv:"60", place:"Mount Hyjal", title:"You made it to 60!", map:[["hyjal"]],
+  todo:[
+    "Visit <b>Mount Hyjal</b>, a new level 60 zone reached through Winterspring.",
+    "From here on, it's about gear, dungeons and raids. Congratulations!"
+  ] }
+];
+
+/* Talent points: which talent to click at each level. */
+const TALENTS = [
+  ["10–14", "Improved Frostbolt", "Click it 5 times (once per level)", "Frostbolt casts faster."],
+  ["15–19", "Ice Shards", "5 times", "Your Frost spells hit harder on critical hits."],
+  ["20", "Ice Lance", "Once", "Triple damage to frozen enemies. Your best new trick."],
+  ["21–23", "Frostbite", "3 times", "Frostbolt can freeze enemies by itself."],
+  ["24", "Improved Frost Nova", "Once", "Frost Nova comes back sooner."],
+  ["25", "Ice Block", "Once", "Your \"don't die\" button."],
+  ["26", "Improved Frost Nova", "Once more (2 of 2)", ""],
+  ["27–29", "Shatter", "3 times", "More critical hits on frozen enemies."],
+  ["30–31", "Arctic Reach", "2 times", "Longer range."],
+  ["32–33", "Fingers of Frost", "2 times", "Enemies count as frozen more often, so more Ice Lances."],
+  ["34", "Cold Snap", "Once", "Resets your Frost cooldowns, so you can Ice Block twice."],
+  ["35–39", "Winter's Chill", "5 times", "Makes Cone of Cold stronger."],
+  ["40", "Ice Barrier", "Once", "A damage-absorbing shield."],
+  ["41–45", "Improved Channeling (Arcane tab)", "5 times", "Switch to the Arcane tab now."],
+  ["46–50", "Arcane Concentration", "5 times", "Sometimes your next spell is free."],
+  ["51–52", "Missile Barrage", "2 times", "Sometimes gives a free, fast Arcane Missiles. Press it when it lights up."],
+  ["53–54", "Arcane Subtlety", "2 times", ""],
+  ["55–56", "Arcane Impact", "2 times", ""],
+  ["57", "Arcane Blast", "Once", ""],
+  ["58–60", "Arcane Meditation", "3 times", "Better mana regeneration. That's all 51 points."]
+];
+
+/* Words a new player won't know. Matching is case-insensitive. */
+const WORDS = {
+  "buff": "A good effect on you, like Frost Armor. Its icon shows at the top right of your screen.",
+  "elite": "A much stronger enemy. Its portrait has a golden dragon border. Skip these alone.",
+  "dungeon": "A private area for a group of 5 players, with bosses and better loot.",
+  "flight path": "Talk to a flight master (the person with a gryphon) once to unlock that place. Then you can fly between any places you've unlocked.",
+  "hearthstone": "A stone in your bag that teleports you to the inn you set as home. Usable once an hour.",
+  "rested xp": "Bonus XP you build up while logged out in an inn or city. Your XP bar turns blue while you have it.",
+  "talent": "One point per level from 10. You spend it in the talent window (N) to make yourself stronger.",
+  "trainer": "An NPC who teaches you new spells for gold. Mages need one every 2 levels.",
+  "tank": "The group member (often a warrior) whose job is to make enemies attack them, not you.",
+  "frozen": "Can't move. Frost Nova and Frostbite freeze enemies. Ice Lance does triple damage to frozen enemies.",
+  "pull": "Starting a fight with an enemy, usually by hitting it from a distance.",
+  "cooldown": "Waiting time before you can use an ability again. The button shows a clock-style sweep.",
+  "elites": "Much stronger enemies with a golden dragon border on their portrait. Skip them alone.",
+  "legacy": "A Forever system: you earn points across your whole account and spend them on bonuses. Press Y.",
+  "reagent vendor": "A shop NPC who sells things your spells use up, like Runes of Teleportation.",
+  "auction house": "Where players buy and sell items. In Ironforge it's near the bank.",
+  "pvp": "Fighting other players. On PvP servers, the other faction can attack you in some zones."
+};
+
+/* ---------------------------------------------------------
+   PART 2 — PAGE BEHAVIOUR
+   --------------------------------------------------------- */
+
+const SAVE_KEY = "gnomeMageBeginner.v1";
+let saved = { step: 0, done: {} };
+try {
+  const s = JSON.parse(localStorage.getItem(SAVE_KEY));
+  if (s && typeof s === "object") saved = Object.assign(saved, s);
+} catch (e) {}
+function persist() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(saved)); } catch (e) {} }
+
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+
+/* Wrap known words with a clickable explanation (first match per step only). */
+function explainWords(html) {
+  const used = new Set();
+  const terms = Object.keys(WORDS).sort((a, b) => b.length - a.length);
+  // work only on text outside tags
+  return html.replace(/(^|>)([^<]+)/g, (m, open, text) => {
+    terms.forEach((term) => {
+      if (used.has(term)) return;
+      const re = new RegExp(`\\b(${term.replace(/ /g, "\\s")})\\b`, "i");
+      if (re.test(text)) {
+        used.add(term);
+        text = text.replace(re, `\u0001${term}\u0002$1\u0003`);
+      }
+    });
+    text = text.replace(/\u0001([^\u0002]+)\u0002([^\u0003]+)\u0003/g,
+      (x, key, shown) => `<button type="button" class="word" data-word="${key}">${shown}</button>`);
+    return open + text;
+  });
+}
+
+/* ---------- step card ---------- */
+
+/* "1–2" -> 1 */
+function stepLevel(i) { return parseInt(STEPS[i].lv, 10) || 1; }
+window.currentStepLevel = () => stepLevel(saved.step);
+window.currentStepIndex = () => saved.step;
+
+function showStep(i, direction) {
+  i = Math.max(0, Math.min(STEPS.length - 1, i));
+  saved.step = i;
+  persist();
+
+  const s = STEPS[i];
+  const card = $("#card");
+  card.classList.remove("slide-next", "slide-back");
+  void card.offsetWidth; // restart animation
+  if (!document.querySelector(".mapbox.big")) card.classList.add(direction === "back" ? "slide-back" : "slide-next");
+
+  $("#stepmeta").innerHTML = `Step ${i + 1} of ${STEPS.length} <span>·</span> Level ${s.lv} <span>·</span> ${s.place}`;
+  $("#steptitle").textContent = s.title;
+  $("#steptodo").innerHTML = s.todo.map((t) => `<li>${explainWords(t)}</li>`).join("");
+  drawMap(i);
+  $("#steptip").innerHTML = s.tip ? `<b>Tip:</b> ${explainWords(s.tip)}` : "";
+  $("#steptip").hidden = !s.tip;
+
+  $("#back").disabled = i === 0;
+  $("#next").textContent = i === STEPS.length - 1 ? "Finished!" : "Next Step ›";
+  $("#bar").style.width = `${((i + 1) / STEPS.length) * 100}%`;
+  $("#xptext").textContent = `Level ${s.lv} · Guide step ${i + 1} / ${STEPS.length}`;
+  if (window.syncBarsToStep) window.syncBarsToStep(stepLevel(i), i);
+
+  $$("#steplist li").forEach((li, n) => {
+    li.classList.toggle("current", n === i);
+    li.classList.toggle("done", n < i);
+  });
+  closeWord();
+}
+
+function buildStepList() {
+  $("#steplist").innerHTML = STEPS.map((s, i) => {
+    return `<li data-i="${i}"><button type="button"><span class="n"><span>${i + 1}</span></span><span class="t">${s.title}</span><span class="l">Lv ${s.lv}</span></button></li>`;
+  }).join("");
+  $$("#steplist li").forEach((li) => {
+    li.querySelector("button").addEventListener("click", () => {
+      showStep(+li.dataset.i, "next");
+      $("#allsteps").open = false;
+      // bring the Back/Next buttons into view, just under the sticky header
+      const top = $("#panel-steps .nav").getBoundingClientRect().top + window.scrollY - $(".top").offsetHeight - 12;
+      window.scrollTo({ top, behavior: "smooth" });
+    });
+  });
+}
+
+/* ---------- "Where to go" map: drag, zoom, clickable pins ---------- */
+
+/* Zone maps from Wowhead's classic map server. id: null = no classic map exists. */
+const MAP_URL = "https://wow.zamimg.com/images/wow/classic/maps/enus/original/";
+const TOMTOM_URL = "https://www.curseforge.com/wow/addons/tomtom";
+const ZONES = {
+  dunmorogh: { name: "Dun Morogh", id: 1 },       ironforge: { name: "Ironforge", id: 1537 },
+  lochmodan: { name: "Loch Modan", id: 38 },      stormwind: { name: "Stormwind", id: 1519 },
+  wetlands: { name: "Wetlands", id: 11 },         redridge: { name: "Redridge Mountains", id: 44 },
+  duskwood: { name: "Duskwood", id: 10 },         hillsbrad: { name: "Hillsbrad Foothills", id: 267 },
+  arathi: { name: "Arathi Highlands", id: 45 },   stranglethorn: { name: "Stranglethorn Vale", id: 33 },
+  needles: { name: "Thousand Needles", id: 400 }, tirisfal: { name: "Tirisfal Glades", id: 85 },
+  dustwallow: { name: "Dustwallow Marsh", id: 15 }, tanaris: { name: "Tanaris", id: 440 },
+  feralas: { name: "Feralas", id: 357 },          hinterlands: { name: "The Hinterlands", id: 47 },
+  searing: { name: "Searing Gorge", id: 51 },     ungoro: { name: "Un'Goro Crater", id: 490 },
+  felwood: { name: "Felwood", id: 361 },          burning: { name: "Burning Steppes", id: 46 },
+  wpl: { name: "Western Plaguelands", id: 28 },   epl: { name: "Eastern Plaguelands", id: 139 },
+  winterspring: { name: "Winterspring", id: 618 },
+  riverglades: { name: "Riverglades", id: null, none: "Riverglades is new in WoW: Forever, so there's no map of it here yet. Follow the directions above." },
+  hyjal: { name: "Mount Hyjal", id: null, none: "Mount Hyjal isn't on the classic maps. Follow the directions above." }
+};
+
+const $map = {
+  box: $("#mapbox"), view: $("#mapview"), img: $("#mapimg"), pins: $("#mappins"),
+  tip: $("#maptip"), list: $("#maplist"), route: $("#maproute")
+};
+
+/* map state. s = zoom, tx/ty = where the map's top-left corner sits in the window (px) */
+const MV = {
+  step: -1, zone: 0, zoneKey: null, preferZone: null, pins: [], ghosts: [], sel: null, showAll: false,
+  s: 1, tx: 0, ty: 0, W: 0, H: 0, A: 1022 / 668, minS: 1, maxS: 6,
+  active: false, ptrs: new Map(), moved: 0, touchIdle: false, anim: 0
+};
+
+const clampN = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const isBig = () => $map.box.classList.contains("big");
+const hasMap = () => !$map.box.hidden && !$map.box.classList.contains("nomap");
+const attr = (t) => String(t).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+
+/* steps with no map of their own (talent points, training) keep the last map */
+function mapForStep(i) {
+  for (let k = i; k >= 0; k--) if (STEPS[k].map) return STEPS[k].map;
+  return null;
+}
+
+function drawMap(i) {
+  const map = mapForStep(i);
+  if (!map) { $map.box.hidden = true; toggleBigMap(false); return; }
+  if (MV.step !== i) {
+    MV.step = i;
+    const want = MV.preferZone ? map.findIndex((m) => m[0] === MV.preferZone) : -1;
+    MV.zone = Math.max(0, want);
+    MV.preferZone = null;
+  }
+  if (MV.zone >= map.length) MV.zone = 0;
+  $map.box.hidden = false;
+
+  const [zoneKey, ...pins] = map[MV.zone];
+  const zone = ZONES[zoneKey];
+  const sameZone = MV.zoneKey === zoneKey;
+  MV.zoneKey = zoneKey;
+  MV.pins = pins;
+
+  $("#maptitle").innerHTML = `Where to go <small>${zone.name}</small>`;
+  $("#mapzones").innerHTML = map.length > 1
+    ? map.map((m, n) => `<button type="button" data-zone="${n}" class="${n === MV.zone ? "on" : ""}">${ZONES[m[0]].name}</button>`).join("")
+    : "";
+
+  $map.box.classList.toggle("nomap", !zone.id);
+  const none = $("#mapnone");
+  if (!zone.id) {
+    none.textContent = zone.none;
+    none.hidden = false;
+    $map.img.removeAttribute("src");
+  } else {
+    none.hidden = true;
+    const src = `${MAP_URL}${zone.id}.jpg`;
+    if ($map.img.getAttribute("src") !== src) $map.img.src = src;
+    $map.img.alt = `Map of ${zone.name}`;
+  }
+
+  $map.list.innerHTML = pins.map(([x, y, label], n) =>
+    `<li><button type="button" data-n="${n}"><i>${n + 1}</i>${label}<span>${Math.round(x)}, ${Math.round(y)}</span></button></li>`
+  ).join("");
+
+  hideTip();
+  buildPins();
+  measureMap();
+  fitMap(sameZone);
+}
+
+/* places from other steps in the same zone (when the box is ticked) */
+function ghostPins() {
+  if (!MV.showAll) return [];
+  const seen = new Set();
+  const out = [];
+  STEPS.forEach((s, k) => (s.map || []).forEach(([zk, ...ps]) => {
+    if (zk !== MV.zoneKey) return;
+    ps.forEach(([x, y, label]) => {
+      if (MV.pins.some(([ox, oy]) => Math.hypot(ox - x, oy - y) < 1.5)) return;
+      const key = `${Math.round(x)},${Math.round(y)}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push({ x, y, label, step: k });
+    });
+  }));
+  return out;
+}
+
+function buildPins() {
+  MV.ghosts = ghostPins();
+  const ghosts = MV.ghosts.map((p, k) =>
+    `<button type="button" class="pin ghost" data-ghost="${k}" aria-label="${attr(`${p.label}, step ${p.step + 1}`)}"><i></i><span>${p.label}</span></button>`);
+  const own = MV.pins.map(([, , label], n) =>
+    `<button type="button" class="pin" data-n="${n}" aria-label="${attr(`${n + 1}: ${label}`)}"><i>${n + 1}</i><span>${label}</span></button>`);
+  $map.pins.innerHTML = ghosts.join("") + own.join("");   // this step's pins on top
+}
+
+function measureMap() {
+  const W = $map.view.clientWidth, H = $map.view.clientHeight;
+  if (!W) return;
+  MV.W = W;
+  MV.H = H;
+  MV.minS = Math.min(1, (H * MV.A) / W);                   // small enough to see the whole zone
+  $map.img.style.width = `${W}px`;
+  $map.img.style.height = `${W / MV.A}px`;
+}
+
+/* map % <-> pixels in the window */
+const toScreen = (x, y) => [MV.tx + (x / 100) * MV.W * MV.s, MV.ty + (y / 100) * (MV.W / MV.A) * MV.s];
+const toMap = (px, py) => [((px - MV.tx) / (MV.W * MV.s)) * 100, ((py - MV.ty) / ((MV.W / MV.A) * MV.s)) * 100];
+
+/* keep the map covering the window (or centred when zoomed all the way out) */
+function clampView({ s, tx, ty }) {
+  s = clampN(s, MV.minS, MV.maxS);
+  const mw = MV.W * s, mh = (MV.W / MV.A) * s;
+  tx = mw <= MV.W ? (MV.W - mw) / 2 : clampN(tx, MV.W - mw, 0);
+  ty = mh <= MV.H ? (MV.H - mh) / 2 : clampN(ty, MV.H - mh, 0);
+  return { s, tx, ty };
+}
+
+function renderMap() {
+  $map.img.style.transform = `translate(${MV.tx}px, ${MV.ty}px) scale(${MV.s})`;
+  const spots = [...MV.ghosts.map((p) => [p.x, p.y]), ...MV.pins];
+  $map.pins.querySelectorAll(".pin").forEach((el, k) => {
+    const [px, py] = toScreen(spots[k][0], spots[k][1]);
+    el.style.left = `${px}px`;
+    el.style.top = `${py}px`;
+    el.classList.toggle("flip", px > MV.W - 170);          // keep labels inside the window
+  });
+  const pts = MV.pins.length > 1 ? MV.pins.map(([x, y]) => toScreen(x, y).join(",")).join(" ") : "";
+  $map.route.querySelectorAll("polyline").forEach((p) => p.setAttribute("points", pts));
+  placeTip();
+}
+
+function setView(v, animate) {
+  const to = clampView(v);
+  cancelAnimationFrame(MV.anim);
+  if (!animate || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    Object.assign(MV, to);
+    renderMap();
+    return;
+  }
+  const from = { s: MV.s, tx: MV.tx, ty: MV.ty }, t0 = performance.now();
+  const frame = (t) => {
+    const k = Math.min(1, (t - t0) / 420), e = 1 - Math.pow(1 - k, 3);
+    MV.s = from.s + (to.s - from.s) * e;
+    MV.tx = from.tx + (to.tx - from.tx) * e;
+    MV.ty = from.ty + (to.ty - from.ty) * e;
+    renderMap();
+    if (k < 1) MV.anim = requestAnimationFrame(frame);
+  };
+  MV.anim = requestAnimationFrame(frame);
+}
+
+/* zoom and pan so this step's pins fill the window */
+function fitMap(animate) {
+  if (!MV.W) return;
+  if (!MV.pins.length) { setView({ s: MV.minS, tx: 0, ty: 0 }, animate); return; }
+  const xs = MV.pins.map((p) => (p[0] / 100) * MV.W), ys = MV.pins.map((p) => (p[1] / 100) * (MV.W / MV.A));
+  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+  const padX = Math.min(130, MV.W * 0.22), padY = Math.min(60, MV.H * 0.18);
+  let s = Math.min((MV.W - 2 * padX) / Math.max(maxX - minX, 1), (MV.H - 2 * padY) / Math.max(maxY - minY, 1));
+  s = clampN(s, MV.minS, 2.8);
+  const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+  setView({ s, tx: MV.W / 2 - cx * s, ty: MV.H / 2 - cy * s }, animate);
+}
+
+function zoomAt(f, px, py, animate) {
+  const s = clampN(MV.s * f, MV.minS, MV.maxS), k = s / MV.s;
+  setView({ s, tx: px - (px - MV.tx) * k, ty: py - (py - MV.ty) * k }, animate);
+}
+
+function flyTo(x, y) {
+  const s = Math.max(MV.s, 2.2);
+  setView({ s, tx: MV.W / 2 - (x / 100) * MV.W * s, ty: MV.H / 2 - (y / 100) * (MV.W / MV.A) * s }, true);
+}
+
+/* ---------- pin tooltip with a /way command ---------- */
+
+function tipSpot() {
+  if (!MV.sel) return null;
+  if (MV.sel.kind === "pin") return MV.pins[MV.sel.n];
+  const g = MV.ghosts[MV.sel.n];
+  return g ? [g.x, g.y] : null;
+}
+
+function showTip(sel) {
+  MV.sel = sel;
+  const zone = ZONES[MV.zoneKey];
+  let x, y, label, head, extra = "";
+  if (sel.kind === "pin") {
+    [x, y, label] = MV.pins[sel.n];
+    head = `${sel.n + 1}. ${label}`;
+  } else {
+    ({ x, y, label } = MV.ghosts[sel.n]);
+    const k = MV.ghosts[sel.n].step;
+    head = label;
+    extra = `<button type="button" data-tip="go" data-step="${k}">Go to step ${k + 1}</button>`;
+    label = `${label} (step ${k + 1}: ${STEPS[k].title})`;
+  }
+  const way = `/way ${zone.name} ${x.toFixed(1)} ${y.toFixed(1)} ${sel.kind === "pin" ? label : head}`;
+  $map.tip.innerHTML = `<div class="tt-name">${head}</div>
+    <div class="tt-sub">${sel.kind === "ghost" ? `Step ${MV.ghosts[sel.n].step + 1}: ${STEPS[MV.ghosts[sel.n].step].title}<br>` : ""}${zone.name} ${x.toFixed(1)}, ${y.toFixed(1)}</div>
+    <input type="text" readonly value="${attr(way)}" aria-label="Waypoint command">
+    <div class="row"><button type="button" data-tip="copy">Copy /way</button>${extra}</div>
+    <small>Paste it in game chat. Needs the free <a href="${TOMTOM_URL}" target="_blank" rel="noopener">TomTom addon</a> · <a href="Gnome-Mage-Addons.html#install">how to install</a></small>`;
+  $map.tip.hidden = false;
+  $map.pins.querySelectorAll(".pin.sel").forEach((p) => p.classList.remove("sel"));
+  $map.list.querySelectorAll("button.sel").forEach((b) => b.classList.remove("sel"));
+  const pinEl = sel.kind === "pin" ? $map.pins.querySelector(`.pin[data-n="${sel.n}"]`) : $map.pins.querySelector(`.pin[data-ghost="${sel.n}"]`);
+  if (pinEl) pinEl.classList.add("sel");
+  if (sel.kind === "pin") $map.list.querySelector(`button[data-n="${sel.n}"]`)?.classList.add("sel");
+  placeTip();
+}
+
+function placeTip() {
+  const spot = tipSpot();
+  if (!spot || $map.tip.hidden) return;
+  const [px, py] = toScreen(spot[0], spot[1]);
+  const tw = $map.tip.offsetWidth, th = $map.tip.offsetHeight;
+  let top = py - th - 22;
+  if (top < 6) top = py + 22;
+  $map.tip.style.left = `${clampN(px - tw / 2, 6, Math.max(6, MV.W - tw - 6))}px`;
+  $map.tip.style.top = `${clampN(top, 6, Math.max(6, MV.H - th - 6))}px`;
+}
+
+function hideTip() {
+  MV.sel = null;
+  $map.tip.hidden = true;
+  $map.pins.querySelectorAll(".pin.sel").forEach((p) => p.classList.remove("sel"));
+  $map.list.querySelectorAll("button.sel").forEach((b) => b.classList.remove("sel"));
+}
+
+
+$map.tip.addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-tip]");
+  if (!b) return;
+  if (b.dataset.tip === "copy") {
+    const input = $map.tip.querySelector("input");
+    try {
+      await navigator.clipboard.writeText(input.value);
+      b.textContent = "Copied!";
+    } catch (err) {
+      input.focus();
+      input.select();
+      b.textContent = "Press Ctrl+C";
+    }
+  }
+  if (b.dataset.tip === "go") {
+    const k = +b.dataset.step;
+    MV.preferZone = MV.zoneKey;
+    showStep(k, k > saved.step ? "next" : "back");
+  }
+});
+
+/* ---------- mouse, touch and keys ---------- */
+
+let hintTimer = 0;
+function hint(text) {
+  const h = $("#maphint");
+  h.textContent = text;
+  h.hidden = false;
+  clearTimeout(hintTimer);
+  hintTimer = setTimeout(() => { h.hidden = true; }, 1700);
+}
+
+function setActive(on) {
+  MV.active = on;
+  $map.view.classList.toggle("active", on);
+}
+
+function showCursor(e) {
+  const out = $("#mapcursor");
+  if (e.pointerType !== "mouse" || !hasMap()) { out.textContent = ""; return; }
+  const r = $map.view.getBoundingClientRect();
+  const [x, y] = toMap(e.clientX - r.left, e.clientY - r.top);
+  out.textContent = x >= 0 && x <= 100 && y >= 0 && y <= 100 ? `${x.toFixed(1)}, ${y.toFixed(1)}` : "";
+}
+
+$map.view.addEventListener("pointerdown", (e) => {
+  if (!hasMap() || e.target.closest(".map-ctrls, .map-tip, .pin")) return;
+  if (e.pointerType === "mouse" && e.button !== 0) return;
+  cancelAnimationFrame(MV.anim);
+  // on a phone, the first touch only unlocks the map so a swipe can still scroll the page
+  MV.touchIdle = e.pointerType !== "mouse" && !MV.active && !isBig();
+  if (e.pointerType === "mouse") setActive(true);
+  MV.ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  MV.moved = 0;
+  if (!MV.touchIdle) {
+    try { $map.view.setPointerCapture(e.pointerId); } catch (err) { /* pointer already gone */ }
+    $map.view.classList.add("dragging");
+  }
+});
+
+$map.view.addEventListener("pointermove", (e) => {
+  showCursor(e);
+  const p = MV.ptrs.get(e.pointerId);
+  if (!p) return;
+  const nx = e.clientX, ny = e.clientY;
+  MV.moved += Math.abs(nx - p.x) + Math.abs(ny - p.y);
+  if (!MV.touchIdle) {
+    if (MV.ptrs.size === 1) {
+      setView({ s: MV.s, tx: MV.tx + nx - p.x, ty: MV.ty + ny - p.y }, false);
+    } else if (MV.ptrs.size === 2) {
+      // pinch: follow the two fingers' midpoint and zoom by how far they spread
+      const other = [...MV.ptrs.values()].find((q) => q !== p);
+      const r = $map.view.getBoundingClientRect();
+      const before = Math.hypot(p.x - other.x, p.y - other.y);
+      const after = Math.hypot(nx - other.x, ny - other.y);
+      const mx = (nx + other.x) / 2 - r.left, my = (ny + other.y) / 2 - r.top;
+      MV.tx += mx - ((p.x + other.x) / 2 - r.left);
+      MV.ty += my - ((p.y + other.y) / 2 - r.top);
+      zoomAt(before > 0 ? after / before : 1, mx, my, false);
+    }
+  }
+  p.x = nx;
+  p.y = ny;
+});
+
+function endPointer(e) {
+  if (!MV.ptrs.has(e.pointerId)) return;
+  MV.ptrs.delete(e.pointerId);
+  if (!MV.ptrs.size) $map.view.classList.remove("dragging");
+  if (e.type === "pointerup" && MV.moved < 6 && !MV.ptrs.size) {     // a click or tap, not a drag
+    if (MV.touchIdle) { setActive(true); hint("Map unlocked: drag to move, pinch to zoom"); }
+    hideTip();
+  }
+}
+$map.view.addEventListener("pointerup", endPointer);
+$map.view.addEventListener("pointercancel", endPointer);
+$map.view.addEventListener("pointerleave", () => { $("#mapcursor").textContent = ""; });
+/* focusing a pin (Tab key) makes the browser scroll the window's insides; undo that, we pan ourselves */
+$map.view.addEventListener("scroll", () => { $map.view.scrollLeft = 0; $map.view.scrollTop = 0; });
+
+$map.view.addEventListener("wheel", (e) => {
+  if (!hasMap()) return;
+  if (!MV.active && !isBig() && !e.ctrlKey) { hint("Click the map first, then scroll to zoom"); return; }
+  e.preventDefault();
+  const r = $map.view.getBoundingClientRect();
+  zoomAt(Math.exp(-e.deltaY * (e.deltaMode === 1 ? 0.05 : 0.0018)), e.clientX - r.left, e.clientY - r.top, false);
+}, { passive: false });
+
+$map.view.addEventListener("dblclick", (e) => {
+  if (!hasMap() || e.target.closest(".map-ctrls, .map-tip, .pin")) return;
+  const r = $map.view.getBoundingClientRect();
+  zoomAt(2, e.clientX - r.left, e.clientY - r.top, true);
+});
+
+/* clicking anywhere else on the page lets the mouse wheel scroll the page again */
+document.addEventListener("pointerdown", (e) => {
+  if (!e.target.closest("#mapbox") && !isBig()) setActive(false);
+});
+
+$map.box.querySelector(".map-ctrls").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-act]");
+  if (!b) return;
+  const act = b.dataset.act;
+  if (act === "in") zoomAt(1.6, MV.W / 2, MV.H / 2, true);
+  if (act === "out") zoomAt(1 / 1.6, MV.W / 2, MV.H / 2, true);
+  if (act === "fit") fitMap(true);
+  if (act === "zone") setView({ s: MV.minS, tx: 0, ty: 0 }, true);
+  if (act === "big") toggleBigMap();
+});
+
+$map.pins.addEventListener("click", (e) => {
+  const el = e.target.closest(".pin");
+  if (!el) return;
+  if (el.dataset.n !== undefined) showTip({ kind: "pin", n: +el.dataset.n });
+  else showTip({ kind: "ghost", n: +el.dataset.ghost });
+});
+
+/* list under the map: click to fly to a place, hover to light up its pin */
+$map.list.addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-n]");
+  if (!b) return;
+  const n = +b.dataset.n;
+  flyTo(MV.pins[n][0], MV.pins[n][1]);
+  showTip({ kind: "pin", n });
+});
+$map.list.addEventListener("mouseover", (e) => {
+  const b = e.target.closest("button[data-n]");
+  $map.pins.querySelectorAll(".pin.hot").forEach((p) => p.classList.remove("hot"));
+  if (b) $map.pins.querySelector(`.pin[data-n="${b.dataset.n}"]`)?.classList.add("hot");
+});
+$map.list.addEventListener("mouseleave", () => {
+  $map.pins.querySelectorAll(".pin.hot").forEach((p) => p.classList.remove("hot"));
+});
+
+$("#mapzones").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-zone]");
+  if (!b) return;
+  MV.zone = +b.dataset.zone;
+  drawMap(saved.step);
+});
+
+$("#mapall").addEventListener("change", (e) => {
+  MV.showAll = e.target.checked;
+  hideTip();
+  buildPins();
+  renderMap();
+});
+
+/* ---------- big map (M), like the in-game world map ---------- */
+
+function toggleBigMap(force) {
+  const on = force === undefined ? !isBig() : force;
+  if (on === isBig()) return;
+  $map.box.classList.toggle("big", on);
+  $("#mapveil").hidden = !on;
+  document.body.style.overflow = on ? "hidden" : "";
+  setActive(on);
+  measureMap();
+  fitMap(false);
+  if (on) $map.view.focus({ preventScroll: true });
+}
+$("#mapclose").addEventListener("click", () => toggleBigMap(false));
+$("#mapveil").addEventListener("click", () => toggleBigMap(false));
+
+document.addEventListener("keydown", (e) => {
+  if ((e.target instanceof Element && e.target.matches("input, textarea")) || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === "Escape" && isBig()) { toggleBigMap(false); return; }
+  if ((e.key === "m" || e.key === "M") && $("#panel-steps").classList.contains("on") && hasMap()) toggleBigMap();
+  if (!(MV.active || isBig()) || !hasMap()) return;
+  if (e.key === "+" || e.key === "=") zoomAt(1.6, MV.W / 2, MV.H / 2, true);
+  if (e.key === "-") zoomAt(1 / 1.6, MV.W / 2, MV.H / 2, true);
+});
+
+/* no picture (offline): say so instead of an empty box */
+$map.img.addEventListener("error", () => {
+  if (!$map.img.getAttribute("src")) return;
+  $("#mapnone").textContent = "The map needs an internet connection. The places and coordinates below still work.";
+  $("#mapnone").hidden = false;
+});
+
+/* re-fit whenever the map window changes size (window resize, big map, coming back to this tab) */
+new ResizeObserver(() => {
+  const W = $map.view.clientWidth, H = $map.view.clientHeight;
+  if (!W || (W === MV.W && H === MV.H)) return;
+  measureMap();
+  fitMap(false);
+}).observe($map.view);
+
+/* ---------- word popup ---------- */
+
+function openWord(btn) {
+  const pop = $("#wordpop");
+  pop.innerHTML = `<b>${btn.textContent}</b>${WORDS[btn.dataset.word]}`;
+  pop.hidden = false;
+  const r = btn.getBoundingClientRect();
+  const left = Math.min(window.innerWidth - pop.offsetWidth - 12, Math.max(12, r.left + window.scrollX));
+  pop.style.left = `${left}px`;
+  pop.style.top = `${r.bottom + window.scrollY + 8}px`;
+  pop.classList.remove("show"); void pop.offsetWidth; pop.classList.add("show");
+}
+function closeWord() { $("#wordpop").hidden = true; }
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".word");
+  if (btn) { openWord(btn); return; }
+  if (!e.target.closest("#wordpop")) closeWord();
+});
+
+/* ---------- tabs ---------- */
+
+function showTab(name) {
+  $$(".tabs button").forEach((b) => {
+    const on = b.dataset.tab === name;
+    b.classList.toggle("on", on);
+    // on phones the tab row scrolls sideways; keep the chosen tab in view
+    if (on) b.scrollIntoView({ block: "nearest", inline: "nearest" });
+  });
+  $$(".panel").forEach((p) => p.classList.toggle("on", p.id === `panel-${name}`));
+  document.body.dataset.tab = name;
+  window.scrollTo({ top: 0 });
+  closeWord();
+}
+
+/* ---------- talents and glossary ---------- */
+
+function buildTalents() {
+  $("#talentrows").innerHTML = TALENTS.map((t) =>
+    `<tr><td class="lv">${t[0]}</td><td><b>${t[1]}</b><div class="how">${t[2]}</div></td><td>${t[3]}</td></tr>`
+  ).join("");
+}
+
+function buildGlossary() {
+  const skip = new Set(["elites"]);
+  const label = { pvp: "PvP", "rested xp": "Rested XP" };
+  $("#glossary").innerHTML = Object.keys(WORDS).filter((w) => !skip.has(w)).sort().map((w) =>
+    `<div><dt>${label[w] || w.charAt(0).toUpperCase() + w.slice(1)}</dt><dd>${WORDS[w]}</dd></div>`
+  ).join("");
+}
+
+/* ---------- start ---------- */
+
+buildStepList();
+buildTalents();
+buildGlossary();
+showStep(saved.step, "next");
+
+$("#next").addEventListener("click", () => showStep(saved.step + 1, "next"));
+$("#back").addEventListener("click", () => showStep(saved.step - 1, "back"));
+$$(".tabs button").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+$$("[data-goto]").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); showTab(a.dataset.goto); }));
+
+document.addEventListener("keydown", (e) => {
+  if (!$("#panel-steps").classList.contains("on")) return;
+  if (e.target.matches("input, textarea")) return;
+  if (e.key === "ArrowRight") showStep(saved.step + 1, "next");
+  if (e.key === "ArrowLeft") showStep(saved.step - 1, "back");
+});
+
+</script>
+<script>
+/* =========================================================
+   Action bars: which spell goes on which key, by level.
+   Loaded after wow-guide.js. Draws:
+     - the HUD bar pinned to the bottom of the screen
+     - the full "Action bars" tab with a level slider
+   ========================================================= */
+
+/* ---------- icons (simple drawings, 24x24) ---------- */
+const GLYPH = {
+  snow:   '<path d="M12 2v20M3.3 7l17.4 10M3.3 17L20.7 7M9 3.5l3 2.5 3-2.5M9 20.5l3-2.5 3 2.5" stroke-width="1.8"/>',
+  flame:  '<path d="M12 22c-4 0-7-3-7-7 0-4 4-6 4-10 3 2 3 5 3 5s1-2 3-3c0 3 4 5 4 8 0 4-3 7-7 7z" fill="currentColor" stroke="none"/>',
+  star:   '<path d="M12 2l2.6 6.9L22 9.3l-5.7 4.8L18 21.5 12 17.6 6 21.5l1.7-7.4L2 9.3l7.4-.4z" fill="currentColor" stroke="none"/>',
+  shield: '<path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5z" stroke-width="2"/>',
+  drop:   '<path d="M12 2s7 8 7 13a7 7 0 01-14 0c0-5 7-13 7-13z" fill="currentColor" stroke="none"/>',
+  burst:  '<path d="M12 1v6M12 17v6M1 12h6M17 12h6M4 4l4 4M16 16l4 4M20 4l-4 4M8 16l-4 4" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/>',
+  arrow:  '<path d="M3 12h15M13 6l6 6-6 6" stroke-width="2.4"/><path d="M3 6v12" stroke-width="2" opacity=".6"/>',
+  cube:   '<path d="M12 2l9 5v10l-9 5-9-5V7z" stroke-width="2"/><path d="M12 12l9-5M12 12L3 7M12 12v10" stroke-width="1.4"/>',
+  gear:   '<circle cx="12" cy="12" r="4" stroke-width="2"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M19.8 4.2L17 7M7 17l-2.8 2.8" stroke-width="2.2"/>',
+  ring:   '<ellipse cx="12" cy="12" rx="7" ry="10" stroke-width="2.2"/><ellipse cx="12" cy="12" rx="3" ry="6" stroke-width="1.4"/>',
+  gem:    '<path d="M6 3h12l4 6-10 13L2 9z" stroke-width="1.8"/><path d="M2 9h20M9 3l3 6 3-6M12 9v13" stroke-width="1.2"/>',
+  clock:  '<circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M12 6v6l4 3" stroke-width="2"/>',
+  slash:  '<circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M5.5 5.5l13 13" stroke-width="2.4"/>',
+  dots:   '<circle cx="5" cy="12" r="2.6" fill="currentColor"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/><circle cx="19" cy="12" r="2.6" fill="currentColor"/><path d="M2 6l3 3M9 6l3 3M16 6l3 3" stroke-width="1.4"/>',
+  scroll: '<path d="M6 3h11a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5" stroke-width="2"/><path d="M9 8h7M9 12h7M9 16h5" stroke-width="1.6"/>',
+  feather:'<path d="M20 4C10 4 5 10 5 19l14-14zM5 19l-2 2M9 15h6" stroke-width="2"/>',
+  house:  '<path d="M3 11l9-8 9 8M5 10v11h14V10" stroke-width="2"/><path d="M10 21v-6h4v6" stroke-width="1.6"/>',
+  wand:   '<path d="M4 20L16 8" stroke-width="3"/><path d="M18 2v4M16 4h4M20 9v3M18.5 10.5h3" stroke-width="1.6"/>',
+  sheep:  '<path d="M7 15a4 4 0 01-1-7.8A4 4 0 0113 5a4 4 0 017 3 3.5 3.5 0 01-2 7z" fill="currentColor" stroke="none"/><path d="M9 15v4M15 15v4" stroke-width="2"/>',
+  swirl:  '<path d="M12 12a2 2 0 112 2 4 4 0 11-4-4 6 6 0 116 6 8 8 0 11-8-8" stroke-width="1.8"/>',
+  cross:  '<path d="M12 3v18M3 12h18" stroke-width="3.4"/>',
+  bread:  '<path d="M4 12a8 6 0 0116 0v6H4z" fill="currentColor" stroke="none"/><path d="M8 10v3M12 9v4M16 10v3" stroke="#0006" stroke-width="1.4"/>',
+  chain:  '<rect x="2" y="9" width="9" height="6" rx="3" stroke-width="2"/><rect x="13" y="9" width="9" height="6" rx="3" stroke-width="2"/><path d="M11 5l2 4M13 19l-2-4" stroke-width="1.6"/>',
+  bulb:   '<path d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c1 1 1 2 1 3h6c0-1 0-2 1-3A6 6 0 0012 3z" stroke-width="2"/>',
+  horse:  '<circle cx="7" cy="17" r="4" stroke-width="2"/><circle cx="17" cy="17" r="4" stroke-width="2"/><path d="M7 17l5-9h4l1 9M10 8h4" stroke-width="2"/>'
+};
+
+/* ---------- spells ---------- */
+/* school: frost / fire / arcane / util / racial / item  */
+const SPELLBOOK = {
+  fireball:      { name:"Fireball", lv:1, school:"fire", icon:"flame", text:"Your first attack. From level 4 it moves to Shift+- and you only use it to pull enemies that are far away." },
+  frostbolt:     { name:"Frostbolt", lv:4, school:"frost", icon:"snow", text:"Your main attack all the way to 60. Slows the enemy." },
+  fireblast:     { name:"Fire Blast", lv:6, school:"fire", icon:"burst", text:"Instant hit. Press whenever it's ready, or while moving." },
+  frostnova:     { name:"Frost Nova", lv:10, school:"frost", icon:"snow", text:"Freezes every enemy next to you. Then step away." },
+  icelance:      { name:"Ice Lance", lv:20, school:"frost", icon:"wand", talent:true, text:"Triple damage on a frozen enemy. Press right after Frost Nova." },
+  polymorph:     { name:"Polymorph", lv:8, school:"arcane", icon:"sheep", text:"Turns an extra enemy into a sheep for a while. Don't hit the sheep." },
+  shoot:         { name:"Shoot (wand)", lv:5, school:"item", icon:"wand", text:"Free damage with your wand. Use it to finish enemies. Needs a wand equipped." },
+  blink:         { name:"Blink", lv:20, school:"arcane", icon:"arrow", text:"Teleports you a short way forward. Your escape button." },
+  coneofcold:    { name:"Cone of Cold", lv:26, school:"frost", icon:"snow", text:"Hits and slows everything in front of you." },
+  iceblock:      { name:"Ice Block", lv:25, school:"frost", icon:"cube", talent:true, text:"Nothing can hurt you for a few seconds. Press it when you're about to die." },
+  eureka:        { name:"Eureka!", lv:1, school:"racial", icon:"bulb", text:"Gnome racial. For 8 sec your spells cost 10% less mana and hit 10% harder. 2 min cooldown." },
+  counterspell:  { name:"Counterspell", lv:24, school:"arcane", icon:"slash", text:"Stops an enemy's spell while they're casting it." },
+  arcanemissiles:{ name:"Arcane Missiles", lv:8, school:"arcane", icon:"dots", text:"Channels a stream of arcane bolts. Mostly for later: from level 51 (Missile Barrage talent), press it when it lights up, because then it's free and fast." },
+
+  arcaneexplosion:{ name:"Arcane Explosion", lv:14, school:"arcane", icon:"burst", text:"Hits every enemy around you. Costs a lot of mana. For groups of enemies." },
+  blizzard:      { name:"Blizzard", lv:20, school:"frost", icon:"snow", text:"Ice rains on an area for a few seconds. For big groups of enemies." },
+  flamestrike:   { name:"Flamestrike", lv:16, school:"fire", icon:"flame", text:"Burns an area. Good right after Frost Nova on a group." },
+  icebarrier:    { name:"Ice Barrier", lv:40, school:"frost", icon:"shield", talent:true, text:"A shield that soaks up damage and adds 15% Frost damage. Use before every fight." },
+  managem:       { name:"Mana Agate", lv:28, school:"item", icon:"gem", text:"Instantly gives you mana back in a fight. Made by Conjure Mana Agate. One charge, so conjure a new one after you use it." },
+  managem2:      { name:"Mana Jade", lv:38, school:"item", icon:"gem", text:"Better mana gem. Made by Conjure Mana Jade." },
+  managem3:      { name:"Mana Citrine", lv:48, school:"item", icon:"gem", text:"Better mana gem. Made by Conjure Mana Citrine." },
+  managem4:      { name:"Mana Ruby", lv:58, school:"item", icon:"gem", text:"Best mana gem. Made by Conjure Mana Ruby." },
+
+  water1: { name:"Conjured Water", lv:4, school:"item", icon:"drop", text:"Drink it after a fight to refill mana. Made by Conjure Water." },
+  water2: { name:"Conjured Fresh Water", lv:10, school:"item", icon:"drop", text:"Better water from Conjure Water (rank 2)." },
+  water3: { name:"Conjured Purified Water", lv:20, school:"item", icon:"drop", text:"Better water from Conjure Water (rank 3)." },
+  water4: { name:"Conjured Spring Water", lv:30, school:"item", icon:"drop", text:"Better water from Conjure Water (rank 4)." },
+  water5: { name:"Conjured Mineral Water", lv:40, school:"item", icon:"drop", text:"Better water from Conjure Water (rank 5)." },
+  water6: { name:"Conjured Sparkling Water", lv:50, school:"item", icon:"drop", text:"Better water from Conjure Water (rank 6)." },
+  water7: { name:"Conjured Crystal Water", lv:60, school:"item", icon:"drop", text:"Best water from Conjure Water (rank 7)." },
+  food1:  { name:"Conjured Muffin", lv:6, school:"item", icon:"bread", text:"Eat it after a fight to refill health. Made by Conjure Food." },
+  food2:  { name:"Conjured Bread", lv:12, school:"item", icon:"bread", text:"Better food from Conjure Food (rank 2)." },
+  food3:  { name:"Conjured Rye", lv:22, school:"item", icon:"bread", text:"Better food from Conjure Food (rank 3)." },
+  food4:  { name:"Conjured Pumpernickel", lv:32, school:"item", icon:"bread", text:"Better food from Conjure Food (rank 4)." },
+  food5:  { name:"Conjured Sourdough", lv:42, school:"item", icon:"bread", text:"Better food from Conjure Food (rank 5)." },
+  food6:  { name:"Conjured Sweet Roll", lv:52, school:"item", icon:"bread", text:"Better food from Conjure Food (rank 6)." },
+  food7:  { name:"Conjured Cinnamon Roll", lv:60, school:"item", icon:"bread", text:"Best food from Conjure Food (rank 7)." },
+  evocation:     { name:"Evocation", lv:20, school:"arcane", icon:"swirl", text:"Channels to refill a big chunk of mana. Use after a hard fight." },
+  escape:        { name:"Escape Artist", lv:1, school:"racial", icon:"chain", text:"Gnome racial. Breaks roots and slows on you." },
+  coldsnap:      { name:"Cold Snap", lv:34, school:"frost", icon:"clock", talent:true, text:"Resets your Frost cooldowns, so you can use Ice Block or Frost Nova again." },
+  removecurse:   { name:"Remove Lesser Curse", lv:18, school:"arcane", icon:"cross", text:"Removes a curse from you or a party member." },
+  frostfire:     { name:"Frostfire Bolt", lv:40, school:"frost", icon:"flame", text:"A big hit plus damage over time. Optional for a Frost mage." },
+  manashield:    { name:"Mana Shield", lv:20, school:"arcane", icon:"shield", text:"Damage takes your mana instead of your health. Emergency only." },
+
+  frostarmor:    { name:"Frost Armor", lv:1, school:"frost", icon:"shield", text:"Armor buff that slows enemies who hit you. Keep it on." },
+  icearmor:      { name:"Ice Armor", lv:30, school:"frost", icon:"shield", text:"Replaces Frost Armor. Stronger. Keep it on." },
+  magearmor:     { name:"Mage Armor", lv:34, school:"arcane", icon:"shield", text:"Better mana regen. Swap to it for long dungeon fights." },
+  arcaneint:     { name:"Arcane Intellect", lv:1, school:"arcane", icon:"star", text:"More mana. Keep it on yourself and cast it on party members." },
+  conjurewater:  { name:"Conjure Water", lv:4, school:"arcane", icon:"drop", text:"Makes a stack of water. The water goes on Alt + 1." },
+  conjurefood:   { name:"Conjure Food", lv:6, school:"arcane", icon:"bread", text:"Makes a stack of food. The food goes on Alt + 2." },
+  conjuregem:    { name:"Conjure Mana Agate", lv:28, school:"arcane", icon:"gem", text:"Makes a Mana Agate. The gem goes on Shift + 5. Recast after you use it." },
+  conjuregem2:   { name:"Conjure Mana Jade", lv:38, school:"arcane", icon:"gem", text:"Makes a Mana Jade. The gem goes on Shift + 5." },
+  conjuregem3:   { name:"Conjure Mana Citrine", lv:48, school:"arcane", icon:"gem", text:"Makes a Mana Citrine. The gem goes on Shift + 5." },
+  conjuregem4:   { name:"Conjure Mana Ruby", lv:58, school:"arcane", icon:"gem", text:"Makes a Mana Ruby. The gem goes on Shift + 5." },
+  comprehend:    { name:"Comprehend Scroll", lv:6, school:"arcane", icon:"scroll", text:"Reads the odd scrolls monsters drop. Free buffs." },
+  slowfall:      { name:"Slow Fall", lv:12, school:"arcane", icon:"feather", text:"You float down slowly. Saves you from falling damage." },
+  hearth:        { name:"Hearthstone", lv:1, school:"item", icon:"house", text:"Takes you to the inn you set as home. 1 hour cooldown." },
+  tp_if:         { name:"Teleport: Ironforge", lv:20, school:"arcane", icon:"ring", text:"Takes you to Ironforge. Uses a Rune of Teleportation." },
+  tp_sw:         { name:"Teleport: Stormwind", lv:20, school:"arcane", icon:"ring", text:"Takes you to Stormwind. Uses a Rune of Teleportation." },
+  mount:         { name:"Mechanostrider", lv:40, school:"item", icon:"horse", text:"Your gnome mount. Buy it at Steelgrill's Depot, Dun Morogh." }
+};
+
+
+/* ---------- real WoW icons (loaded from Wowhead's icon server) ----------
+   If you're offline the simple drawings above are shown instead. */
+const ICON_URL = "https://wow.zamimg.com/images/wow/icons/large/";
+const ICONS = {
+  fireball:"spell_fire_flamebolt", frostbolt:"spell_frost_frostbolt02", fireblast:"spell_fire_fireball",
+  frostnova:"spell_frost_frostnova", icelance:"spell_frost_frostblast", polymorph:"spell_nature_polymorph",
+  shoot:"ability_shootwand", blink:"spell_arcane_blink", coneofcold:"spell_frost_glacier",
+  iceblock:"spell_frost_frost", eureka:"inv_gnometoy", counterspell:"spell_frost_iceshock",
+  arcanemissiles:"spell_nature_starfall", arcaneexplosion:"spell_nature_wispsplode", blizzard:"spell_frost_icestorm",
+  flamestrike:"spell_fire_selfdestruct", icebarrier:"spell_ice_lament", managem:"inv_misc_gem_emerald_01",
+  evocation:"spell_nature_purge", escape:"ability_rogue_trip", coldsnap:"spell_frost_wizardmark",
+  removecurse:"spell_nature_removecurse", frostfire:"ability_mage_frostfirebolt", manashield:"spell_shadow_detectlesserinvisibility",
+  frostarmor:"spell_frost_frostarmor02", icearmor:"spell_frost_frostarmor02", magearmor:"spell_magearmor",
+  arcaneint:"spell_holy_magicalsentry", conjurewater:"inv_drink_06", conjurefood:"inv_misc_food_10",
+  conjuregem:"inv_misc_gem_emerald_01", comprehend:"inv_scroll_03", slowfall:"spell_magic_featherfall",
+  hearth:"inv_misc_rune_01", tp_if:"spell_arcane_teleportironforge", tp_sw:"spell_arcane_teleportstormwind",
+  mount:"ability_mount_mechastrider",
+  managem2:"inv_misc_gem_emerald_02", managem3:"inv_misc_gem_opal_01", managem4:"inv_misc_gem_ruby_01",
+  conjuregem2:"inv_misc_gem_emerald_02", conjuregem3:"inv_misc_gem_opal_01", conjuregem4:"inv_misc_gem_ruby_01",
+  water1:"inv_drink_06", water2:"inv_drink_07", water3:"inv_drink_milk_02", water4:"inv_drink_10",
+  water5:"inv_drink_09", water6:"inv_drink_11", water7:"inv_drink_18",
+  food1:"inv_misc_food_10", food2:"inv_misc_food_09", food3:"inv_misc_food_12", food4:"inv_misc_food_08",
+  food5:"inv_misc_food_11", food6:"inv_misc_food_33", food7:"inv_misc_food_73cinnamonroll"
+};
+
+/* ---------- which key holds what, from which level ---------- */
+/* each slot: [key label, [[fromLevel, spellId], ...]] */
+const BARS = [
+  { id:"main", title:"Main bar", how:"Keys 1 to =. Everything you press in a normal fight.",
+    slots:[
+      ["1", [[1,"fireball"],[4,"frostbolt"]]],
+      ["2", [[6,"fireblast"]]],
+      ["3", [[10,"frostnova"]]],
+      ["4", [[20,"icelance"]]],
+      ["5", [[8,"polymorph"]]],
+      ["6", [[5,"shoot"]]],
+      ["7", [[20,"blink"]]],
+      ["8", [[26,"coneofcold"]]],
+      ["9", [[25,"iceblock"]]],
+      ["0", [[1,"eureka"]]],
+      ["-", [[24,"counterspell"]]],
+      ["=", [[8,"arcanemissiles"]]]
+    ]},
+  { id:"shift", title:"Bottom left bar", how:"Shift + 1 to =. Group fights, emergencies and rarer spells.",
+    slots:[
+      ["S1", [[14,"arcaneexplosion"]]],
+      ["S2", [[20,"blizzard"]]],
+      ["S3", [[16,"flamestrike"]]],
+      ["S4", [[40,"icebarrier"]]],
+      ["S5", [[28,"managem"],[38,"managem2"],[48,"managem3"],[58,"managem4"]]],
+      ["S6", [[20,"evocation"]]],
+      ["S7", [[1,"escape"]]],
+      ["S8", [[34,"coldsnap"]]],
+      ["S9", [[18,"removecurse"]]],
+      ["S0", [[40,"frostfire"]]],
+      ["S-", [[4,"fireball"]]],
+      ["S=", [[20,"manashield"]]]
+    ]},
+  { id:"side", title:"Right bar", how:"Click these with the mouse between fights. No key needed.",
+    slots:[
+      ["", [[1,"frostarmor"],[30,"icearmor"]]],
+      ["", [[34,"magearmor"]]],
+      ["", [[1,"arcaneint"]]],
+      ["", [[4,"conjurewater"]]],
+      ["", [[6,"conjurefood"]]],
+      ["", [[28,"conjuregem"],[38,"conjuregem2"],[48,"conjuregem3"],[58,"conjuregem4"]]],
+      ["", [[6,"comprehend"]]],
+      ["", [[12,"slowfall"]]],
+      ["", [[1,"hearth"]]],
+      ["", [[20,"tp_if"]]],
+      ["", [[20,"tp_sw"]]],
+      ["", [[40,"mount"]]]
+    ]},
+  { id:"alt", title:"Bottom right bar", how:"Alt + 1 and Alt + 2. The water and food you conjure. Drink and eat after fights.",
+    slots:[
+      ["A1", [[4,"water1"],[10,"water2"],[20,"water3"],[30,"water4"],[40,"water5"],[50,"water6"],[60,"water7"]]],
+      ["A2", [[6,"food1"],[12,"food2"],[22,"food3"],[32,"food4"],[42,"food5"],[52,"food6"],[60,"food7"]]]
+    ]}
+];
+
+/* what's in a slot at a level */
+function spellIn(slot, level) {
+  let id = null;
+  slot[1].forEach(([from, spell]) => { if (level >= from) id = spell; });
+  return id;
+}
+/* was it put there at this level (or the level before, since trainers are every 2 levels)? */
+function isNewIn(slot, level) {
+  return slot[1].some(([from]) => from === level);
+}
+
+function iconHTML(id, key, fresh) {
+  if (!id) return `<div class="slot empty">${key ? `<span class="hk">${keyLabel(key)}</span>` : ""}</div>`;
+  const s = SPELLBOOK[id];
+  return `<button type="button" class="slot sc-${s.school}${fresh ? " fresh" : ""}" data-spell="${id}" aria-label="${s.name}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${GLYPH[s.icon]}</svg>
+      ${ICONS[id] ? `<img class="ico" src="${ICON_URL}${ICONS[id]}.jpg" alt="" draggable="false" onerror="this.remove()">` : ""}
+      ${key ? `<span class="hk">${keyLabel(key)}</span>` : ""}
+      <span class="cd"></span>
+    </button>`;
+}
+function keyLabel(k) { return k.startsWith("S") ? "s" + k.slice(1) : k.startsWith("A") ? "a" + k.slice(1) : k; }
+
+/* ---------- tooltip (WoW style) ---------- */
+function showSpellTip(btn) {
+  const s = SPELLBOOK[btn.dataset.spell];
+  const tip = document.getElementById("spelltip");
+  tip.innerHTML = `<div class="tt-name">${ICONS[btn.dataset.spell] ? `<img class="tt-ico" src="${ICON_URL}${ICONS[btn.dataset.spell]}.jpg" alt="" onerror="this.remove()">` : ""}${s.name}</div>
+    <div class="tt-sub">${s.talent ? "Talent" : s.school === "racial" ? "Racial" : s.school === "item" ? "Item" : "Spell"} · from level ${s.lv}</div>
+    <div class="tt-text">${s.text}</div>`;
+  tip.hidden = false;
+  const r = btn.getBoundingClientRect();
+  let left = r.left + r.width / 2 - tip.offsetWidth / 2;
+  left = Math.max(8, Math.min(window.innerWidth - tip.offsetWidth - 8, left));
+  let top = r.top - tip.offsetHeight - 10;
+  if (top < 8) top = r.bottom + 10;
+  tip.style.left = left + "px";
+  tip.style.top = top + "px";
+}
+function hideSpellTip() { document.getElementById("spelltip").hidden = true; }
+
+document.addEventListener("mouseover", (e) => { const b = e.target.closest(".slot[data-spell]"); if (b) showSpellTip(b); });
+document.addEventListener("mouseout", (e) => { if (e.target.closest(".slot[data-spell]")) hideSpellTip(); });
+document.addEventListener("click", (e) => {
+  const b = e.target.closest(".slot[data-spell]");
+  if (!b) return;
+  showSpellTip(b);
+  const cd = b.querySelector(".cd");            // play a cooldown sweep for fun
+  cd.classList.remove("run"); void cd.offsetWidth; cd.classList.add("run");
+});
+window.addEventListener("scroll", hideSpellTip, { passive: true });
+
+/* ---------- HUD bar at the bottom of the screen ---------- */
+function drawHud(level) {
+  const main = BARS[0];
+  document.getElementById("hudbar").innerHTML =
+    main.slots.map((slot) => iconHTML(spellIn(slot, level), slot[0], isNewIn(slot, level))).join("");
+  const portrait = document.querySelector(".portrait span");
+  if (portrait) portrait.textContent = level;
+}
+
+/* ---------- full Action bars tab ---------- */
+function drawBars(level) {
+  document.getElementById("barslevel").textContent = level;
+  document.getElementById("bars").innerHTML = BARS.map((bar) => `
+    <div class="barblock">
+      <div class="barhead"><span>${bar.title}</span><small>${bar.how}</small></div>
+      <div class="bar ${bar.id === "main" ? "main mb-frame" : "multi"}">
+        ${bar.slots.map((slot) => iconHTML(spellIn(slot, level), slot[0], isNewIn(slot, level))).join("")}
+      </div>
+    </div>`).join("");
+
+  // what changed at this level
+  const changes = [];
+  BARS.forEach((bar) => bar.slots.forEach((slot) => {
+    slot[1].forEach(([from, id], n) => {
+      if (from !== level) return;
+      const where = whereText(findPlace(id, level));
+      const replaced = n > 0 ? ` (replaces ${SPELLBOOK[slot[1][n - 1][1]].name})` : "";
+      changes.push(`Put <b>${SPELLBOOK[id].name}</b> on ${where}${replaced}.`);
+    });
+  }));
+  document.getElementById("barchanges").innerHTML = changes.length
+    ? changes.map((c) => `<li>${c}</li>`).join("")
+    : `<li class="none">Nothing new for your bars at level ${level}. ${level % 2 === 0 ? "Still visit the trainer for new ranks." : ""}</li>`;
+}
+
+function setupBarsTab() {
+  const slider = document.getElementById("barslider");
+  const update = () => drawBars(+slider.value);
+  slider.addEventListener("input", update);
+  document.getElementById("barsminus").addEventListener("click", () => { slider.value = Math.max(1, +slider.value - 1); update(); });
+  document.getElementById("barsplus").addEventListener("click", () => { slider.value = Math.min(60, +slider.value + 1); update(); });
+  update();
+}
+
+/* ---------- "Action bar" box on each quest step ---------- */
+/* where a spell sits at a given level: { bar, slot, n, replaced } */
+function findPlace(id, level) {
+  for (const bar of BARS) {
+    for (let n = 0; n < bar.slots.length; n++) {
+      const slot = bar.slots[n];
+      if (spellIn(slot, level) !== id) continue;
+      const k = slot[1].findIndex(([, sp]) => sp === id);
+      return { bar, slot, n, replaced: k > 0 ? slot[1][k - 1][1] : null };
+    }
+  }
+  return null;
+}
+function whereText(p) {
+  const key = p.slot[0];
+  if (p.bar.id === "main") return `Key <kbd>${key}</kbd> <small>main bar</small>`;
+  if (p.bar.id === "shift") return `<kbd>Shift</kbd> + <kbd>${key.slice(1)}</kbd> <small>bottom left bar</small>`;
+  if (p.bar.id === "alt") return `<kbd>Alt</kbd> + <kbd>${key.slice(1)}</kbd> <small>bottom right bar</small>`;
+  return `Right bar, button <b>${p.n + 1}</b> <small>counting from the top</small>`;
+}
+/* Upgrades that no step lists by hand (better water, food and gems) are shown
+   on the first step whose level range reaches them. */
+let AUTO = null;
+function stepRange(s) {
+  const m = String(s.lv).match(/\d+/g) || ["1"];
+  return [+m[0], +m[m.length - 1]];
+}
+function autoUpgradesFor(i) {
+  if (!AUTO) {
+    AUTO = STEPS.map(() => []);
+    const named = new Set();
+    STEPS.forEach((s) => (s.learn || []).forEach((id) => named.add(id)));
+    BARS.forEach((bar) => bar.slots.forEach((slot) => slot[1].forEach(([from, id]) => {
+      if (named.has(id)) return;
+      let at = STEPS.findIndex((s) => stepRange(s)[0] === from && /^Level \d+/.test(s.title));
+      if (at < 0) at = STEPS.findIndex((s) => stepRange(s)[0] === from);
+      if (at < 0) at = STEPS.findIndex((s) => { const [lo, hi] = stepRange(s); return lo <= from && from <= hi; });
+      if (at < 0) at = STEPS.findIndex((s) => stepRange(s)[0] >= from);
+      if (at < 0) at = STEPS.length - 1;
+      AUTO[at].push(id);
+    })));
+  }
+  return AUTO[i] || [];
+}
+
+function drawStepBars(i) {
+  const box = document.getElementById("stepbars");
+  if (!box || typeof STEPS === "undefined" || !STEPS[i]) return;
+  const step = STEPS[i];
+  const level = parseInt(step.lv, 10) || 1;
+  const learn = (step.learn || []).concat(autoUpgradesFor(i));
+  const isTraining = learn.length || /^Level \d+/.test(step.title);
+  if (!isTraining) { box.hidden = true; box.innerHTML = ""; return; }
+
+  const rows = learn.map((id) => {
+    const p = findPlace(id, Math.max(level, SPELLBOOK[id].lv));
+    if (!p) return "";
+    const rep = p.replaced && p.replaced !== id ? `<em>replaces ${SPELLBOOK[p.replaced].name}</em>` : "";
+    const lv = SPELLBOOK[id].lv;
+    const when = lv > level ? `<i class="sb-lv">at level ${lv}</i>` : "";
+    return `<li>${iconHTML(id, "", false)}<span class="sb-name">${SPELLBOOK[id].name}${when}</span><span class="sb-where">${whereText(p)}${rep}</span></li>`;
+  }).join("");
+
+  const notes = [];
+  if (learn.some((id) => /^(water|food|managem)/.test(id))) notes.push("Water, food and gems are items: they show up in your bags after you cast the Conjure spell. Drag them from your bag (<kbd>B</kbd>) onto the key shown. When a better one replaces an old one, drop the new one on the same key and sell or eat up the old ones.");
+  if (i === 0) notes.push(`First time? Turn on the extra bars first: <a href="#" data-goto="bars">Action Bars tab</a> → <i>How to set this up in game</i>.`);
+  notes.push(learn.length
+    ? "New ranks of spells you already have stay on the same key. If a button still shows the old rank, drag the new one from your spellbook (<kbd>P</kbd>) onto it."
+    : "Nothing new to place this time. New ranks stay on the same keys. If a button still shows the old rank, drag the new one from your spellbook (<kbd>P</kbd>) onto it.");
+
+  const head = /^Level \d+/.test(step.title) || i === 0 ? "Action bar" : "Action bar · when you next visit the trainer";
+  box.innerHTML = `<div class="sb-head">${head}</div>${rows ? `<ul>${rows}</ul>` : ""}${notes.map((n) => `<p class="sb-note">${n}</p>`).join("")}`;
+  box.hidden = false;
+}
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("#stepbars [data-goto]");
+  if (!a) return;
+  e.preventDefault();
+  if (typeof showTab === "function") showTab(a.dataset.goto);
+});
+
+/* the step guide tells us the level of the current step */
+window.syncBarsToStep = function (level, stepIndex) {
+  drawHud(level);
+  drawStepBars(stepIndex !== undefined ? stepIndex : (window.currentStepIndex ? window.currentStepIndex() : 0));
+  const slider = document.getElementById("barslider");
+  if (slider && !slider.dataset.touched) { slider.value = level; drawBars(level); }
+};
+document.getElementById("barslider").addEventListener("input", (e) => { e.target.dataset.touched = "1"; });
+
+setupBarsTab();
+window.syncBarsToStep(window.currentStepLevel ? window.currentStepLevel() : 1, window.currentStepIndex ? window.currentStepIndex() : 0);
+
+</script>
+</body>
+</html>

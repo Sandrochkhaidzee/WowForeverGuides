@@ -1,0 +1,9 @@
+# Windows / editor junk
+Thumbs.db
+desktop.ini
+.DS_Store
+*.tmp
+
+# local-only helper scripts and tool config
+*.bat
+.claude/
