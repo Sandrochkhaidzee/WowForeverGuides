@@ -120,6 +120,10 @@ function stepLevel(i) { return parseInt(STEPS[i].lv, 10) || 1; }
 window.currentStepLevel = () => stepLevel(saved.step);
 window.currentStepIndex = () => saved.step;
 
+/* Calm animations (the default in Settings): no sliding page, no smooth scrolling, no map glide.
+   Only "Full" animations, on a device that doesn't ask for less motion, gets the moving version. */
+const calmMotion = () => document.documentElement.dataset.motion !== "on" || matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 function showStep(i, direction) {
   i = Math.max(0, Math.min(STEPS.length - 1, i));
   const prev = saved.step;
@@ -130,7 +134,7 @@ function showStep(i, direction) {
   const card = $("#card");
   card.classList.remove("slide-next", "slide-back");
   void card.offsetWidth; // restart animation
-  if (!document.querySelector(".mapbox.big")) card.classList.add(direction === "back" ? "slide-back" : "slide-next");
+  if (!document.querySelector(".mapbox.big") && !calmMotion()) card.classList.add(direction === "back" ? "slide-back" : "slide-next");
 
   const kind = stepKind(i);
   $("#stepmeta").innerHTML = `<span class="kind k-${kind}" title="${KINDS[kind].hint}">${kindIcon(kind)}${KINDS[kind].label}</span>`
@@ -173,7 +177,7 @@ function showStep(i, direction) {
 /* bring the step into view, just under the sticky header */
 function scrollToStep() {
   const top = $("#panel-steps .journey, #panel-steps .nav").getBoundingClientRect().top + window.scrollY - $(".top").offsetHeight - 12;
-  if (window.scrollY > top) window.scrollTo({ top, behavior: "smooth" });
+  if (window.scrollY > top) window.scrollTo({ top, behavior: calmMotion() ? "auto" : "smooth" });
 }
 
 function buildStepList() {
@@ -223,12 +227,8 @@ $("#steptodo").addEventListener("click", (e) => {
   saved.done[i] = got;
   if (!got.length) delete saved.done[i];
   persist();
-  const wasAll = $("#tickcount").classList.contains("all");
   syncTicks();
   if (b.getAttribute("aria-pressed") === "true" && window.WF && WF.sparksFrom) WF.sparksFrom(b, 8, { min: 14, max: 40, small: 3, big: 6 });
-  if (!wasAll && $("#tickcount").classList.contains("all") && saved.step < STEPS.length - 1 && window.WF && WF.toast) {
-    WF.toast("Step done!", "Press Next Step when you're ready.", "good");
-  }
 });
 
 /* ---------- journey strip: every chapter, where you are, what's left ---------- */
@@ -268,7 +268,7 @@ function drawJourney(i) {
   const road = $("#jroad"), cur = road.querySelector(".jc.now");
   if (cur && road.scrollWidth > road.clientWidth) {
     const want = cur.offsetLeft - road.clientWidth / 2 + cur.offsetWidth / 2;
-    road.scrollTo({ left: want, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    road.scrollTo({ left: want, behavior: calmMotion() ? "auto" : "smooth" });
   }
 }
 
@@ -443,7 +443,7 @@ function renderMap() {
 function setView(v, animate) {
   const to = clampView(v);
   cancelAnimationFrame(MV.anim);
-  if (!animate || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  if (!animate || calmMotion()) {
     Object.assign(MV, to);
     renderMap();
     return;

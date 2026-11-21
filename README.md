@@ -30,8 +30,9 @@ Step-by-step beginner guides for WoW: Forever, styled like the in-game UI.
 - **First-visit welcome and a short guided tour** that points at each part of the page.
 - **Settings (gear button)**: bigger text, high contrast, an easy-read font, animations on/off, floating embers on/off.
 - **Progress is saved** in the browser; the landing page shows "Continue your journey" with where you stopped.
-- Effects: level-up banner, step-complete messages, sparks, scroll-in animations. They follow the device's
-  "reduce motion" setting unless the visitor picks *Animations → On*.
+- Effects are **calm by default** (gentle fades only, nothing pulsing or sparkling). Settings → Animations →
+  **Full** turns on glows, sparks, sliding pages and scroll-in animations. Floating embers have their own switch.
+  There are no pop-up messages (no level-up banner or "step complete" notes).
 
 ## How the files are organised
 

@@ -69,15 +69,18 @@
      ========================================================= */
 
   const SETTINGS_KEY = "wf.settings.v1";
-  /* motion "on" by default: full effects even when the device asks for less motion.
-     Visitors can pick Auto (follow the device) or Off in Settings. */
-  const DEFAULTS = { text: "1", contrast: "normal", font: "classic", motion: "on", fx: "on", simple: "off" };
-  const settings = Object.assign({}, DEFAULTS, store.get(SETTINGS_KEY, {}));
-  if (!["auto", "on", "off"].includes(settings.motion)) settings.motion = "auto";
+  /* motion "calm" by default: short fades only, nothing that pulses, glows, spins, sparks or floats.
+     Visitors can pick Full (every effect) or Off (no animation at all) in Settings. */
+  const DEFAULTS = { text: "1", contrast: "normal", font: "classic", motion: "calm", fx: "off", simple: "off", v: 2 };
+  const saved = store.get(SETTINGS_KEY, {});
+  // settings saved before v2 stored the old flashy defaults (motion "on", embers on): start those calm
+  if (saved.v !== 2) { delete saved.motion; delete saved.fx; }
+  const settings = Object.assign({}, DEFAULTS, saved, { v: 2 });
+  if (!["calm", "on", "off"].includes(settings.motion)) settings.motion = "calm";
   const osReduced = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
-  /* auto = full motion, or calm motion if the device asks for less; on/off = the visitor's choice wins.
+  /* calm: fades only. on: full effects (calmer if the device asks for less motion). off: nothing moves.
      reduced(): no big movement (embers, sparks, tilt). motionOff(): no animation at all. */
-  const reduced = () => settings.motion === "off" || (settings.motion === "auto" && osReduced());
+  const reduced = () => settings.motion !== "on" || osReduced();
   const motionOff = () => settings.motion === "off";
 
   function applySettings() {
@@ -163,17 +166,8 @@
   })();
 
   /* =========================================================
-     3. Toasts, sparks, level-up banner
+     3. Sparks
      ========================================================= */
-
-  let toastBox = null;
-  function toast(text, small, cls) {
-    if (!toastBox) { toastBox = make("div", "wf-toasts"); toastBox.setAttribute("aria-live", "polite"); body.append(toastBox); }
-    const t = make("div", "wf-toast" + (cls ? " " + cls : ""), esc(text) + (small ? `<small>${esc(small)}</small>` : ""));
-    toastBox.append(t);
-    while (toastBox.children.length > 3) toastBox.firstChild.remove();
-    setTimeout(() => t.remove(), 2700);
-  }
 
   let sparkBox = null;
   function sparks(x, y, n, opt) {
@@ -202,27 +196,7 @@
     const r = elm.getBoundingClientRect();
     sparks(r.left + r.width / 2, r.top + r.height / 2, n, opt);
   }
-  function confetti() {
-    if (reduced()) return;
-    const colors = ["#ffd100", "#ff8000", "#69ccf0", "#1eff00", "#a335ee", "#ffffff"];
-    for (let k = 0; k < 4; k++) {
-      setTimeout(() => {
-        sparks(innerWidth * .15, innerHeight * .75, 26, { angle: -Math.PI / 3, spread: .5, min: 160, max: 420, gravity: 140, colors, square: true, slow: 1.6, big: 10 });
-        sparks(innerWidth * .85, innerHeight * .75, 26, { angle: -Math.PI * 2 / 3, spread: .5, min: 160, max: 420, gravity: 140, colors, square: true, slow: 1.6, big: 10 });
-      }, k * 260);
-    }
-  }
-  function banner(top, big, sub) {
-    const b = make("div", "wf-levelup", `<small>${esc(top)}</small><b>${esc(big)}</b>${sub ? `<em>${esc(sub)}</em>` : ""}`);
-    b.setAttribute("role", "status");
-    body.append(b);
-    setTimeout(() => {
-      const r = b.getBoundingClientRect();
-      sparks(r.left + r.width / 2, r.top + r.height / 2, 34, { min: 80, max: 220 });
-    }, 250);
-    setTimeout(() => b.remove(), 3500);
-  }
-  Object.assign(WF, { toast, sparks, sparksFrom, confetti, banner });
+  Object.assign(WF, { sparks, sparksFrom });
 
   /* =========================================================
      4. Dialog windows (settings, help, welcome)
@@ -248,7 +222,7 @@
     ["text", "Text size", "Makes the guide text bigger.", [["1", "A"], ["2", "A+"], ["3", "A++"]]],
     ["contrast", "High contrast", "Brighter text on a plain black background.", [["normal", "Off"], ["high", "On"]]],
     ["font", "Easy-read font", "A plain font instead of the fancy game-style one.", [["classic", "Off"], ["readable", "On"]]],
-    ["motion", "Animations", "Off if movement is distracting. Auto follows your device's motion setting.", [["on", "On"], ["auto", "Auto"], ["off", "Off"]]],
+    ["motion", "Animations", "Calm: gentle fades only. Full: glows, sparks and sliding pages. Off: nothing moves.", [["calm", "Calm"], ["on", "Full"], ["off", "Off"]]],
     ["fx", "Floating embers", "The little sparks drifting behind the page.", [["on", "On"], ["off", "Off"]]],
     ["simple", "Simple view", "Quest Guide shows only the step: what to do, when it's done, and Back / Next. Hides the chapter strip, map and action bar.", [["off", "Off"], ["on", "On"]]],
   ];
@@ -425,7 +399,7 @@
   function moveTour(d) {
     if (!tour) return;
     tour.i += d;
-    if (tour.i >= tour.steps.length) { endTour(); toast("You're ready!", "Press ? any time for help."); return; }
+    if (tour.i >= tour.steps.length) { endTour(); return; }
     tour.i = Math.max(0, tour.i);
     showTourStep();
   }
@@ -613,7 +587,7 @@
     }).observe(body, { childList: true, subtree: true });
   }
   function tag(rootNode) {
-    if (motionOff()) return;
+    if (reduced()) return;   // calm/off: everything is simply there, nothing slides in on scroll
     $$(REVEAL, rootNode).forEach((n) => {
       if (n.dataset.wfr) return;
       n.dataset.wfr = "1";
@@ -628,7 +602,7 @@
 
   doc.addEventListener("pointerdown", (e) => {
     const b = e.target.closest(".wowbtn");
-    if (!b || b.disabled || motionOff()) return;
+    if (!b || b.disabled || reduced()) return;   // calm: no ripple when a button is pressed
     const r = b.getBoundingClientRect();
     const s = make("span", "wf-ripple");
     s.style.left = e.clientX - r.left + "px";
@@ -834,22 +808,16 @@
     sparksFrom(next, 16, { angle: -Math.PI / 2, spread: 1.3, min: 30, max: 90 });
     const xp = $(".xp");
     if (xp) { xp.classList.remove("wf-gain"); void xp.offsetWidth; xp.classList.add("wf-gain"); }
-    if (d.index === d.total - 1) {
-      setTimeout(() => { banner("Guide complete", "Level " + d.level, "You did it. Congratulations, champion!"); confetti(); }, 200);
-    } else if (d.level > d.prevLevel) {
-      setTimeout(() => banner("You have reached", "Level " + d.level, "Visit your trainer for new abilities."), 220);
+    // no pop-up messages (level-up, step complete): the step itself says what's next
+    if (d.level > d.prevLevel) {
       const mb = $(".mainbar");
       if (mb) { mb.classList.remove("wf-bump"); void mb.offsetWidth; mb.classList.add("wf-bump"); }
-    } else {
-      toast("Step " + (d.prev + 1) + " complete", "Next: " + d.title, "good");
     }
   });
 
   doc.addEventListener("wf:progress", (e) => {
     const d = e.detail;
     sparksFrom(d.source, 16, { angle: -Math.PI / 2, spread: 1.3, min: 30, max: 90 });
-    if (d.finished) { setTimeout(() => { banner("Profession complete", String(d.name).replace(/\s*1–300$/, ""), "Every step done. Well crafted!"); confetti(); }, 200); }
-    else toast(`${d.count} of ${d.total} done`, "", "good");
   });
 
   /* =========================================================
@@ -880,9 +848,4 @@
   setupGlossarySearch();
   maybeWelcome();
 
-  // once per browser: say why nothing moves, and how to change it
-  if (settings.motion === "auto" && osReduced() && !store.get("wf.motionNote2", 0)) {
-    store.set("wf.motionNote2", 1);
-    setTimeout(() => toast("Calm animations", "Your device asks for less motion. For all the effects: ⚙ Settings → Animations → On."), 1400);
-  }
 })();

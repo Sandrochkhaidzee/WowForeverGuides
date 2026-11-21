@@ -9,7 +9,7 @@
      3. frames, plaques, buttons, tabs
      4. guide-page extras (quest paper, objectives, XP bar)
      5. scroll reveal
-     6. site layer UI: dock, switcher, dialogs, tour, toasts
+     6. site layer UI: dock, switcher, dialogs, tour
      7. celebrations: sparks, level-up banner
      8. phones + reduced motion
    ========================================================= */
@@ -493,39 +493,6 @@ body[data-page="guide"] { --dock-b: 18px; }
 .wf-note .row small { margin-right: auto; color: #8f8a82; }
 .wf-note .wowbtn { min-width: 0; padding: 4px 14px; font-size: 15px; }
 
-/* "Quest complete"-style messages at the top middle, like game error text */
-.wf-toasts {
-  position: fixed;
-  top: 16%;
-  left: 50%;
-  z-index: 150;
-  transform: translateX(-50%);
-  display: grid;
-  justify-items: center;
-  gap: 4px;
-  pointer-events: none;
-  width: max-content;
-  max-width: calc(100vw - 32px);
-}
-.wf-toast {
-  padding: 6px 28px;
-  border-radius: 40px;
-  background: radial-gradient(ellipse at center, rgba(5, 4, 3, .82), rgba(5, 4, 3, .55) 60%, transparent 75%);
-  font-size: 22px;
-  text-align: center;
-  color: var(--wow-yellow);
-  text-shadow: 0 2px 2px #000, 0 0 12px rgba(0, 0, 0, .9), 0 0 2px #000;
-  animation: wfToast 2.6s ease forwards;
-}
-.wf-toast small { display: block; font-size: 15px; color: #fff; }
-.wf-toast.good { color: #40ff40; }
-@keyframes wfToast {
-  0% { opacity: 0; transform: translateY(10px) scale(.9); }
-  12% { opacity: 1; transform: none; }
-  75% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-14px); }
-}
-
 /* glossary search on the Words tab */
 .wf-search { position: relative; margin: 2px 0 14px; }
 .wf-search input {
@@ -566,66 +533,6 @@ body[data-page="guide"] { --dock-b: 18px; }
   100% { transform: translate(var(--dx), var(--dy)) scale(.3) rotate(var(--r, 0deg)); opacity: 0; }
 }
 
-/* "LEVEL 12" banner, like reaching a new level in game */
-.wf-levelup {
-  position: fixed;
-  left: 50%;
-  top: 22%;
-  z-index: 155;
-  translate: -50% 0;
-  padding: 22px 56px;
-  text-align: center;
-  pointer-events: none;
-  background: radial-gradient(ellipse at center, rgba(5, 4, 3, .88), rgba(5, 4, 3, .6) 55%, transparent 72%);
-  animation: wfLvl 3.4s ease forwards;
-}
-.wf-levelup::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 420px;
-  height: 420px;
-  margin: -210px 0 0 -210px;
-  z-index: -1;
-  border-radius: 50%;
-  background:
-    repeating-conic-gradient(from 0deg, rgba(255, 209, 0, .22) 0 6deg, transparent 6deg 18deg);
-  mask: radial-gradient(circle, #000 18%, transparent 68%);
-  -webkit-mask: radial-gradient(circle, #000 18%, transparent 68%);
-  animation: wfRays 6s linear infinite;
-}
-@keyframes wfRays { to { transform: rotate(360deg); } }
-.wf-levelup small {
-  display: block;
-  font-size: 18px;
-  letter-spacing: .3em;
-  text-transform: uppercase;
-  color: #fff;
-  text-shadow: 0 2px 3px #000;
-}
-.wf-levelup b {
-  display: block;
-  font-size: clamp(46px, 9vw, 78px);
-  font-weight: normal;
-  line-height: 1.05;
-  color: var(--wow-yellow);
-  background: linear-gradient(#fff6c0, #ffd100 45%, #c07a00);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 3px 2px #000) drop-shadow(0 0 18px rgba(255, 170, 0, .6));
-  letter-spacing: .04em;
-}
-.wf-levelup em { display: block; margin-top: 4px; font-style: normal; font-size: 16px; color: #e6e0d4; text-shadow: 0 2px 2px #000; }
-@keyframes wfLvl {
-  0% { opacity: 0; transform: scale(.6); }
-  10% { opacity: 1; transform: scale(1.08); }
-  18% { transform: scale(1); }
-  80% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-20px); }
-}
-
 /* ---------- 8. phones + reduced motion ---------- */
 
 @media (max-width: 640px) {
@@ -639,35 +546,52 @@ body[data-page="guide"] { --dock-b: 18px; }
   .wf-menu { position: fixed; left: 12px; right: 12px; top: 72px; min-width: 0; }
   .wf-dlg-body { padding: 6px 16px 18px; }
   .wf-set { grid-template-columns: 1fr; }
-  .wf-toast { font-size: 19px; }
-  .wf-levelup::before { width: 300px; height: 300px; margin: -150px 0 0 -150px; }
 }
 
-/* Calm mode: the device asks for less motion and the visitor left Animations
-   on Auto. Keep fades, glows, shimmer and pulses; drop sliding, spinning,
-   floating and flying things. (site.js also skips embers, sparks and tilt.) */
-@media (prefers-reduced-motion: reduce) {
-  html[data-motion="auto"] #wf-embers { display: none; }
-  html[data-motion="auto"] .wf-reveal { transform: none; }
-  html[data-motion="auto"] .panel.on,
-  html[data-motion="auto"] .questpaper.slide-next,
-  html[data-motion="auto"] .questpaper.slide-back,
-  html[data-motion="auto"] .todo li,
-  html[data-motion="auto"] .answer.show,
-  html[data-motion="auto"] .wf-dialog[open] { animation-name: wfFade; }
-  html[data-motion="auto"] .wf-toast { animation-name: wfToastCalm; }
-  html[data-motion="auto"] .wf-levelup { animation-name: wfLvlCalm; }
-  html[data-motion="auto"] .wf-levelup::before,
-  html[data-motion="auto"] .rune,
-  html[data-motion="auto"] .rune .inner,
-  html[data-motion="auto"] .hero-crest,
-  html[data-motion="auto"] .wf-welcome-ico span,
-  html[data-motion="auto"] .mainbar.wf-bump,
-  html[data-motion="auto"] .wf-menu { animation: none; }
-  html[data-motion="auto"] .wf-spot { transition: none; }
+/* Calm (the default, Settings → Animations → Calm): easy on the eyes.
+   Nothing pulses, glows, shimmers, spins, floats or slides; things just fade in.
+   (site.js also skips embers, sparks, tilt, scroll reveals and the big level-up banner.) */
+html[data-motion="calm"] :is(
+  .frame, .frame-title, .wf-cta, .top .portrait, .wf-orb.wf-nudge, .wf-welcome-ico span, .wf-spot,
+  .slot.fresh, .mainbar .slot.fresh, .bar.main .slot.fresh, .pin, .map-route .over,
+  .wowbtn.ready, .rune, .rune .inner, .hero-crest, .hero h1, .rule, .card.pick, .howcard.wf-flash,
+  .mainbar.wf-bump, .tick, .questpaper h2, .todo li, .xp i, .xp.wf-gain i
+),
+html[data-motion="calm"] :is(.frame, .xp i, .wf-orb.wf-nudge, .pin, .rule)::before,
+html[data-motion="calm"] :is(.frame, .xp i, .rule)::after { animation: none !important; }
+html[data-motion="calm"] :is(.panel.on, .questpaper.slide-next, .questpaper.slide-back, .answer.show, .wf-dialog[open]) {
+  animation: wfFade .2s ease !important;
 }
-@keyframes wfToastCalm { 0% { opacity: 0; } 12%, 75% { opacity: 1; } 100% { opacity: 0; } }
-@keyframes wfLvlCalm { 0% { opacity: 0; } 10%, 80% { opacity: 1; } 100% { opacity: 0; } }
+/* Back / Next: the new step just appears. No sliding page, no button shine or glow, no growing bars. */
+html[data-motion="calm"] :is(.questpaper, .questpaper.slide-next, .questpaper.slide-back) { animation: none !important; }
+html[data-motion="calm"] .wowbtn::after { display: none; }
+html[data-motion="calm"] .wowbtn:hover:not(:disabled) { box-shadow: 0 0 0 1px #000, inset 0 1px 0 rgba(255, 255, 255, .25); }
+html[data-motion="calm"] :is(.xp i, .jc-fill i, .todo li > div, .jc) { transition: none !important; }
+html[data-motion="calm"] .wf-reveal { opacity: 1 !important; transform: none !important; }
+html[data-motion="calm"] #wf-embers, html[data-motion="calm"] .wf-sparks { display: none; }
+/* softer glow on the big gold title */
+html[data-motion="calm"] .hero h1 { filter: drop-shadow(0 3px 2px #000); }
+
+/* Full animations, but the device asks for less motion: keep fades, glows and
+   pulses; drop sliding, spinning, floating and flying things.
+   (site.js also skips embers, sparks and tilt.) */
+@media (prefers-reduced-motion: reduce) {
+  html[data-motion="on"] #wf-embers { display: none; }
+  html[data-motion="on"] .wf-reveal { transform: none; }
+  html[data-motion="on"] .panel.on,
+  html[data-motion="on"] .questpaper.slide-next,
+  html[data-motion="on"] .questpaper.slide-back,
+  html[data-motion="on"] .todo li,
+  html[data-motion="on"] .answer.show,
+  html[data-motion="on"] .wf-dialog[open] { animation-name: wfFade; }
+  html[data-motion="on"] .rune,
+  html[data-motion="on"] .rune .inner,
+  html[data-motion="on"] .hero-crest,
+  html[data-motion="on"] .wf-welcome-ico span,
+  html[data-motion="on"] .mainbar.wf-bump,
+  html[data-motion="on"] .wf-menu { animation: none; }
+  html[data-motion="on"] .wf-spot { transition: none; }
+}
 
 /* =========================================================
    Visual helpers for reading pages (site.js section 10):
