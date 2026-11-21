@@ -14,6 +14,7 @@
 const ADDONS_PATH = "E:\\World of Warcraft\\_forever_\\Interface\\AddOns";
 
 const DIRS = {
+  "wowforeverguide": ["WowForeverGuide"],
   "questie": ["Questie", "+QuestieTrace"],
   "tomtom": ["TomTom"],
   "leatrix-plus": ["Leatrix_Plus"],
@@ -298,8 +299,9 @@ function tips(a) {
 
 function card(a) {
   const q = tierOf(a.tier).quality;
-  const icon = a.icon
-    ? `<img src="${ICON(a.icon.replace("/256/256/", "/64/64/"))}" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('⚙'))">`
+  const src = a.img || (a.icon && ICON(a.icon.replace("/256/256/", "/64/64/")));
+  const icon = src
+    ? `<img src="${src}" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('⚙'))">`
     : "⚙";
   const link = ([s, n]) => `<a href="${CF}${s}" target="_blank" rel="noopener">${n}</a>`;
   // needs = required by the addon (the CurseForge app adds them); plugins = separate add-ons you install yourself
@@ -311,7 +313,7 @@ function card(a) {
   return `<article class="addon ${q}${got[a.slug] ? " done" : ""}" data-slug="${a.slug}">
     <div class="aicon">${icon}</div>
     <div>
-      <div class="ahead"><b class="aname">${a.name}</b><span class="atag">${a.tag} · ${a.dl} downloads</span>${a.pick ? `<span class="apick">${a.pick}</span>` : ""}${a.only ? `<span class="apick">${a.only.join(", ")} only</span>` : ""}</div>
+      <div class="ahead"><b class="aname">${a.name}</b><span class="atag">${a.tag}${a.dl ? ` · ${a.dl} downloads` : ""}</span>${a.pick ? `<span class="apick">${a.pick}</span>` : ""}${a.only ? `<span class="apick">${a.only.join(", ")} only</span>` : ""}</div>
       <p class="awhat">${a.what}</p>
       <p class="awhy">${a.why}</p>
       ${tips(a)}
@@ -319,7 +321,10 @@ function card(a) {
       ${a.warn ? `<p class="awarn">${a.warn}</p>` : ""}
       ${scanWarn(a)}
       <div class="aactions">
-        <a class="wowbtn small" href="${CF}${a.slug}" target="_blank" rel="noopener">CurseForge ›</a>
+        ${a.url
+          ? `<a class="wowbtn small" href="${a.url}">${a.button || "Download ›"}</a>`
+          : `<a class="wowbtn small" href="${CF}${a.slug}" target="_blank" rel="noopener">CurseForge ›</a>`}
+        ${a.more ? `<a class="amore" href="${a.more[0]}" target="_blank" rel="noopener">${a.more[1]}</a>` : ""}
         ${status(a)}
       </div>
     </div>

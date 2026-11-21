@@ -1,0 +1,12 @@
+## Interface: 16001
+## Title: WoW Forever Guide
+## Notes: The WoW Forever leveling guide from the website, step by step in game. Click the book on your minimap.
+## Version: 1.0.15
+## IconTexture: Interface\Icons\INV_Misc_Book_09
+## OptionalDeps: TomTom
+## SavedVariablesPerCharacter: WowForeverGuideCharDB
+
+Guides\Kinds.lua
+Guides\gnome-mage.lua
+Guides\nightelf-rogue.lua
+Core.lua

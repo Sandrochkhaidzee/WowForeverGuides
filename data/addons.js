@@ -9,10 +9,18 @@ const ADDONS_PAGE = { scanKey: "wfAddons.scan.v1", dbName: "wfAddons", oldScanKe
           (class names as in assets/js/characters.js, cls).
    only:  ["Mage"] = hidden when another class is picked.
    needs: other addons it requires ([slug, name]).
+   url / button / img: for an addon that isn't on CurseForge (our own).
    ========================================================= */
 
 const CF = "https://www.curseforge.com/wow/addons/";
 const ICON = (path) => `https://media.forgecdn.net/avatars/thumbnails/${path}`;
+
+/* This site's own addon. GitHub builds it from the guides on every change
+   (.github/workflows/addon-release.yml), so "latest" is always the newest. */
+const GUIDE_ADDON = {
+  zip: "https://github.com/Sandrochkhaidzee/WowForeverGuides/releases/latest/download/WowForeverGuide.zip",
+  releases: "https://github.com/Sandrochkhaidzee/WowForeverGuides/releases",
+};
 
 const TIERS = [
   { id: "must", title: "Must-have", quality: "legendary", note: "Install these first. Together they show you where to go, what to train and what to wear." },
@@ -26,6 +34,12 @@ const TIERS = [
 
 const ADDONS = [
   /* ---------- must-have ---------- */
+  { slug: "wowforeverguide", name: "WoW Forever Guide", tier: "must", tag: "Guide · made by this site", img: "assets/icons/inv_misc_book_09.jpg",
+    url: GUIDE_ADDON.zip, button: "Download ›", more: [GUIDE_ADDON.releases, "All versions ›"],
+    what: "This website's leveling guide inside the game. Every step, objective, map spot, action bar change, talent and word explanation, with tick boxes and the same tabs as the site.",
+    why: "Follow the guide without switching to your browser. It's built from these pages, so it always says exactly what the website says.",
+    tips: { Mage: "Has the full Gnome Mage guide.", Rogue: "Has the full Night Elf Rogue guide." },
+    warn: "Unzip it straight into your AddOns folder, so you get Interface\\AddOns\\WowForeverGuide. Then click the book button on your minimap. Install TomTom too for the arrow." },
   { slug: "questie", name: "Questie", tier: "must", tag: "Quests", dl: "229M", icon: "351/162/256/256/637505206198965674.png",
     what: "Shows quests on your map and minimap: where quests start, where to hand them in, and the area for each objective.",
     why: "Your guide tells you which quests to do. Questie shows exactly where they are.",
