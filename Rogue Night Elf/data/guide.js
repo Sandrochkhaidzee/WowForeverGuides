@@ -313,20 +313,32 @@ const STEPS = [
     "Stormwind's rogue trainers are at SI:7 in Old Town. Train wherever is closest."
   ] },
 
-{ lv:"30", place:"Trainer", title:"Level 30: Kidney Shot and Deadly Poison", learn:["kidney","opois2","disarmtrap"],
+/* ---------- 28–34: Duskwood, Arathi, Southshore ---------- */
+{ chapter:"Duskwood to Arathi", lv:"28–30", place:"Darkshire, Duskwood", title:"Duskwood", map:[["duskwood",[73.5,46,"Darkshire"],[64,36,"Brightwood Grove (worgen)"],[20,45,"Raven Hill Cemetery (skeletons)"],[80,70,"Tranquil Gardens Cemetery"]]],
   todo:[
-    "Learn <b>Kidney Shot</b>, <b>Deadly Poison</b> and <b>Disarm Trap</b>.",
+    "Go to Stormwind (from Menethil Harbor: fly to Ironforge and take the Deeprun Tram), then follow the road south-east through Elwynn Forest into <b>Duskwood</b>, a dark forest. The town is <b>Darkshire</b>, on the east side. Make the inn your home and unlock the flight path.",
+    "Take every quest in Darkshire. Start with <b>Worgen in the Woods</b> from Calor (wolf-men in Brightwood Grove, north-west of town) and <b>The Night Watch</b> from Commander Althea Ebonlock (skeletons in Raven Hill Cemetery, far west).",
+    "Many Duskwood quests lead into one story about <b>Morbent Fel</b>, a necromancer at the Tranquil Gardens Cemetery. Keep following it: it's one of the best stories in the game.",
+    "Skip quests marked <b>Elite</b>, like <b>Mor'Ladim</b>, unless you have a group. Move on at level 30."
+  ],
+  tip:"Worgen walk in pairs. They're humanoids, so Sap works on them: Sap one, kill the other, then fight the one that wakes up." },
+
+{ lv:"30", place:"Stormwind trainer", title:"Level 30: Kidney Shot and Deadly Poison", map:[["stormwind",[75.8,59.8,"SI:7 (rogue trainers, Old Town)"]]], learn:["kidney","opois2","disarmtrap"],
+  todo:[
+    "Fly to Stormwind and visit the rogue trainers at <b>SI:7</b> in Old Town. Learn <b>Kidney Shot</b>, <b>Deadly Poison</b> and <b>Disarm Trap</b>.",
     "Kidney Shot (<kbd>Shift</kbd> + <kbd>4</kbd>) is a finisher that stuns. Use it on enemies that cast spells, or when you need a break.",
     "Put <b>Deadly Poison</b> on your off-hand weapon and keep Instant Poison on your main hand."
-  ] },
-
-/* ---------- 28–36 ---------- */
-{ chapter:"Duskwood to Stranglethorn", lv:"28–32", place:"Duskwood or Hillsbrad", title:"Two zones to choose from", map:[["duskwood",[73.5,46,"Darkshire"]],["hillsbrad",[50,55,"Southshore"]]],
-  todo:[
-    "<b>Duskwood</b> (town: Darkshire) or <b>Hillsbrad Foothills</b> (town: Southshore). Pick one, or do both. Southshore also has a boat to Auberdine.",
-    "In Southshore, talk to <b>Emissary Jacques</b> to start the new <b>City of Dalaran</b> dungeon (levels 28–35)."
   ],
-  tip:"From here on, on PvP servers, Horde players can attack you. Stealth, Sprint and Vanish are your escape." },
+  tip:"From now on you need a trainer every 2 levels. Rogue trainers: SI:7 in Stormwind, the Forlorn Cavern in Ironforge, and the Cenarion Enclave in Darnassus. Use whichever is closest." },
+
+{ lv:"30–32", place:"Arathi Highlands", title:"Arathi Highlands", map:[["arathi",[44,89,"Thandol Span (from the Wetlands)"],[45.8,47.6,"Refuge Pointe"],[32,28,"Northfold Manor (Syndicate)"],[66,68,"Witherbark Village (trolls)"],[25,30,"Stromgarde Keep (elites)"],[73,33,"Hammerfall (Horde town)"]]],
+  todo:[
+    "Fly to <b>Menethil Harbor</b> and ride north over the big bridge (Thandol Span) into <b>Arathi Highlands</b>, a wide open grassland.",
+    "In the middle is <b>Refuge Pointe</b>, the Alliance camp. Unlock the flight path and make it your home.",
+    "Take every quest. Captain Nials's <b>Northfold Manor</b> sends you to the Syndicate in the north-west. Sentinel Glynda Nal'Shea sends you after the Witherbark trolls in the south-east.",
+    "Stay out of <b>Stromgarde Keep</b> (west) unless you're in a group: it's full of elite enemies. <b>Hammerfall</b> (east) is a Horde town. Move on at level 32."
+  ],
+  tip:"The Syndicate are humanoids: Pick Pocket each one from Stealth before you attack." },
 
 { lv:"31", place:"Talents (N)", title:"Level 31: Blade Flurry", learn:["bladeflurry"],
   todo:[
@@ -334,63 +346,238 @@ const STEPS = [
     "When two enemies fight you, press it: every hit also hits a second enemy."
   ] },
 
-{ lv:"30–33", place:"Arathi Highlands", title:"Arathi Highlands", map:[["arathi",[44,89,"Thandol Span (from the Wetlands)"],[45.8,47.6,"Refuge Pointe"],[66,68,"Witherbark trolls"]]],
+{ lv:"32", place:"Southshore, Hillsbrad", title:"Southshore", map:[["arathi",[20,30,"Gate in Thoradin's Wall (west)"]],["hillsbrad",[50,55,"Southshore"],[40,74,"Murloc beach"]]],
   todo:[
-    "From the Wetlands, go north over the big bridge (Thandol Span) into <b>Arathi Highlands</b>.",
-    "Make <b>Refuge Pointe</b> your home and unlock the flight path. Take every quest there."
-  ] },
+    "From Refuge Pointe, ride west through the gate in the huge wall (Thoradin's Wall) into Hillsbrad Foothills. Follow the road south to <b>Southshore</b>. Unlock the flight path.",
+    "Take the town's quests. <b>Down the Coast</b> from Lieutenant Farren Orinelle (murlocs on the beach) and <b>Syndicate Assassins</b> from Marshal Redpath (in the Alterac Mountains, north) are quick XP.",
+    "Talk to <b>Emissary Jacques</b> to start the new <b>City of Dalaran</b> dungeon (levels 28–35). Optional.",
+    "Southshore also has a boat to Auberdine. Move on at about level 33."
+  ],
+  tip:"From here on, on PvP servers, Horde players can attack you. Stealth, Sprint and Vanish are your escape." },
 
-{ lv:"32–36", place:"Stranglethorn Vale", title:"Stranglethorn Vale", map:[["stranglethorn",[38,3.5,"Rebel Camp"],[27,77,"Booty Bay"]]],
+/* ---------- 33–37: Stranglethorn Vale ---------- */
+{ chapter:"Stranglethorn Vale", lv:"33–35", place:"Stranglethorn Vale (north)", title:"Stranglethorn: Rebel Camp and the hunters", map:[["stranglethorn",[38,3.5,"Rebel Camp"],[35.6,10.6,"Nesingwary's Expedition"],[44,10,"Kurzen's Compound"],[32,28,"Grom'gol (Horde camp)"]]],
   todo:[
-    "A big jungle zone south of Duskwood. Start at <b>Rebel Camp</b> in the north, then <b>Booty Bay</b> in the far south.",
-    "Unlock both flight paths. Booty Bay sells good poison ingredients and has a boat to Ratchet in Kalimdor."
-  ] },
+    "Fly to <b>Darkshire</b> and follow the road south out of Duskwood into <b>Stranglethorn Vale</b>, a big jungle. Right at the zone edge, turn west to the <b>Rebel Camp</b>.",
+    "Lieutenant Doren's quests at the Rebel Camp send you against the Kurzen soldiers at their compound, east of the camp.",
+    "Just south is <b>Nesingwary's Expedition</b>, a hunting camp. Take <b>Tiger Mastery</b>, <b>Panther Mastery</b> and <b>Raptor Mastery</b>: each sends you to hunt one kind of animal, and later parts send you after bigger ones.",
+    "Pages of <b>The Green Hills of Stranglethorn</b> drop from almost everything here. Keep them: when you have a full chapter, hand it to Barnil Stonepot at Nesingwary's camp for XP."
+  ],
+  tip:"Grom'gol, on the west coast, is a Horde camp. Stay away from it." },
 
-{ lv:"34", place:"Trainer", title:"Level 34: Blind", learn:["blind"],
+{ lv:"34", place:"Nearest rogue trainer", title:"Level 34: Blind", learn:["blind"],
   todo:[
     "Learn <b>Blind</b> and put it on <kbd>Shift</kbd> + <kbd>0</kbd>. It needs <b>Blinding Powder</b>: learn it in Poisons and make some.",
     "Blind takes one enemy out of the fight for a while. Use it when a second enemy joins: Blind it, kill the first one, then deal with the blinded one."
   ] },
 
-/* ---------- 35–60 ---------- */
-{ chapter:"Riverglades to 60", lv:"35–40", place:"Riverglades (new zone)", title:"Riverglades", map:[["riverglades"]],
+{ lv:"35–37", place:"Booty Bay, Stranglethorn", title:"Stranglethorn: Booty Bay", map:[["stranglethorn",[27,77,"Booty Bay"],[38,3.5,"Rebel Camp"],[35.6,10.6,"Nesingwary's Expedition"]]], learn:["stone4","food5"],
   todo:[
-    "A brand new zone for levels 35–45. From Redridge, take the road toward Burning Steppes, turn right into the hills, and follow the road south to <b>Farholde Keep</b>.",
-    "Make it your home and unlock the flight path. It flies straight back to Redridge.",
-    "Quest here until about 42. There are 150+ quests."
+    "Follow the main road all the way south to <b>Booty Bay</b>, a goblin port built into a cliff. Unlock the flight path and make the inn your home.",
+    "Booty Bay is neutral: Horde players use it too, and the goblin guards attack anyone who starts a fight in town.",
+    "Take <b>Singing Blue Shards</b> from Crank Fizzlebub (crystal-backed basilisks in the middle of the zone) and the pirate quests that start with <b>The Bloodsail Buccaneers</b> from First Mate Crazz.",
+    "Keep doing the Nesingwary hunting quests as new parts open. Move on at level 37."
+  ],
+  tip:"Upgrade your supplies: <b>Solid Sharpening Stones</b> (auction house) and <b>Moon Harvest Pumpkins</b> (food vendors). Booty Bay also has a boat to Ratchet in Kalimdor." },
+
+{ lv:"35–40", place:"Tirisfal Glades", title:"Dungeon: Scarlet Monastery (optional)", map:[["tirisfal",[83,33,"Scarlet Monastery"]]],
+  todo:[
+    "Four short dungeon wings, run by crazed crusaders: <b>Graveyard</b> (around level 30), <b>Library</b> (around 33), <b>Armory</b> (around 36) and <b>Cathedral</b> (around 38).",
+    "It's deep in Horde land, so don't walk there. Find a group with the Looking For Group tool and let the group summon you at the meeting stone outside.",
+    "Collect the Alliance quests first: <b>Mythology of the Titans</b> (Librarian Mae Paledust, Hall of Explorers in Ironforge) and <b>In the Name of the Light</b> (Raleigh the Devout, Southshore inn).",
+    "Skip it if you'd rather keep questing."
+  ],
+  tip:"Inside, stay behind the tank and hit the same enemy. Feint when an enemy turns to you." },
+
+{ lv:"36", place:"Nearest rogue trainer", title:"Level 36: Instant Poison III", map:[["stormwind",[75.8,59.8,"SI:7 (rogue trainers)"]]], learn:["ipois3"],
+  todo:[
+    "Fly to a rogue trainer and learn new ranks and <b>Instant Poison III</b>.",
+    "Make Instant Poison III in the Poisons window and put it on your main-hand weapon.",
+    "Use your Hearthstone to get back to Booty Bay."
+  ] },
+
+/* ---------- 37–44: Riverglades ---------- */
+{ chapter:"Riverglades", lv:"37", place:"Redridge → Riverglades", title:"Travel to the Riverglades", map:[["redridge",[30.6,59.4,"Lakeshire flight path"]],["riverglades"]],
+  todo:[
+    "Fly to <b>Lakeshire</b> in Redridge Mountains. No flight path there yet? Fly to Darkshire and ride north-east into Redridge.",
+    "From Lakeshire, follow the road north toward the Burning Steppes. Near the edge of the map, a signpost at a crossroads points to the Riverglades: take the right-hand path into the hills.",
+    "Follow that road south to <b>Farholde Keep</b>, the Alliance town in the Riverglades (a new zone in WoW Forever).",
+    "Unlock the flight path (Gretchen Mayberry) and make the inn your home. From now on you can fly straight between Farholde Keep and Lakeshire."
+  ] },
+
+{ lv:"37–40", place:"Farholde Keep, Riverglades", title:"Riverglades: around Farholde Keep", map:[["riverglades"]],
+  todo:[
+    "Take every quest in Farholde Keep. Many come from <b>Demar Brant</b>, the knight in charge, and the people around him. There are over 70 Alliance quests in this zone.",
+    "Riverglades quests come in waves: when you finish a batch, new ones usually appear back in Farholde Keep. Check the town after every few turn-ins.",
+    "Start with the farms and lookouts close to the keep. The enemies get tougher the further north you go.",
+    "The Horde quests here too (their town is Rog'mar). On PvP servers, keep your escape buttons ready. Move on at level 40."
+  ],
+  tip:"There's no Riverglades map on this site yet. Use your in-game map (<kbd>M</kbd>): Farholde Keep is in the south of the zone." },
+
+{ lv:"38", place:"Nearest rogue trainer", title:"Level 38: Deadly Poison II", map:[["stormwind",[75.8,59.8,"SI:7 (rogue trainers)"]]], learn:["opois3"],
+  todo:[
+    "Fly to a rogue trainer (Lakeshire flies to Stormwind) and learn new ranks and <b>Deadly Poison II</b>.",
+    "Make it and put it on your off-hand weapon.",
+    "Start saving gold now: your mount costs a lot at level 40."
   ] },
 
 { lv:"40", place:"Trainer + Darnassus", title:"Level 40: your mount!", map:[["darnassus",[38.5,16.7,"Lelanai (nightsaber vendor)"]]], learn:["mount","adrenaline"],
   todo:[
-    "Learn riding and buy a <b>nightsaber</b> (night elf mount) in Darnassus. Start saving gold around level 30. Darnassus reputation makes it cheaper.",
+    "Learn riding and buy a <b>nightsaber</b> (night elf mount) in Darnassus. Darnassus reputation makes it cheaper.",
     "Learn <b>Safe Fall</b> and new ranks at the trainer.",
     "Talent: <b>Adrenaline Rush</b>. Put it on <kbd>Shift</kbd> + <kbd>6</kbd>. Your energy fills twice as fast for a short time. Use it for hard fights."
   ],
   tip:"At level 40 you can also unlock a second talent setup (Dual Specialization) at a trainer in a big city." },
 
-{ lv:"40–45", place:"Riverglades, Tanaris", title:"Riverglades to Tanaris", map:[["riverglades"],["tanaris",[51,28,"Gadgetzan"]]],
+{ lv:"40–43", place:"Riverglades (north)", title:"Riverglades: Sunnyglade and the north", map:[["riverglades"]],
   todo:[
-    "Finish Riverglades. Its dungeon is <b>Krol'dok Stronghold</b>.",
-    "Take the boat from Powderfuse Port (in Riverglades) to <b>Tanaris</b>, a desert in Kalimdor. Town: <b>Gadgetzan</b>."
+    "Fly back to Farholde Keep. Demar Brant's <b>Saving Sunnyglade</b> sends you north to the village of <b>Sunnyglade</b>.",
+    "Keep turning in and picking up: the later quests send you further north, toward <b>Twilight's Shroud</b>.",
+    "Pick up the quests for the dungeon <b>Krol'dok Stronghold</b> (next step) as they appear.",
+    "<b>Powderfuse Port</b>, a neutral goblin port on the east coast, has a bank, an auction house and the boat to Tanaris. Move on at about level 43."
   ] },
 
-{ lv:"45–50", place:"Several zones", title:"Pick two zones", map:[["feralas",[30.5,43.5,"Feathermoon Stronghold"]],["tanaris",[51,28,"Gadgetzan"]],["hinterlands",[14,46,"Aerie Peak"]],["searing",[38,27,"Thorium Point"]]],
+{ lv:"41–45", place:"Riverglades", title:"Dungeon: Krol'dok Stronghold (optional)", map:[["riverglades"]],
   todo:[
-    "Choose from <b>Feralas</b> (its night elf town, Feathermoon Stronghold, is on an island off the coast), <b>Tanaris</b>, <b>The Hinterlands</b> and <b>Searing Gorge</b>.",
-    "Do the zones where you have the most quests. Move on when the quests turn green."
+    "A new 5-player dungeon for levels 40–45, with six bosses. The entrance is in the hills north of Sunnyglade (with TomTom: <kbd>/way 37.5 37.5</kbd>).",
+    "Its quests are a chain of about ten that starts in Farholde Keep. Do the parts you can do alone first.",
+    "Find a group with the Looking For Group tool or ask in chat (\"LFG Krol'dok\")."
   ],
-  tip:"From level 48, most quests also give gold." },
+  tip:"Most dungeon XP in Forever comes from quests, so collect them before you go in." },
 
-{ lv:"50–55", place:"Several zones", title:"Un'Goro and Felwood", map:[["ungoro",[43.5,8.5,"Marshal's Refuge"]],["felwood",[62.5,24.5,"Talonbranch Glade"]],["burning",[84,68,"Morgan's Vigil"]],["wpl",[43,84,"Chillwind Camp"]]],
+/* ---------- 43–50: Tanaris, Feralas, Hinterlands ---------- */
+{ chapter:"Tanaris & Feralas", lv:"43", place:"Riverglades → Tanaris", title:"Travel to Tanaris", map:[["tanaris",[67.5,23,"Steamwheedle Port (boat)"],[51,28,"Gadgetzan"]]],
   todo:[
-    "<b>Un'Goro Crater</b> (a dinosaur jungle) and <b>Felwood</b> (a poisoned forest, just south of Winterspring).",
-    "Also <b>Burning Steppes</b> and <b>Western Plaguelands</b> if you run out."
+    "Ride to <b>Powderfuse Port</b> on the Riverglades' east coast and take the boat to <b>Steamwheedle Port</b> in Tanaris, a desert in Kalimdor.",
+    "Follow the road west to <b>Gadgetzan</b>, the goblin town. Unlock the flight path and make the inn your home.",
+    "Gadgetzan is neutral: its guards attack anyone who starts a fight in town."
   ] },
 
-{ lv:"55–60", place:"Several zones", title:"The last levels", map:[["epl",[81.5,59,"Light's Hope Chapel"]],["winterspring",[61,38.5,"Everlook"]]],
+{ lv:"43–46", place:"Gadgetzan, Tanaris", title:"Tanaris", map:[["tanaris",[51,28,"Gadgetzan"],[63,30,"Wastewander bandit camps"],[35,45,"Noxious Lair (giant insects)"],[72,46,"Lost Rigger Cove (pirates)"],[39,20,"Zul'Farrak"]]],
   todo:[
-    "<b>Eastern Plaguelands</b> and <b>Winterspring</b>.",
-    "Run dungeons with groups. Their quests give big XP."
+    "Take every quest in Gadgetzan. <b>Wastewander Justice</b> and <b>Water Pouch Bounty</b> send you to the bandit camps east of town.",
+    "<b>Noxious Lair Investigation</b> from Alchemist Pestlezugg: giant insects at the Noxious Lair, south-west of town.",
+    "Steamwheedle Port has pirate quests (<b>Southsea Shakedown</b>, <b>Pirate Hats Ahoy!</b>) for the pirates at <b>Lost Rigger Cove</b> on the east coast.",
+    "Gadgetzan also has quests for <b>Zul'Farrak</b>, the dungeon in the north-west. Move on at about level 46."
+  ],
+  tip:"Bandits and pirates are humanoids: Pick Pocket them for extra gold. Bandits run away at low health, so finish them with Kidney Shot or Throw." },
+
+{ lv:"44", place:"Nearest rogue trainer", title:"Level 44: Instant Poison IV", map:[["darnassus",[37,22,"Rogue trainers (Cenarion Enclave)"]],["stormwind",[75.8,59.8,"SI:7 (rogue trainers)"]]], learn:["ipois4"],
+  todo:[
+    "Learn new ranks and <b>Instant Poison IV</b>. While you're in Kalimdor, Darnassus is the closest trainer.",
+    "Make it and put it on your main-hand weapon. Hearth back to Gadgetzan."
+  ] },
+
+{ lv:"44–48", place:"Tanaris", title:"Dungeon: Zul'Farrak (optional)", map:[["tanaris",[39,20,"Zul'Farrak"],[51,28,"Gadgetzan"]]],
+  todo:[
+    "A troll city in the north-west of Tanaris, for levels 44–48. Lots of quests from Gadgetzan.",
+    "Good ones: <b>Divino-matic Rod</b> (Chief Engineer Bilgewhizzle) and <b>Troll Temper</b> (Trenton Lighthammer).",
+    "Find a group with the Looking For Group tool or ask in chat (\"LFG ZF\")."
+  ] },
+
+{ lv:"46", place:"Tanaris → Feralas", title:"Travel to Feralas", map:[["needles",[78,77,"Shimmering Flats"]],["feralas",[89.5,46,"Thalanaar"],[43.5,43,"Ferry dock to Feathermoon"],[30.5,43.5,"Feathermoon Stronghold"]]],
+  todo:[
+    "From Gadgetzan, ride north into <b>Thousand Needles</b>. Cross the white salt flats and keep heading west along the canyon road. (Freewind Post, up on the cliffs, is Horde.)",
+    "The road leads to <b>Thalanaar</b>, a night elf outpost at the east edge of Feralas. Unlock its flight path.",
+    "Ride west through the jungle to the coast. <b>Feathermoon Stronghold</b> is on an island: take the ferry from the small dock on the shore.",
+    "Unlock the Feathermoon flight path and make the inn your home."
+  ] },
+
+{ lv:"46", place:"Nearest rogue trainer", title:"Level 46: Deadly Poison III", map:[["darnassus",[37,22,"Rogue trainers (Cenarion Enclave)"]]], learn:["opois4","stone5","food6"],
+  todo:[
+    "Feathermoon flies to Rut'theran Village, next to Darnassus. Learn new ranks and <b>Deadly Poison III</b>.",
+    "Upgrade your supplies: <b>Dense Sharpening Stones</b> (auction house) and <b>Deep Fried Plantains</b> (food vendors)."
+  ] },
+
+{ lv:"46–48", place:"Feathermoon, Feralas", title:"Feralas", map:[["feralas",[30.5,43.5,"Feathermoon Stronghold"],[43.5,43,"Ferry dock"],[59,44,"Dire Maul (for later)"]]],
+  todo:[
+    "Take every quest in Feathermoon Stronghold, like <b>The Mark of Quality</b> from Pratt McGrubben (yeti hides) and the <b>Rise of the Silithid</b> chain.",
+    "Near the ferry dock, <b>Zorbin Fandazzle</b> gives <b>Zapped Giants</b>: use his gadget on the giants that walk along the coast.",
+    "<b>Dire Maul</b>, the ruined city in the middle of Feralas, is a dungeon for levels 55–60. Come back much later.",
+    "Move on at about level 48."
+  ] },
+
+{ lv:"47–50", place:"Aerie Peak, Hinterlands", title:"The Hinterlands", map:[["hinterlands",[14,46,"Aerie Peak"],[55,42,"Skulk Rock (oozes)"],[63,73,"Jintha'Alor (trolls)"]]],
+  todo:[
+    "Back to the Eastern Kingdoms: take the boat from Auberdine or Rut'theran, fly to <b>Southshore</b>, then ride north-east into <b>The Hinterlands</b>. <b>Aerie Peak</b>, the Wildhammer dwarf town, is right at the entrance.",
+    "Unlock the flight path and make the inn your home.",
+    "Take every quest: <b>Skulk Rock Clean-up</b> (oozes at Skulk Rock), <b>Troll Necklace Bounty</b> (necklaces from any Witherbark troll) and Gryphon Master Talonaxe's chain, starting with <b>Witherbark Cages</b>.",
+    "Run out of quests? <b>Searing Gorge</b> (town: Thorium Point) is another zone for this level. Move on at level 50."
+  ],
+  tip:"WoW Forever adds a new dungeon for these levels: <b>Alcaz Prison</b> (about 48–53). Look for it in the Looking For Group tool." },
+
+/* ---------- 49–60 ---------- */
+{ chapter:"Un'Goro to 60", lv:"49–52", place:"Marshal's Refuge, Un'Goro", title:"Un'Goro Crater", map:[["ungoro",[43.5,8.5,"Marshal's Refuge"],[50,48,"Fire Plume Ridge (volcano)"],[70,75,"Entrance from Tanaris"]]],
+  todo:[
+    "Fly to Gadgetzan and ride west out of Tanaris. The road goes down a long ramp into <b>Un'Goro Crater</b>, a jungle full of dinosaurs.",
+    "Follow the crater's edge north to <b>Marshal's Refuge</b>, a camp under the northern cliffs. Unlock the flight path.",
+    "Take every quest. <b>Crystals of Power</b> from J.D. Collie: grab the red, green, blue and yellow crystals lying around the whole crater. Karna Remtravel's <b>Chasing A-Me 01</b> sends you to walk a lost robot home.",
+    "Watch out for <b>Devilsaurs</b>: huge dinosaurs that walk around and hit very hard. Stay out of their way. Move on at level 52."
+  ],
+  tip:"Devilsaurs can't see you in Stealth. If one comes your way, Stealth and step aside." },
+
+{ lv:"50", place:"Talents (N)", title:"Level 50: Assassination talents",
+  todo:[
+    "From now on your talent points go into the <b>Assassination</b> tab, starting with <b>Malice</b> (more critical hits).",
+    "The Talents tab shows the order to the end. At 60 you've spent all 51 points."
+  ] },
+
+{ lv:"52", place:"Nearest rogue trainer", title:"Level 52: Instant Poison V", map:[["darnassus",[37,22,"Rogue trainers (Cenarion Enclave)"]]], learn:["ipois5"],
+  todo:[
+    "Learn new ranks and <b>Instant Poison V</b>. Put it on your main-hand weapon."
+  ] },
+
+{ lv:"52–54", place:"Felwood", title:"Felwood", map:[["felwood",[51,82,"Emerald Sanctuary"],[37,60,"Jaedenar (Shadow Council)"],[62.5,24.5,"Talonbranch Glade"],[64.5,8,"Timbermaw Hold (tunnel to Winterspring)"]]],
+  todo:[
+    "Fly to <b>Astranaar</b> in Ashenvale and follow the road north into <b>Felwood</b>, a forest poisoned by demons.",
+    "In the south, stop at the <b>Emerald Sanctuary</b> camp. <b>Forces of Jaedenar</b> from Greta Mosshoof sends you after the demon worshippers at Jaedenar, west of the road.",
+    "Follow the road north to <b>Talonbranch Glade</b>. Unlock the flight path and take its quests.",
+    "Near the north end, Nafien gives <b>Deadwood of the North</b>: killing the Deadwood furbolgs makes the Timbermaw furbolgs like you, so they let you walk through their tunnel to Winterspring later. Move on at level 54."
+  ] },
+
+{ lv:"54", place:"Nearest rogue trainer", title:"Level 54: Deadly Poison IV", map:[["darnassus",[37,22,"Rogue trainers (Cenarion Enclave)"]]], learn:["opois5"],
+  todo:[
+    "Learn new ranks and <b>Deadly Poison IV</b>. Put it on your off-hand weapon."
+  ] },
+
+{ lv:"54–56", place:"Morgan's Vigil, Burning Steppes", title:"Burning Steppes", map:[["burning",[84,68,"Morgan's Vigil"],[65,24,"Flame Crest (black dragons)"],[28,36,"Blackrock Mountain"]]],
+  todo:[
+    "Fly to Lakeshire and ride north into <b>Burning Steppes</b>, a scorched land of orcs and dragons. <b>Morgan's Vigil</b>, the Alliance camp, is just over the border. Unlock the flight path.",
+    "Take every quest. <b>Dragonkin Menace</b> from Helendis Riverhorn (black dragonkin in the north) starts a very long chain that matters much later at 60.",
+    "The Blackrock orcs all over the zone are targets for several quests.",
+    "<b>Blackrock Depths</b>, a huge dungeon inside Blackrock Mountain (west), is great from 52 to 60. Go with a group. Move on at level 56."
+  ],
+  tip:"WoW Forever adds new dungeons for these levels too: <b>Blackmaw Hold</b> (55–60) and <b>Shaper's Terrace</b> (58–60). Look for them in the Looking For Group tool." },
+
+{ lv:"55–57", place:"Chillwind Camp, Western Plaguelands", title:"Western Plaguelands", map:[["wpl",[43,84,"Chillwind Camp"],[37,57,"Felstone Field"],[46,52,"Dalson's Tears"],[53,66,"Writhing Haunt"],[62,58,"Gahrron's Withering"],[43,70,"Andorhal"]]],
+  todo:[
+    "Fly to Southshore and ride north through the Alterac Mountains into <b>Western Plaguelands</b>. <b>Chillwind Camp</b> is just inside, in the south. Unlock the flight path.",
+    "<b>The Scourge Cauldrons</b> chain: undead lords guard four cauldrons that poison the land, at Felstone Field, Dalson's Tears, the Writhing Haunt and Gahrron's Withering. Kill each lord and use his key on his cauldron.",
+    "<b>Andorhal</b>, the ruined city in the middle, has more undead quests.",
+    "Move on at level 57."
+  ],
+  tip:"Undead can't be Sapped or Pick Pocketed. Use Gouge or Blind on a second enemy instead." },
+
+{ lv:"56–58", place:"Light's Hope, Eastern Plaguelands", title:"Eastern Plaguelands", map:[["epl",[81.5,59,"Light's Hope Chapel"],[36,90,"Darrowshire"],[7,43,"Tirion Fordring's house"],[27,11,"Stratholme"]]],
+  todo:[
+    "Ride east into <b>Eastern Plaguelands</b> and follow the road to <b>Light's Hope Chapel</b> on the far east side. Unlock the flight path.",
+    "The <b>Argent Dawn</b> at Light's Hope fight the undead. Their quests give good XP and reputation.",
+    "In the ruined village of <b>Darrowshire</b> (south-west), talk to the little ghost girl <b>Pamela Redpath</b>. Her quests tell one of the saddest stories in WoW.",
+    "In a small house by the river in the far west, <b>Tirion Fordring</b> starts the famous <b>Redemption</b> chain. Move on at level 58."
+  ] },
+
+{ lv:"58–60", place:"Everlook, Winterspring", title:"Winterspring", map:[["felwood",[64.5,8,"Timbermaw Hold (tunnel)"]],["winterspring",[61,38.5,"Everlook"],[31,45,"Donova Snowden (hot springs)"],[67,36,"Winterfall Village (furbolgs)"]]],
+  todo:[
+    "Fly to Talonbranch Glade in Felwood and walk north through the <b>Timbermaw Hold</b> tunnel. It comes out in <b>Winterspring</b>, a snowy valley.",
+    "At the hot springs, talk to <b>Donova Snowden</b>: her quests are about the Winterfall furbolgs.",
+    "Follow the road east to <b>Everlook</b>, a goblin town. Unlock the flight path, make it your home and take every quest, like <b>Are We There, Yeti?</b> from Legacki.",
+    "For the last bars of XP, run end-game dungeons with groups: Blackrock Depths, Lower Blackrock Spire, Dire Maul, Stratholme and Scholomance."
+  ] },
+
+{ lv:"60", place:"Nearest rogue trainer", title:"Level 60: Instant Poison VI", map:[["darnassus",[37,22,"Rogue trainers (Cenarion Enclave)"]]], learn:["ipois6"],
+  todo:[
+    "Learn the last ranks and <b>Instant Poison VI</b>.",
+    "Spend your last talent point. That's all 51."
   ] },
 
 { lv:"60", place:"Mount Hyjal", title:"You made it to 60!", map:[["hyjal"]],
@@ -462,6 +649,7 @@ const ZONES = {
   wetlands: { name: "Wetlands", id: 11 },         redridge: { name: "Redridge Mountains", id: 44 },
   duskwood: { name: "Duskwood", id: 10 },         hillsbrad: { name: "Hillsbrad Foothills", id: 267 },
   arathi: { name: "Arathi Highlands", id: 45 },   stranglethorn: { name: "Stranglethorn Vale", id: 33 },
+  tirisfal: { name: "Tirisfal Glades", id: 85 },    needles: { name: "Thousand Needles", id: 400 },
   tanaris: { name: "Tanaris", id: 440 },
   feralas: { name: "Feralas", id: 357 },          hinterlands: { name: "The Hinterlands", id: 47 },
   searing: { name: "Searing Gorge", id: 51 },     ungoro: { name: "Un'Goro Crater", id: 490 },
