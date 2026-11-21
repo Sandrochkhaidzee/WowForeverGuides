@@ -69,7 +69,9 @@
      ========================================================= */
 
   const SETTINGS_KEY = "wf.settings.v1";
-  const DEFAULTS = { text: "1", contrast: "normal", font: "classic", motion: "auto", fx: "on" };
+  /* motion "on" by default: full effects even when the device asks for less motion.
+     Visitors can pick Auto (follow the device) or Off in Settings. */
+  const DEFAULTS = { text: "1", contrast: "normal", font: "classic", motion: "on", fx: "on" };
   const settings = Object.assign({}, DEFAULTS, store.get(SETTINGS_KEY, {}));
   if (!["auto", "on", "off"].includes(settings.motion)) settings.motion = "auto";
   const osReduced = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -241,7 +243,7 @@
     ["text", "Text size", "Makes the guide text bigger.", [["1", "A"], ["2", "A+"], ["3", "A++"]]],
     ["contrast", "High contrast", "Brighter text on a plain black background.", [["normal", "Off"], ["high", "On"]]],
     ["font", "Easy-read font", "A plain font instead of the fancy game-style one.", [["classic", "Off"], ["readable", "On"]]],
-    ["motion", "Animations", "Auto is calmer if your device asks for less motion. Off if movement is distracting.", [["auto", "Auto"], ["on", "On"], ["off", "Off"]]],
+    ["motion", "Animations", "Off if movement is distracting. Auto follows your device's motion setting.", [["on", "On"], ["auto", "Auto"], ["off", "Off"]]],
     ["fx", "Floating embers", "The little sparks drifting behind the page.", [["on", "On"], ["off", "Off"]]],
   ];
   let setDlg = null;
@@ -255,7 +257,7 @@
               ${opts.map(([v, l]) => `<button type="button" data-k="${k}" data-v="${v}" aria-pressed="false">${l}</button>`).join("")}
             </div>
           </div>`).join("") +
-        `<p class="hint" style="margin-top:14px">Saved in this browser. ${osReduced() ? "Your device asks for less motion, so <b>Auto</b> plays calm animations only. Pick <b>On</b> for all the effects." : ""}</p>
+        `<p class="hint" style="margin-top:14px">Saved in this browser. </p>
          <div class="wf-dlg-foot"><button type="button" class="wowbtn small" data-reset>Reset</button><button type="button" class="wowbtn small" data-done>Done</button></div>`);
       setDlg.addEventListener("click", (e) => {
         const b = e.target.closest("[data-k]");
