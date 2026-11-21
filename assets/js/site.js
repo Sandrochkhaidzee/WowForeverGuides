@@ -73,8 +73,10 @@
   const settings = Object.assign({}, DEFAULTS, store.get(SETTINGS_KEY, {}));
   if (!["auto", "on", "off"].includes(settings.motion)) settings.motion = "auto";
   const osReduced = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
-  /* auto = follow the device; on/off = the visitor's own choice wins */
+  /* auto = full motion, or calm motion if the device asks for less; on/off = the visitor's choice wins.
+     reduced(): no big movement (embers, sparks, tilt). motionOff(): no animation at all. */
   const reduced = () => settings.motion === "off" || (settings.motion === "auto" && osReduced());
+  const motionOff = () => settings.motion === "off";
 
   function applySettings() {
     html.dataset.text = settings.text;
@@ -239,7 +241,7 @@
     ["text", "Text size", "Makes the guide text bigger.", [["1", "A"], ["2", "A+"], ["3", "A++"]]],
     ["contrast", "High contrast", "Brighter text on a plain black background.", [["normal", "Off"], ["high", "On"]]],
     ["font", "Easy-read font", "A plain font instead of the fancy game-style one.", [["classic", "Off"], ["readable", "On"]]],
-    ["motion", "Animations", "Auto follows your device's setting. Off if movement is distracting.", [["auto", "Auto"], ["on", "On"], ["off", "Off"]]],
+    ["motion", "Animations", "Auto is calmer if your device asks for less motion. Off if movement is distracting.", [["auto", "Auto"], ["on", "On"], ["off", "Off"]]],
     ["fx", "Floating embers", "The little sparks drifting behind the page.", [["on", "On"], ["off", "Off"]]],
   ];
   let setDlg = null;
@@ -253,7 +255,7 @@
               ${opts.map(([v, l]) => `<button type="button" data-k="${k}" data-v="${v}" aria-pressed="false">${l}</button>`).join("")}
             </div>
           </div>`).join("") +
-        `<p class="hint" style="margin-top:14px">Saved in this browser. ${osReduced() ? "Your device asks for less motion, so <b>Auto</b> keeps animations off. Pick <b>On</b> to see them anyway." : ""}</p>
+        `<p class="hint" style="margin-top:14px">Saved in this browser. ${osReduced() ? "Your device asks for less motion, so <b>Auto</b> plays calm animations only. Pick <b>On</b> for all the effects." : ""}</p>
          <div class="wf-dlg-foot"><button type="button" class="wowbtn small" data-reset>Reset</button><button type="button" class="wowbtn small" data-done>Done</button></div>`);
       setDlg.addEventListener("click", (e) => {
         const b = e.target.closest("[data-k]");
@@ -603,7 +605,7 @@
     }).observe(body, { childList: true, subtree: true });
   }
   function tag(rootNode) {
-    if (reduced()) return;
+    if (motionOff()) return;
     $$(REVEAL, rootNode).forEach((n) => {
       if (n.dataset.wfr) return;
       n.dataset.wfr = "1";
@@ -618,7 +620,7 @@
 
   doc.addEventListener("pointerdown", (e) => {
     const b = e.target.closest(".wowbtn");
-    if (!b || b.disabled || reduced()) return;
+    if (!b || b.disabled || motionOff()) return;
     const r = b.getBoundingClientRect();
     const s = make("span", "wf-ripple");
     s.style.left = e.clientX - r.left + "px";
@@ -632,7 +634,7 @@
     const a = e.target.closest("a[href]");
     if (!a || e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     if (a.target && a.target !== "_self") return;
-    if (a.hasAttribute("download") || reduced()) return;
+    if (a.hasAttribute("download") || motionOff()) return;
     const url = new URL(a.href, location.href);
     if (url.origin !== location.origin || url.pathname === location.pathname || !/(\.html|\/)$/.test(url.pathname)) return;
     e.preventDefault();
@@ -731,8 +733,8 @@
   maybeWelcome();
 
   // once per browser: say why nothing moves, and how to change it
-  if (settings.motion === "auto" && osReduced() && !store.get("wf.motionNote", 0)) {
-    store.set("wf.motionNote", 1);
-    setTimeout(() => toast("Animations are paused", "Your device asks for less motion. Turn them on in ⚙ Settings."), 1400);
+  if (settings.motion === "auto" && osReduced() && !store.get("wf.motionNote2", 0)) {
+    store.set("wf.motionNote2", 1);
+    setTimeout(() => toast("Calm animations", "Your device asks for less motion. For all the effects: ⚙ Settings → Animations → On."), 1400);
   }
 })();

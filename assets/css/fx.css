@@ -640,7 +640,28 @@ body[data-page="guide"] { --dock-b: 18px; }
   .wf-levelup::before { width: 300px; height: 300px; margin: -150px 0 0 -150px; }
 }
 
+/* Calm mode: the device asks for less motion and the visitor left Animations
+   on Auto. Keep fades, glows, shimmer and pulses; drop sliding, spinning,
+   floating and flying things. (site.js also skips embers, sparks and tilt.) */
 @media (prefers-reduced-motion: reduce) {
-  html:not([data-motion="on"]) .wf-reveal { opacity: 1; transform: none; }
-  html:not([data-motion="on"]) #wf-embers { display: none; }
+  html[data-motion="auto"] #wf-embers { display: none; }
+  html[data-motion="auto"] .wf-reveal { transform: none; }
+  html[data-motion="auto"] .panel.on,
+  html[data-motion="auto"] .questpaper.slide-next,
+  html[data-motion="auto"] .questpaper.slide-back,
+  html[data-motion="auto"] .todo li,
+  html[data-motion="auto"] .answer.show,
+  html[data-motion="auto"] .wf-dialog[open] { animation-name: wfFade; }
+  html[data-motion="auto"] .wf-toast { animation-name: wfToastCalm; }
+  html[data-motion="auto"] .wf-levelup { animation-name: wfLvlCalm; }
+  html[data-motion="auto"] .wf-levelup::before,
+  html[data-motion="auto"] .rune,
+  html[data-motion="auto"] .rune .inner,
+  html[data-motion="auto"] .hero-crest,
+  html[data-motion="auto"] .wf-welcome-ico span,
+  html[data-motion="auto"] .mainbar.wf-bump,
+  html[data-motion="auto"] .wf-menu { animation: none; }
+  html[data-motion="auto"] .wf-spot { transition: none; }
 }
+@keyframes wfToastCalm { 0% { opacity: 0; } 12%, 75% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes wfLvlCalm { 0% { opacity: 0; } 10%, 80% { opacity: 1; } 100% { opacity: 0; } }

@@ -294,10 +294,6 @@ li { margin: 6px 0; }
   main { padding: 26px 12px 20px; }
 }
 
-/* devices that ask for less motion get none, unless the visitor picks
-   Settings → Animations → On (sets data-motion="on" on <html>) */
-@media (prefers-reduced-motion: reduce) {
-  html:not([data-motion="on"]) *,
-  html:not([data-motion="on"]) *::before,
-  html:not([data-motion="on"]) *::after { animation: none !important; transition: none !important; }
-}
+/* Motion is handled in fx.css: devices that ask for less motion get a calm
+   version (fades and glows, no big movement); Settings → Animations → Off
+   stops everything, → On plays everything. */
