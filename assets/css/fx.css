@@ -1,0 +1,646 @@
+/* =========================================================
+   fx.css — motion, polish and comfort settings for every page.
+   Loaded last. Everything here is decoration: the pages work
+   the same without it. site.js adds the elements used below.
+
+   Sections
+     1. comfort settings (text size, contrast, font, motion)
+     2. page load / leave
+     3. frames, plaques, buttons, tabs
+     4. guide-page extras (quest paper, objectives, XP bar)
+     5. scroll reveal
+     6. site layer UI: dock, switcher, dialogs, tour, toasts
+     7. celebrations: sparks, level-up banner
+     8. phones + reduced motion
+   ========================================================= */
+
+/* ---------- 1. comfort settings (set on <html> by site.js) ---------- */
+
+html[data-text="2"] main { zoom: 1.12; }
+html[data-text="3"] main { zoom: 1.25; }
+/* the map does its own maths in screen pixels: keep it at 1x */
+html[data-text="2"] .mapbox { zoom: calc(1 / 1.12); }
+html[data-text="3"] .mapbox { zoom: calc(1 / 1.25); }
+
+html[data-contrast="high"] {
+  --text: #fffaf0;
+  --muted: #e0d5bb;
+  --stone-light: #7a705f;
+}
+html[data-contrast="high"] body { background: #000; }
+html[data-contrast="high"] .word { border-bottom-width: 2px; border-bottom-style: solid; }
+html[data-contrast="high"] .hint,
+html[data-contrast="high"] .keys,
+html[data-contrast="high"] .tier-note { color: var(--muted); }
+html[data-contrast="high"] #wf-embers { display: none; }
+
+html[data-font="readable"] {
+  --font: Verdana, "Segoe UI", Tahoma, system-ui, sans-serif;
+}
+html[data-font="readable"] body { letter-spacing: .01em; }
+
+html[data-motion="off"] *,
+html[data-motion="off"] *::before,
+html[data-motion="off"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+html[data-motion="off"] .wf-reveal { opacity: 1 !important; transform: none !important; }
+
+/* ---------- 2. page load / leave ---------- */
+
+body { animation: wfPageIn .55s ease both; }
+@keyframes wfPageIn { from { opacity: 0; } }
+html.wf-leaving body { opacity: 0; transition: opacity .2s ease; }
+
+/* drifting embers behind everything (canvas drawn by site.js) */
+#wf-embers {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* thin gold line at the very top that fills as you scroll */
+.wf-scroll {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: 3px;
+  pointer-events: none;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  background: linear-gradient(90deg, var(--gold-dark), var(--wow-yellow), #fff3a0);
+  box-shadow: 0 0 10px rgba(255, 209, 0, .7);
+}
+
+/* ---------- 3. frames, plaques, buttons, tabs ---------- */
+
+/* the gold studs on each window breathe a little */
+.frame::before, .frame::after { animation: wfStud 4s ease-in-out infinite; }
+.frame::after { animation-delay: -2s; }
+@keyframes wfStud {
+  50% { box-shadow: 0 0 8px 2px rgba(255, 209, 0, .55); filter: brightness(1.25); }
+}
+
+/* a slow gleam runs across every title plaque */
+.frame-title {
+  background:
+    linear-gradient(105deg, transparent 42%, rgba(255, 225, 150, .38) 50%, transparent 58%) -160% 0 / 260% 100% no-repeat,
+    linear-gradient(#5a1610, #2e0906);
+  animation: wfPlaque 7s ease-in-out infinite;
+}
+@keyframes wfPlaque {
+  0%, 62% { background-position: -160% 0, 0 0; }
+  100% { background-position: 160% 0, 0 0; }
+}
+
+/* red buttons: a light sweep on hover, ripple on press */
+.wowbtn { position: relative; overflow: hidden; isolation: isolate; }
+.wowbtn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 240, 190, .35) 50%, transparent 65%);
+  transform: translateX(-120%);
+}
+.wowbtn:hover:not(:disabled)::after { transform: translateX(120%); transition: transform .65s ease; }
+.wowbtn:hover:not(:disabled) { box-shadow: 0 0 0 1px #000, inset 0 1px 0 rgba(255, 255, 255, .25), 0 0 14px rgba(255, 120, 40, .45); }
+.wf-ripple {
+  position: absolute;
+  z-index: -1;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 236, 170, .75), rgba(255, 209, 0, 0) 70%);
+  animation: wfRipple .6s ease-out forwards;
+}
+@keyframes wfRipple { to { transform: scale(26); opacity: 0; } }
+
+/* the one button a beginner should press next glows softly */
+.wf-cta:not(:disabled) { animation: wfCta 2.6s ease-in-out infinite; }
+@keyframes wfCta {
+  0%, 100% { box-shadow: 0 0 0 1px #000, inset 0 1px 0 rgba(255, 255, 255, .25), 0 0 0 0 rgba(255, 209, 0, 0); }
+  50% { box-shadow: 0 0 0 1px #000, inset 0 1px 0 rgba(255, 255, 255, .25), 0 0 16px 3px rgba(255, 209, 0, .55); }
+}
+
+/* tabs: glowing gold line slides in over the chosen one */
+.tabs button, .tabs .tablink { position: relative; transition: color .2s, background .2s, transform .15s; }
+.tabs button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  right: 50%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--wow-yellow);
+  box-shadow: 0 0 8px 1px rgba(255, 209, 0, .8);
+  transition: left .3s cubic-bezier(.2, .8, .2, 1), right .3s cubic-bezier(.2, .8, .2, 1);
+}
+.tabs button.on::after { left: 12%; right: 12%; }
+.tabs button:not(.on):hover::after { left: 38%; right: 38%; opacity: .6; }
+
+/* switching tabs: the window rises into place */
+.panel.on { animation: wfPanelIn .45s cubic-bezier(.2, .8, .2, 1); }
+@keyframes wfPanelIn { from { opacity: 0; transform: translateY(14px); filter: blur(2px); } }
+
+/* portrait gets a slow class-coloured halo */
+.top .portrait { animation: wfHalo 5s ease-in-out infinite; }
+@keyframes wfHalo {
+  50% { box-shadow: 0 0 0 2px #000, inset 0 0 12px rgba(0, 0, 0, .9), 0 0 16px 3px var(--class-glow, rgba(255, 209, 0, .35)); }
+}
+
+/* tooltips pop instead of blink */
+.wordpop.show, .spelltip { animation: wfTip .18s cubic-bezier(.2, .9, .3, 1.3); transform-origin: top left; }
+@keyframes wfTip { from { opacity: 0; transform: translateY(4px) scale(.96); } }
+
+/* clickable words get a soft highlight on hover */
+.word { transition: background .15s, color .15s; border-radius: 2px; }
+.word:hover { background: rgba(255, 209, 0, .18); }
+.questpaper .word:hover { background: rgba(138, 42, 0, .12); }
+
+/* ---------- 4. guide-page extras ---------- */
+
+/* the quest paper unrolls from the top */
+@keyframes pageNext { from { opacity: 0; transform: translateX(26px) rotate(.4deg); } }
+@keyframes pageBack { from { opacity: 0; transform: translateX(-26px) rotate(-.4deg); } }
+.questpaper h2 { animation: wfInk .6s ease both .05s; }
+@keyframes wfInk { from { opacity: 0; letter-spacing: .06em; filter: blur(2px); } }
+
+/* objectives appear one after another */
+.todo li { animation: wfLi .45s cubic-bezier(.2, .8, .2, 1) both; animation-delay: .12s; }
+.todo li:nth-child(2) { animation-delay: .19s; }
+.todo li:nth-child(3) { animation-delay: .26s; }
+.todo li:nth-child(4) { animation-delay: .33s; }
+.todo li:nth-child(5) { animation-delay: .40s; }
+.todo li:nth-child(6) { animation-delay: .47s; }
+.todo li:nth-child(n+7) { animation-delay: .54s; }
+@keyframes wfLi { from { opacity: 0; transform: translateX(-10px); } }
+
+/* XP bar: a light runs along the filled part */
+.xp i { overflow: hidden; }
+.xp i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .45), transparent);
+  transform: translateX(-100%);
+  animation: wfXp 3.2s ease-in-out infinite;
+}
+@keyframes wfXp { 60%, 100% { transform: translateX(100%); } }
+.xp.wf-gain i { animation: wfXpGain .8s ease; }
+@keyframes wfXpGain { 30% { filter: brightness(1.8) saturate(1.3); box-shadow: 0 0 12px #7fa8ff; } }
+
+/* done ticks in the step list pop in */
+#steplist li.done .n::before { display: inline-block; animation: wfTick .35s cubic-bezier(.3, 1.6, .5, 1) both; }
+@keyframes wfTick { from { transform: scale(0); } }
+
+/* new ability glow is already there; make the HUD lift a little when it changes */
+.mainbar.wf-bump { animation: wfBump .5s ease; }
+@keyframes wfBump { 40% { transform: translateY(-4px); } }
+
+/* "Show places from other steps" etc. — checkbox gets the gold accent everywhere */
+input[type="checkbox"] { accent-color: var(--gold); }
+
+/* ---------- 5. scroll reveal (site.js tags elements) ---------- */
+
+.wf-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .6s ease, transform .6s cubic-bezier(.2, .8, .2, 1);
+  transition-delay: var(--d, 0ms);
+}
+.wf-reveal.wf-in { opacity: 1; transform: none; }
+
+/* ---------- 6. site layer UI ---------- */
+
+/* round minimap-style buttons, bottom right */
+.wf-dock {
+  position: fixed;
+  right: 16px;
+  bottom: var(--dock-b, 18px);
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: bottom .3s ease;
+}
+body[data-page="guide"] { --dock-b: 18px; }
+@media (max-width: 1180px) {
+  body[data-page="guide"]:not([data-tab="bars"]) { --dock-b: 138px; }
+}
+.wf-orb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  font: bold 19px/1 var(--font);
+  color: var(--wow-yellow);
+  text-decoration: none;
+  cursor: pointer;
+  background: radial-gradient(circle at 40% 35%, #4a3f31, #14110e 75%);
+  border: 2px solid var(--gold-dark);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #000, 0 4px 10px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 230, 160, .2);
+  transition: transform .2s cubic-bezier(.3, 1.6, .5, 1), border-color .2s, box-shadow .2s, opacity .3s;
+}
+.wf-orb svg { width: 22px; height: 22px; }
+.wf-orb:hover {
+  transform: scale(1.1) rotate(-4deg);
+  border-color: var(--gold);
+  color: #fff3a0;
+  box-shadow: 0 0 0 1px #000, 0 6px 14px rgba(0, 0, 0, .8), 0 0 14px rgba(255, 209, 0, .45);
+}
+.wf-orb:active { transform: scale(.94); }
+.wf-orb[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  translate: 6px -50%;
+  white-space: nowrap;
+  padding: 4px 10px;
+  font: 14px/1.3 var(--font);
+  color: var(--wow-yellow);
+  background: var(--tip-bg);
+  border: 1px solid #8a8a8a;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s, translate .15s;
+}
+.wf-orb:hover[data-tip]::after, .wf-orb:focus-visible[data-tip]::after { opacity: 1; translate: 0 -50%; }
+.wf-orb.wf-top { opacity: 0; pointer-events: none; transform: translateY(10px); }
+.wf-orb.wf-top.show { opacity: 1; pointer-events: auto; transform: none; }
+/* first-visit nudge on the help button */
+.wf-orb.wf-nudge::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border: 2px solid var(--wow-yellow);
+  border-radius: 50%;
+  animation: ping 1.8s ease-out infinite;
+}
+@keyframes ping { from { transform: scale(.7); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
+
+/* "switch character" + home link in the top frame */
+.wf-nav { margin-left: auto; display: flex; align-items: center; gap: 8px; position: relative; }
+.wf-navbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  font: 14.5px/1.2 var(--font);
+  color: var(--gold);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  background: linear-gradient(#2d2823, #1a1714);
+  border: 1px solid var(--stone-light);
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px #000;
+  transition: color .2s, border-color .2s, box-shadow .2s;
+}
+.wf-navbtn:hover, .wf-navbtn[aria-expanded="true"] { color: var(--wow-yellow); border-color: var(--gold); box-shadow: 0 0 0 1px #000, 0 0 10px rgba(255, 209, 0, .25); }
+.wf-navbtn svg { width: 15px; height: 15px; flex: none; }
+.wf-navbtn .wf-caret { transition: transform .2s; }
+.wf-navbtn[aria-expanded="true"] .wf-caret { transform: rotate(180deg); }
+.wf-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 70;
+  min-width: 270px;
+  padding: 8px;
+  background: linear-gradient(#1c1915, var(--frame-bg));
+  border: 2px solid var(--stone-light);
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--gold-dark), 0 0 0 1px #000, 0 14px 30px rgba(0, 0, 0, .8);
+  transform-origin: top right;
+  animation: wfMenu .2s cubic-bezier(.2, .9, .3, 1.2);
+}
+.wf-menu[hidden] { display: none; }
+@keyframes wfMenu { from { opacity: 0; transform: scale(.94) translateY(-4px); } }
+.wf-menu h4 { margin: 4px 8px 6px; font-size: 13px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.wf-menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 8px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background .15s;
+}
+.wf-menu a:hover, .wf-menu a:focus-visible { background: rgba(255, 209, 0, .1); }
+.wf-menu a[aria-current="page"] { background: rgba(255, 209, 0, .14); box-shadow: inset 3px 0 0 var(--wow-yellow); }
+.wf-menu a b { color: var(--c, var(--wow-yellow)); font-weight: normal; }
+.wf-menu a small { display: block; color: var(--muted); font-size: 12.5px; line-height: 1.3; }
+.wf-mini {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 0 1px #000;
+  background: var(--orb, #222) center / cover;
+  overflow: hidden;
+}
+.wf-mini img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.12); display: block; }
+.wf-menu .wf-sep { height: 1px; margin: 6px 4px; background: linear-gradient(90deg, transparent, var(--gold-dark), transparent); }
+
+/* dialogs (settings, help, welcome) drawn as stone windows */
+.wf-dialog {
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  margin: auto;
+  padding: 0;
+  color: var(--text);
+  font-family: var(--font);
+  background: linear-gradient(#1c1915, var(--frame-bg));
+  border: 3px solid var(--stone-light);
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--gold-dark), inset 0 0 0 3px #000, 0 0 0 1px #000, 0 20px 60px rgba(0, 0, 0, .9);
+  overflow: visible;
+}
+.wf-dialog[open] { animation: wfDlg .32s cubic-bezier(.2, .9, .3, 1.15); }
+@keyframes wfDlg { from { opacity: 0; transform: translateY(16px) scale(.96); } }
+.wf-dialog::backdrop { background: rgba(5, 4, 3, .72); backdrop-filter: blur(3px); }
+.wf-dialog[open]::backdrop { animation: wfFade .3s ease; }
+@keyframes wfFade { from { opacity: 0; } }
+.wf-dialog .frame-title { top: -16px; margin-bottom: -8px; }
+.wf-dlg-body { padding: 6px 24px 22px; max-height: calc(100vh - 110px); overflow-y: auto; }
+.wf-dlg-body h3:first-child { margin-top: 6px; }
+.wf-dlg-body p, .wf-dlg-body li { font-size: 16.5px; }
+.wf-x {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--wow-yellow);
+  font: bold 16px/1 Arial, sans-serif;
+  cursor: pointer;
+  background: radial-gradient(circle at 40% 35%, #a5281a, #4a0703);
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #000;
+  transition: transform .2s, filter .2s;
+}
+.wf-x:hover { transform: rotate(90deg); filter: brightness(1.3); }
+.wf-dlg-foot { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+
+/* settings rows: label left, segmented choice right */
+.wf-set { display: grid; gap: 4px 16px; grid-template-columns: 1fr auto; align-items: center; padding: 12px 0; border-bottom: 1px solid #2f2a24; }
+.wf-set:last-of-type { border-bottom: 0; }
+.wf-set > div:first-child b { display: block; color: var(--wow-yellow); font-weight: normal; font-size: 17.5px; }
+.wf-set > div:first-child small { color: var(--muted); font-size: 14px; line-height: 1.35; display: block; }
+.wf-seg { display: inline-flex; border: 1px solid var(--stone-light); border-radius: 5px; overflow: hidden; box-shadow: 0 0 0 1px #000; }
+.wf-seg button {
+  min-width: 44px;
+  padding: 6px 12px;
+  font: 15px/1.2 var(--font);
+  color: var(--muted);
+  cursor: pointer;
+  background: linear-gradient(#2d2823, #1a1714);
+  border: 0;
+  border-left: 1px solid var(--stone-light);
+  transition: color .15s, background .15s;
+}
+.wf-seg button:first-child { border-left: 0; }
+.wf-seg button:hover { color: var(--text); }
+.wf-seg button[aria-pressed="true"] { color: var(--wow-yellow); background: linear-gradient(#5a4a2a, #2b2318); text-shadow: 0 1px 1px #000; }
+
+/* help dialog bits */
+.wf-keys { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; align-items: center; margin: 8px 0 0; font-size: 16px; }
+.wf-keys dt { white-space: nowrap; }
+.wf-keys dd { margin: 0; color: var(--muted); }
+.wf-faq details { margin: 0; padding: 8px 0; border-top: 1px solid #2f2a24; }
+.wf-faq details:first-child { border-top: 0; }
+.wf-faq summary { cursor: pointer; color: var(--wow-yellow); list-style: none; }
+.wf-faq summary::-webkit-details-marker { display: none; }
+.wf-faq summary::before { content: "›"; display: inline-block; width: 18px; margin: 0; border: 0; vertical-align: baseline; color: var(--gold); transition: transform .2s; }
+.wf-faq details[open] summary::before { transform: rotate(90deg); }
+.wf-faq details p { margin: 6px 0 2px 18px; color: var(--text); }
+
+/* welcome: big friendly icon row */
+.wf-welcome-ico { display: flex; justify-content: center; gap: 14px; margin: 6px 0 14px; }
+.wf-welcome-ico span {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  font-size: 26px;
+  border: 2px solid var(--gold-dark);
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #3a332b, #14110e);
+  box-shadow: 0 0 0 1px #000;
+  animation: wfFloat 3s ease-in-out infinite;
+}
+.wf-welcome-ico span:nth-child(2) { animation-delay: -1s; }
+.wf-welcome-ico span:nth-child(3) { animation-delay: -2s; }
+@keyframes wfFloat { 50% { transform: translateY(-6px); } }
+.wf-welcome ol { padding-left: 22px; }
+.wf-welcome li { margin: 8px 0; }
+
+/* guided tour: spotlight + note */
+.wf-tour-block { position: fixed; inset: 0; z-index: 190; }
+.wf-spot {
+  position: fixed;
+  z-index: 200;
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(5, 4, 3, .74), 0 0 0 3px var(--wow-yellow), 0 0 26px 6px rgba(255, 209, 0, .55);
+  transition: top .4s cubic-bezier(.2, .8, .2, 1), left .4s cubic-bezier(.2, .8, .2, 1), width .4s cubic-bezier(.2, .8, .2, 1), height .4s cubic-bezier(.2, .8, .2, 1);
+  animation: wfSpot 1.8s ease-in-out infinite;
+}
+@keyframes wfSpot { 50% { box-shadow: 0 0 0 9999px rgba(5, 4, 3, .74), 0 0 0 3px #fff3a0, 0 0 36px 10px rgba(255, 209, 0, .7); } }
+.wf-note {
+  position: fixed;
+  z-index: 210;
+  width: min(340px, calc(100vw - 32px));
+  padding: 14px 16px 12px;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--wow-yellow);
+  background: var(--tip-bg);
+  border: 1px solid #8a8a8a;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px #000, 0 10px 30px rgba(0, 0, 0, .8);
+  transition: top .4s cubic-bezier(.2, .8, .2, 1), left .4s cubic-bezier(.2, .8, .2, 1);
+}
+.wf-note b.t { display: block; margin-bottom: 4px; color: #fff; font-size: 18px; font-weight: normal; }
+.wf-note p { margin: 0; color: #e6e0d4; }
+.wf-note .row { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+.wf-note .row small { margin-right: auto; color: #8f8a82; }
+.wf-note .wowbtn { min-width: 0; padding: 4px 14px; font-size: 15px; }
+
+/* "Quest complete"-style messages at the top middle, like game error text */
+.wf-toasts {
+  position: fixed;
+  top: 16%;
+  left: 50%;
+  z-index: 150;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  pointer-events: none;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+}
+.wf-toast {
+  padding: 6px 28px;
+  border-radius: 40px;
+  background: radial-gradient(ellipse at center, rgba(5, 4, 3, .82), rgba(5, 4, 3, .55) 60%, transparent 75%);
+  font-size: 22px;
+  text-align: center;
+  color: var(--wow-yellow);
+  text-shadow: 0 2px 2px #000, 0 0 12px rgba(0, 0, 0, .9), 0 0 2px #000;
+  animation: wfToast 2.6s ease forwards;
+}
+.wf-toast small { display: block; font-size: 15px; color: #fff; }
+.wf-toast.good { color: #40ff40; }
+@keyframes wfToast {
+  0% { opacity: 0; transform: translateY(10px) scale(.9); }
+  12% { opacity: 1; transform: none; }
+  75% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-14px); }
+}
+
+/* glossary search on the Words tab */
+.wf-search { position: relative; margin: 2px 0 14px; }
+.wf-search input {
+  width: 100%;
+  padding: 9px 14px 9px 40px;
+  font: 17px var(--font);
+  color: var(--text);
+  background: #0b0907;
+  border: 1px solid var(--stone-light);
+  border-radius: 4px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, .8), 0 0 0 1px #000;
+  transition: border-color .2s, box-shadow .2s;
+}
+.wf-search input:focus { outline: none; border-color: var(--gold); box-shadow: inset 0 2px 6px rgba(0, 0, 0, .8), 0 0 0 1px #000, 0 0 12px rgba(255, 209, 0, .3); }
+.wf-search svg { position: absolute; left: 13px; top: 50%; width: 18px; height: 18px; margin-top: -9px; color: var(--gold); pointer-events: none; }
+.wf-search small { display: block; margin-top: 4px; color: var(--muted); font-size: 14px; }
+.glossary > [hidden] { display: none; }
+.glossary mark { background: rgba(255, 209, 0, .3); color: #fff; border-radius: 2px; padding: 0 1px; }
+
+/* ---------- 7. celebrations ---------- */
+
+.wf-sparks { position: fixed; left: 0; top: 0; z-index: 160; width: 0; height: 0; pointer-events: none; }
+.wf-spark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--s, 7px);
+  height: var(--s, 7px);
+  margin: calc(var(--s, 7px) / -2) 0 0 calc(var(--s, 7px) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff, var(--c, #ffd100) 45%, transparent 70%);
+  animation: wfSpark var(--t, .9s) cubic-bezier(.15, .7, .3, 1) forwards;
+}
+.wf-spark.sq { border-radius: 1px; background: var(--c, #ffd100); }
+@keyframes wfSpark {
+  0% { transform: translate(0, 0) scale(1) rotate(0); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(.3) rotate(var(--r, 0deg)); opacity: 0; }
+}
+
+/* "LEVEL 12" banner, like reaching a new level in game */
+.wf-levelup {
+  position: fixed;
+  left: 50%;
+  top: 22%;
+  z-index: 155;
+  translate: -50% 0;
+  padding: 22px 56px;
+  text-align: center;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(5, 4, 3, .88), rgba(5, 4, 3, .6) 55%, transparent 72%);
+  animation: wfLvl 3.4s ease forwards;
+}
+.wf-levelup::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 420px;
+  height: 420px;
+  margin: -210px 0 0 -210px;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    repeating-conic-gradient(from 0deg, rgba(255, 209, 0, .22) 0 6deg, transparent 6deg 18deg);
+  mask: radial-gradient(circle, #000 18%, transparent 68%);
+  -webkit-mask: radial-gradient(circle, #000 18%, transparent 68%);
+  animation: wfRays 6s linear infinite;
+}
+@keyframes wfRays { to { transform: rotate(360deg); } }
+.wf-levelup small {
+  display: block;
+  font-size: 18px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 3px #000;
+}
+.wf-levelup b {
+  display: block;
+  font-size: clamp(46px, 9vw, 78px);
+  font-weight: normal;
+  line-height: 1.05;
+  color: var(--wow-yellow);
+  background: linear-gradient(#fff6c0, #ffd100 45%, #c07a00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 3px 2px #000) drop-shadow(0 0 18px rgba(255, 170, 0, .6));
+  letter-spacing: .04em;
+}
+.wf-levelup em { display: block; margin-top: 4px; font-style: normal; font-size: 16px; color: #e6e0d4; text-shadow: 0 2px 2px #000; }
+@keyframes wfLvl {
+  0% { opacity: 0; transform: scale(.6); }
+  10% { opacity: 1; transform: scale(1.08); }
+  18% { transform: scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* ---------- 8. phones + reduced motion ---------- */
+
+@media (max-width: 640px) {
+  .wf-dock { right: 10px; gap: 8px; }
+  body[data-page="guide"]:not([data-tab="bars"]) { --dock-b: 64px; }
+  .wf-orb { width: 40px; height: 40px; font-size: 17px; }
+  .wf-orb svg { width: 19px; height: 19px; }
+  .wf-orb[data-tip]::after { display: none; }
+  .wf-navbtn span { display: none; }
+  .wf-navbtn { padding: 6px 8px; }
+  .wf-menu { position: fixed; left: 12px; right: 12px; top: 72px; min-width: 0; }
+  .wf-dlg-body { padding: 6px 16px 18px; }
+  .wf-set { grid-template-columns: 1fr; }
+  .wf-toast { font-size: 19px; }
+  .wf-levelup::before { width: 300px; height: 300px; margin: -150px 0 0 -150px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion="on"]) .wf-reveal { opacity: 1; transform: none; }
+  html:not([data-motion="on"]) #wf-embers { display: none; }
+}

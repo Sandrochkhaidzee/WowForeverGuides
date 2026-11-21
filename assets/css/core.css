@@ -1,0 +1,303 @@
+/* =========================================================
+   WoW: Forever guides — core look shared by every page.
+   Dark stone frames, gold trim, red buttons, tabs, tooltips.
+   Page-type styles live in guide.css / addons.css / professions.css,
+   effects and comfort settings in fx.css.
+   ========================================================= */
+
+/* Marcellus only has small old-style numbers ("1" looks like "i").
+   Borrow just the digits from a classic serif that has full-height ones. */
+@font-face {
+  font-family: "WowDigits";
+  src: local("Palatino Linotype"), local("Palatino"), local("Book Antiqua"), local("Times New Roman");
+  unicode-range: U+0030-0039;
+}
+
+/* design tokens — change a colour here and every page follows */
+:root {
+  --wow-yellow: #ffd100;
+  --gold: #c8a24a;
+  --gold-dark: #7a5c1e;
+  --stone: #2b2722;
+  --stone-light: #4a443c;
+  --frame-bg: #14110e;
+  --text: #e8e0cc;
+  --muted: #a99d84;
+  --parch: #ead9b1;
+  --parch-dark: #cdb47f;
+  --ink: #2a1a08;
+  --tip-bg: rgba(8, 10, 28, .95);
+  --font: "Friz Quadrata TT", "Friz Quadrata", WowDigits, Marcellus, Georgia, serif;
+}
+
+/* dark world background with a soft vignette */
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 18px;
+  line-height: 1.6;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(90, 70, 40, .35), transparent 60%),
+    radial-gradient(ellipse at 50% 120%, rgba(20, 40, 80, .45), transparent 60%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.012) 0 2px, transparent 2px 6px),
+    #0c0a08;
+  background-attachment: fixed;
+  padding-bottom: 40px;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+
+a { color: var(--wow-yellow); text-underline-offset: 3px; }
+a:hover { color: #fff3a0; }
+b, strong { color: #fff; }
+
+::selection { background: rgba(255, 209, 0, .35); color: #fff; }
+
+/* gold focus ring for keyboard users */
+:focus-visible { outline: 2px solid var(--wow-yellow); outline-offset: 2px; }
+
+/* dark stone scrollbars */
+html { scrollbar-color: var(--gold-dark) #0c0a08; }
+::-webkit-scrollbar { width: 12px; height: 10px; }
+::-webkit-scrollbar-track { background: #0c0a08; }
+::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #5a4520, var(--gold-dark), #5a4520); border: 2px solid #0c0a08; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+kbd {
+  display: inline-block;
+  min-width: 24px;
+  text-align: center;
+  font-family: Consolas, monospace;
+  font-size: 14px;
+  padding: 0 6px;
+  color: #fff;
+  background: linear-gradient(#3a3a3a, #1c1c1c);
+  border: 1px solid #777;
+  border-bottom-color: #222;
+  border-radius: 4px;
+  box-shadow: 0 1px 0 #000;
+}
+
+/* ---------- top frame ---------- */
+
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: linear-gradient(#24201b, #15120f);
+  border-bottom: 2px solid var(--gold);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .7);
+}
+.top-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 12px 20px 8px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* round portrait with level number, like the player frame */
+.portrait {
+  width: 58px;
+  height: 58px;
+  flex: none;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+  box-shadow: 0 0 0 2px #000, inset 0 0 12px rgba(0, 0, 0, .9);
+  background: radial-gradient(circle at 40% 35%, #6aa6d8, #234a7a 60%, #0d1b33);
+  position: relative;
+}
+.portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, .85), inset 0 2px 3px rgba(255, 255, 255, .15);
+  pointer-events: none;
+}
+
+.titleplate h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: normal;
+  color: var(--wow-yellow);
+  text-shadow: 0 2px 2px #000, 0 0 18px rgba(255, 180, 0, .25);
+  letter-spacing: .03em;
+}
+.titleplate p { margin: 0; font-size: 14px; color: var(--muted); }
+
+/* tabs, like the tabs under a character window */
+.tabs {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  margin-bottom: -2px; /* active tab sits on top of the gold line */
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button, .tabs .tablink {
+  font-family: var(--font);
+  font-size: 15px;
+  padding: 7px 16px 6px;
+  color: var(--muted);
+  background: linear-gradient(#2d2823, #1a1714);
+  border: 1px solid var(--stone-light);
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .2s, background .2s;
+}
+.tabs button:hover, .tabs .tablink:hover { color: var(--text); background: linear-gradient(#3a332b, #221e19); }
+/* link to the separate Professions page, drawn like a tab */
+.tabs .tablink { text-decoration: none; line-height: inherit; color: var(--gold); }
+.tabs button.on {
+  color: var(--wow-yellow);
+  background: linear-gradient(#4a3d26, #2b2318);
+  border-color: var(--gold);
+  border-bottom: 2px solid #2b2318; /* opens the tab into the page below */
+  text-shadow: 0 1px 1px #000;
+  box-shadow: inset 0 1px 0 rgba(255, 233, 163, .25), 0 -2px 10px rgba(255, 190, 60, .15);
+}
+
+/* ---------- page and frames ---------- */
+
+main { max-width: 860px; margin: 0 auto; padding: 26px 20px 20px; }
+
+.panel { display: none; }
+.panel.on { display: block; animation: frameIn .25s ease; }
+@keyframes frameIn { from { opacity: 0; transform: scale(.985); } }
+
+/* the stone window with gold trim */
+.frame {
+  position: relative;
+  background: linear-gradient(#1c1915, var(--frame-bg));
+  border: 3px solid var(--stone-light);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 0 0 1px var(--gold-dark),
+    inset 0 0 0 3px #000,
+    0 0 0 1px #000,
+    0 10px 30px rgba(0, 0, 0, .7);
+}
+/* gold corner studs */
+.frame::before, .frame::after {
+  content: "";
+  position: absolute;
+  top: -7px;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle at 35% 35%, #ffe9a3, var(--gold) 45%, var(--gold-dark));
+  border: 1px solid #000;
+  transform: rotate(45deg);
+}
+.frame::before { left: -7px; }
+.frame::after { right: -7px; }
+/* small gold diamonds either side of the plaque */
+/* the title plaque on top of each window */
+.frame-title {
+  position: relative;
+  top: -15px;
+  margin: 0 auto -6px;
+  width: max-content;
+  max-width: calc(100% - 40px);
+  padding: 3px 26px;
+  font-size: 17px;
+  color: var(--wow-yellow);
+  text-shadow: 0 1px 2px #000;
+  background: linear-gradient(#5a1610, #2e0906);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px #000, inset 0 1px 0 rgba(255, 200, 120, .25), 0 3px 6px rgba(0, 0, 0, .6);
+  letter-spacing: .03em;
+}
+.frame-title::before, .frame-title::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin-top: -4px;
+  background: var(--gold);
+  border: 1px solid #000;
+  transform: rotate(45deg);
+}
+.frame-title::before { left: 8px; }
+.frame-title::after { right: 8px; }
+.frame-body { padding: 4px 26px 26px; }
+
+h2, h3, h4 { font-weight: normal; }
+h3 {
+  color: var(--wow-yellow);
+  font-size: 21px;
+  margin: 28px 0 8px;
+  padding-bottom: 4px;
+  text-shadow: 0 1px 1px #000;
+  border-bottom: 1px solid;
+  border-image: linear-gradient(90deg, var(--gold-dark), transparent 70%) 1;
+}
+.frame-body > h3:first-child { margin-top: 8px; }
+ul, ol { padding-left: 24px; }
+li { margin: 6px 0; }
+
+.lead { margin-top: 4px; }
+.hint { color: var(--muted); font-size: 15px; }
+.foot { text-align: center; margin-top: 24px; }
+.tip b { font-style: normal; }
+
+/* ---------- WoW red buttons ---------- */
+
+.wowbtn {
+  font-family: var(--font);
+  font-size: 17px;
+  min-width: 140px;
+  padding: 8px 20px;
+  color: var(--wow-yellow);
+  text-shadow: 0 1px 1px #000;
+  background: linear-gradient(#b11f13, #6b0c06 55%, #4a0703);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px #000, inset 0 1px 0 rgba(255, 255, 255, .25);
+  cursor: pointer;
+  transition: filter .15s, transform .08s;
+}
+.wowbtn:hover { filter: brightness(1.25); }
+.wowbtn:active { transform: translateY(1px); filter: brightness(.9); }
+
+.c-grey { color: #9d9d9d; }
+.c-green { color: #40bf40; }
+.c-yellow { color: #ffff00; }
+.c-orange { color: #ff8040; }
+
+/* glossary entries as small dark cards, two per row on wide screens */
+.glossary { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; margin: 8px 0 0; }
+.glossary dt { color: var(--wow-yellow); font-size: 18px; }
+.glossary dd { margin: 2px 0 0; font-size: 16.5px; }
+
+/* ---------- phones ---------- */
+
+@media (max-width: 640px) {
+  .frame-body { padding: 4px 14px 18px; }
+  .top-inner { padding: 10px 16px 6px; gap: 14px; }
+  .portrait { width: 48px; height: 48px; }
+  .titleplate h1 { font-size: 23px; }
+  .titleplate p { font-size: 13px; }
+  .tabs { padding: 0 12px; }
+  .tabs button, .tabs .tablink { padding: 7px 12px 6px; font-size: 14.5px; }
+  main { padding: 26px 12px 20px; }
+}
+
+/* devices that ask for less motion get none, unless the visitor picks
+   Settings → Animations → On (sets data-motion="on" on <html>) */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion="on"]) *,
+  html:not([data-motion="on"]) *::before,
+  html:not([data-motion="on"]) *::after { animation: none !important; transition: none !important; }
+}

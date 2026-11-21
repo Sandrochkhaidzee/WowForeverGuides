@@ -4,279 +4,116 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WoW: Forever — Beginner Guides</title>
-<meta name="description" content="Beginner leveling, professions and addon guides for WoW: Forever — Gnome Mage and Night Elf Rogue.">
+<meta name="description" content="Step-by-step beginner guides for WoW: Forever: leveling 1–60, professions and addons. Written for people who have never played.">
+<meta name="theme-color" content="#14110e">
+<meta property="og:title" content="WoW: Forever — Beginner Guides">
+<meta property="og:description" content="Step-by-step leveling, professions and addon guides for brand-new players.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet">
-<style>
-/* Same look as the guide pages: dark stone frames, gold trim, red buttons. */
-@font-face {
-  font-family: "WowDigits";
-  src: local("Palatino Linotype"), local("Palatino"), local("Book Antiqua"), local("Times New Roman");
-  unicode-range: U+0030-0039;
-}
-
-:root {
-  --wow-yellow: #ffd100;
-  --gold: #c8a24a;
-  --gold-dark: #7a5c1e;
-  --stone-light: #4a443c;
-  --frame-bg: #14110e;
-  --text: #e8e0cc;
-  --muted: #a99d84;
-  --font: "Friz Quadrata TT", "Friz Quadrata", WowDigits, Marcellus, Georgia, serif;
-}
-
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 18px;
-  line-height: 1.6;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(90, 70, 40, .35), transparent 60%),
-    radial-gradient(ellipse at 50% 120%, rgba(20, 40, 80, .45), transparent 60%),
-    repeating-linear-gradient(45deg, rgba(255,255,255,.012) 0 2px, transparent 2px 6px),
-    #0c0a08;
-  background-attachment: fixed;
-  -webkit-font-smoothing: antialiased;
-}
-
-a { color: var(--wow-yellow); text-underline-offset: 3px; }
-a:hover { color: #fff3a0; }
-:focus-visible { outline: 2px solid var(--wow-yellow); outline-offset: 2px; }
-::selection { background: rgba(255, 209, 0, .35); color: #fff; }
-
-/* ---------- header ---------- */
-
-header {
-  text-align: center;
-  padding: 56px 16px 12px;
-}
-header h1 {
-  margin: 0;
-  font-size: clamp(30px, 6vw, 46px);
-  font-weight: normal;
-  color: var(--wow-yellow);
-  letter-spacing: .04em;
-  text-shadow: 0 2px 2px #000, 0 0 24px rgba(255, 180, 0, .3);
-}
-header p { margin: 6px auto 0; max-width: 560px; color: var(--muted); font-size: 16px; }
-.rule {
-  width: min(420px, 80%);
-  height: 1px;
-  margin: 22px auto 0;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  position: relative;
-}
-.rule::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -5px;
-  width: 9px;
-  height: 9px;
-  margin-left: -5px;
-  background: var(--gold);
-  border: 1px solid #000;
-  transform: rotate(45deg);
-}
-
-/* ---------- character cards ---------- */
-
-main {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 36px 16px 40px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
-  gap: 36px 28px;
-}
-
-.frame {
-  position: relative;
-  background: linear-gradient(#1c1915, var(--frame-bg));
-  border: 3px solid var(--stone-light);
-  border-radius: 6px;
-  box-shadow:
-    inset 0 0 0 1px var(--gold-dark),
-    inset 0 0 0 3px #000,
-    0 0 0 1px #000,
-    0 10px 30px rgba(0, 0, 0, .7);
-  display: flex;
-  flex-direction: column;
-  transition: transform .2s, box-shadow .2s;
-}
-.frame:hover {
-  transform: translateY(-3px);
-  box-shadow:
-    inset 0 0 0 1px var(--gold),
-    inset 0 0 0 3px #000,
-    0 0 0 1px #000,
-    0 14px 34px rgba(0, 0, 0, .8),
-    0 0 26px var(--glow);
-}
-.frame::before, .frame::after {
-  content: "";
-  position: absolute;
-  top: -7px;
-  width: 12px;
-  height: 12px;
-  background: radial-gradient(circle at 35% 35%, #ffe9a3, var(--gold) 45%, var(--gold-dark));
-  border: 1px solid #000;
-  transform: rotate(45deg);
-}
-.frame::before { left: -7px; }
-.frame::after { right: -7px; }
-
-.mage  { --class: #69ccf0; --glow: rgba(105, 204, 240, .18); --orb: radial-gradient(circle at 40% 35%, #6aa6d8, #234a7a 60%, #0d1b33); }
-.rogue { --class: #fff569; --glow: rgba(255, 245, 105, .14); --orb: radial-gradient(circle at 40% 35%, #7a6a8a, #2f2440 60%, #120c1a); }
-
-.card-head {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 26px 24px 8px;
-}
-.portrait {
-  width: 76px;
-  height: 76px;
-  flex: none;
-  border-radius: 50%;
-  border: 3px solid var(--gold);
-  box-shadow: 0 0 0 2px #000, inset 0 0 12px rgba(0, 0, 0, .9);
-  background: var(--orb);
-  position: relative;
-  overflow: hidden;
-}
-.portrait img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.12);
-}
-.portrait::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, .85), inset 0 2px 3px rgba(255, 255, 255, .15);
-}
-.card-head h2 {
-  margin: 0;
-  font-size: 27px;
-  font-weight: normal;
-  line-height: 1.15;
-  color: var(--class);
-  text-shadow: 0 2px 2px #000;
-}
-.card-head .race { margin: 2px 0 0; font-size: 14px; color: var(--muted); }
-
-.card-body { padding: 6px 24px 24px; display: flex; flex-direction: column; flex: 1; }
-.card-body > p { margin: 8px 0 18px; font-size: 16px; }
-
-.links { margin-top: auto; display: grid; gap: 10px; }
-.wowbtn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  font-family: var(--font);
-  font-size: 17px;
-  padding: 9px 18px;
-  color: var(--wow-yellow);
-  text-decoration: none;
-  text-shadow: 0 1px 1px #000;
-  background: linear-gradient(#b11f13, #6b0c06 55%, #4a0703);
-  border: 1px solid var(--gold);
-  border-radius: 4px;
-  box-shadow: 0 0 0 1px #000, inset 0 1px 0 rgba(255, 255, 255, .25);
-  transition: filter .15s, transform .08s;
-}
-.wowbtn:hover { filter: brightness(1.25); color: var(--wow-yellow); }
-.wowbtn:active { transform: translateY(1px); filter: brightness(.9); }
-.wowbtn small { font-size: 13px; color: #f3d9a0; opacity: .85; }
-.wowbtn.alt {
-  background: linear-gradient(#2d2823, #1a1714);
-  border-color: var(--stone-light);
-  color: var(--gold);
-}
-.wowbtn.alt small { color: var(--muted); }
-
-footer {
-  text-align: center;
-  color: var(--muted);
-  font-size: 14px;
-  padding: 0 16px 40px;
-}
-
-@media (max-width: 480px) {
-  header { padding-top: 36px; }
-  .card-head { padding: 22px 18px 6px; gap: 14px; }
-  .card-body { padding: 6px 18px 20px; }
-  .portrait { width: 62px; height: 62px; }
-  .card-head h2 { font-size: 23px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .frame, .wowbtn { transition: none; }
-  .frame:hover { transform: none; }
-}
-</style>
+<link rel="stylesheet" href="assets/css/core.css">
+<link rel="stylesheet" href="assets/css/home.css">
+<link rel="stylesheet" href="assets/css/fx.css">
 </head>
-<body>
+<body data-page="home">
 
-<header>
+<header class="hero">
+  <svg class="rune" viewBox="0 0 200 200" aria-hidden="true">
+    <g fill="none" stroke="currentColor">
+      <circle cx="100" cy="100" r="96" stroke-width=".8"/>
+      <circle cx="100" cy="100" r="88" stroke-width=".4" stroke-dasharray="2 4"/>
+      <g class="inner">
+        <circle cx="100" cy="100" r="70" stroke-width=".6"/>
+        <path d="M100 30l60.6 105H39.4z" stroke-width=".6"/>
+        <path d="M100 170L39.4 65h121.2z" stroke-width=".6"/>
+        <circle cx="100" cy="100" r="40" stroke-width=".4" stroke-dasharray="1 3"/>
+      </g>
+      <g stroke-width=".8">
+        <path d="M100 4v10M100 186v10M4 100h10M186 100h10M32 32l7 7M161 161l7 7M168 32l-7 7M39 161l-7 7"/>
+      </g>
+    </g>
+  </svg>
+  <div class="hero-crest" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5z"/><path d="M12 6v12M8 10h8" stroke-width="2"/></svg>
+  </div>
   <h1>WoW: Forever</h1>
-  <p>Step-by-step beginner guides — leveling, professions and addons. Pick your character.</p>
+  <p class="sub">Beginner guides that take you by the hand, from your very first quest to level 60.</p>
+  <p class="sub2">Leveling · Professions · Addons · No experience needed</p>
+  <div class="hero-cta">
+    <a class="wowbtn wf-cta" href="#start">New to the game? Start here</a>
+    <a class="wowbtn alt" href="#choose">Help me choose a class</a>
+  </div>
   <div class="rule"></div>
 </header>
 
-<main>
+<main class="wrap">
+  <noscript><p>This site works best with JavaScript turned on. You can still open every guide from the links below.</p></noscript>
 
-  <article class="frame mage">
-    <div class="card-head">
-      <div class="portrait"><img src="https://wow.zamimg.com/images/wow/icons/large/classicon_mage.jpg" alt="" onerror="this.remove()"></div>
-      <div>
-        <h2>Mage</h2>
-        <p class="race">Gnome · Alliance</p>
-      </div>
-    </div>
-    <div class="card-body">
-      <p>Ranged caster. Freeze enemies, blast them from afar, and conjure your own food and water.</p>
-      <div class="links">
-        <a class="wowbtn" href="Mage%20Gnome/Gnome-Mage-WoW-Guide.html">Leveling Guide <small>start here ›</small></a>
-        <a class="wowbtn alt" href="Mage%20Gnome/Gnome-Mage-Professions.html">Professions <small>›</small></a>
-        <a class="wowbtn alt" href="Mage%20Gnome/Gnome-Mage-Addons.html">Addons <small>›</small></a>
-      </div>
-    </div>
-  </article>
+  <!-- filled in by home.js when you've used a guide before -->
+  <section id="continue" hidden>
+    <div class="sec-head"><h2>Continue your journey</h2><p>Pick up right where you stopped.</p></div>
+    <div class="continue" id="contlist"></div>
+  </section>
 
-  <article class="frame rogue">
-    <div class="card-head">
-      <div class="portrait"><img src="https://wow.zamimg.com/images/wow/icons/large/classicon_rogue.jpg" alt="" onerror="this.remove()"></div>
-      <div>
-        <h2>Rogue</h2>
-        <p class="race">Night Elf · Alliance</p>
-      </div>
+  <section id="characters">
+    <div class="sec-head"><h2>Pick your character</h2><p>Each character has a leveling guide, a professions guide and an addons guide.</p></div>
+    <div class="cards" id="cards">
+      <!-- built from assets/js/characters.js; these links are the no-JavaScript fallback -->
+      <noscript>
+        <p><a href="Mage%20Gnome/Gnome-Mage-WoW-Guide.html">Gnome Mage — Leveling Guide</a> · <a href="Mage%20Gnome/Gnome-Mage-Professions.html">Professions</a> · <a href="Mage%20Gnome/Gnome-Mage-Addons.html">Addons</a></p>
+        <p><a href="Rogue%20Night%20Elf/NightElf-Rogue-WoW-Guide.html">Night Elf Rogue — Leveling Guide</a> · <a href="Rogue%20Night%20Elf/NightElf-Rogue-Professions.html">Professions</a> · <a href="Rogue%20Night%20Elf/NightElf-Rogue-Addons.html">Addons</a></p>
+      </noscript>
     </div>
-    <div class="card-body">
-      <p>Melee assassin. Sneak in stealth, open with a big hit, and finish with combo points.</p>
-      <div class="links">
-        <a class="wowbtn" href="Rogue%20Night%20Elf/NightElf-Rogue-WoW-Guide.html">Leveling Guide <small>start here ›</small></a>
-        <a class="wowbtn alt" href="Rogue%20Night%20Elf/NightElf-Rogue-Professions.html">Professions <small>›</small></a>
-        <a class="wowbtn alt" href="Rogue%20Night%20Elf/NightElf-Rogue-Addons.html">Addons <small>›</small></a>
-      </div>
-    </div>
-  </article>
+  </section>
 
+  <section id="start">
+    <div class="sec-head"><h2>Brand new? Three steps</h2><p>You don't need to know anything about the game yet.</p></div>
+    <div class="path">
+      <div class="frame wf-reveal-me"><span class="num">1</span><h3>Pick a character</h3><p>Not sure? <a href="#choose">Answer one question</a> and we'll suggest one. Then create it in game with the <b>same race and class</b>.</p></div>
+      <div class="frame wf-reveal-me"><span class="num">2</span><h3>Open its Leveling Guide</h3><p>Keep it open next to the game, on a second screen or your phone. Do <b>one step</b>, press <b>Next Step</b>.</p></div>
+      <div class="frame wf-reveal-me"><span class="num">3</span><h3>Add addons later</h3><p>Optional. Once you're comfortable, the <b>Addons</b> page shows a few free extras that make leveling easier.</p></div>
+    </div>
+  </section>
+
+  <section id="choose" class="choose">
+    <div class="sec-head"><h2>Help me choose</h2><p>Both are great first characters. It only comes down to how you like to play.</p></div>
+    <div class="frame wf-reveal-me">
+      <div class="frame-title">One question</div>
+      <div class="frame-body">
+        <p class="q">How do you like to fight?</p>
+        <div class="opts" id="opts">
+          <button type="button" class="opt" data-style="ranged" aria-pressed="false"><span class="ico" aria-hidden="true">🔮</span><b>From far away</b><small>Cast spells from a distance and freeze enemies before they reach you.</small></button>
+          <button type="button" class="opt" data-style="melee" aria-pressed="false"><span class="ico" aria-hidden="true">🗡️</span><b>Up close</b><small>Sneak in unseen, strike first, and finish them with quick blades.</small></button>
+        </div>
+        <p class="answer" id="answer" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="faq">
+    <div class="sec-head"><h2>Questions</h2></div>
+    <div class="frame wf-reveal-me">
+      <div class="frame-title">Good to know</div>
+      <div class="frame-body">
+        <details><summary>I've never played World of Warcraft. Is this for me?</summary><p>Yes. Every step says exactly where to go and what to press, and game words explain themselves when you click them. Each Leveling Guide also has a <b>How to Play</b> tab with the basics.</p></details>
+        <details><summary>Is my progress saved?</summary><p>Yes, automatically, in this browser on this device. Close the page and come back any time. Another browser or device starts fresh.</p></details>
+        <details><summary>Can I use it on my phone?</summary><p>Yes. Many players keep the guide open on their phone next to the game. Everything works on small screens.</p></details>
+        <details><summary>The text is too small or hard to read.</summary><p>Press the <b>gear</b> button at the bottom right. You can make the text bigger, turn on high contrast, or switch to an easy-read font.</p></details>
+        <details><summary>Do I need addons?</summary><p>No. The game works fine without them. A few make leveling easier, and each character's Addons page lists which ones are worth it.</p></details>
+      </div>
+    </div>
+  </section>
 </main>
 
-<footer>Fan-made guides for WoW: Forever. Not affiliated with Blizzard Entertainment.</footer>
+<footer>
+  Fan-made guides for WoW: Forever. Not affiliated with Blizzard Entertainment.<br>
+  Icons and maps © Blizzard Entertainment, shown from Wowhead.
+</footer>
 
+<script src="assets/js/characters.js"></script>
+<script src="assets/js/home.js"></script>
+<script src="assets/js/site.js"></script>
 </body>
 </html>

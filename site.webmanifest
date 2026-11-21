@@ -1,0 +1,9 @@
+{
+  "name": "WoW: Forever — Beginner Guides",
+  "short_name": "WoW Guides",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0c0a08",
+  "theme_color": "#14110e",
+  "icons": [{ "src": "assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

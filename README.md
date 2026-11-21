@@ -9,12 +9,66 @@ Step-by-step beginner guides for WoW: Forever, styled like the in-game UI.
 
 `index.html` at the root is the landing page.
 
+## What visitors get
+
+- **Leveling guide**: one quest step at a time, zone maps with pins, the action bar for your level, talents and a searchable word list.
+- **Professions** and **Addons** pages for each character.
+- **Help button (?)** on every page: how the page works, keyboard keys, and answers for when you're stuck.
+- **First-visit welcome and a short guided tour** that points at each part of the page.
+- **Settings (gear button)**: bigger text, high contrast, an easy-read font, animations on/off, floating embers on/off.
+- **Progress is saved** in the browser; the landing page shows "Continue your journey" with where you stopped.
+- Effects: level-up banner, step-complete messages, sparks, scroll-in animations. They follow the device's
+  "reduce motion" setting unless the visitor picks *Animations → On*.
+
+## How the files are organised
+
+```
+index.html                 landing page (cards are built from the character registry)
+404.html                   "page not found" for GitHub Pages
+site.webmanifest           app name/icon when saved to a phone home screen
+assets/
+  css/core.css             shared look: colours, frames, tabs, buttons, tooltips
+  css/guide.css            leveling-guide page (quest paper, map, action bars)
+  css/professions.css      professions page
+  css/addons.css           addons page
+  css/home.css             landing page
+  css/fx.css               animations + comfort settings (loaded last on every page)
+  js/characters.js         THE CHARACTER REGISTRY: one entry per character
+  js/guide.js              leveling-guide engine (steps, map, word popups, tabs)
+  js/action-bars.js        action-bar engine (HUD, Action Bars tab, per-step bar box)
+  js/professions.js        professions engine
+  js/addons.js             addons engine (list, filters, folder scan)
+  js/home.js               landing page: cards, "continue", class chooser
+  js/site.js               shared layer: help, settings, tour, switcher, effects
+  img/favicon.svg
+<Character folder>/
+  <Name>-WoW-Guide.html    page text (How to Play, etc.) + links to the shared files
+  <Name>-Professions.html
+  <Name>-Addons.html
+  data/guide.js            steps, talents, words, zones, spells, action bars
+  data/professions.js      profession routes
+  data/addons.js           addon list with "why you want it" text
+```
+
+The **engines are shared**: fixing a bug in `assets/js/guide.js` fixes it for every character.
+The **content lives in each character's `data/` folder**: editing a step never touches code.
+
+Engines tell the shared layer what happened with DOM events (`wf:step`, `wf:tab`, `wf:progress`), so new
+effects can be added in `site.js` without touching the engines.
+
+## Adding a character
+
+See [docs/ADDING-A-CHARACTER.md](docs/ADDING-A-CHARACTER.md). In short: copy a character folder,
+edit its `data/*.js` and page text, and add one entry to `assets/js/characters.js`. The landing page,
+the "Switch" menu and the class chooser pick it up automatically.
+
 ## Hosting on GitHub Pages
 
 1. Push this folder to a GitHub repository.
 2. Repository **Settings → Pages → Build and deployment**: Source = *Deploy from a branch*, Branch = `main`, folder = `/ (root)`.
 3. The site appears at `https://<your-username>.github.io/<repo-name>/`.
 
-Static HTML only — no build step. Progress in the quest guide is saved in your browser.
+Static HTML, CSS and JavaScript only. No build step and no dependencies. To preview locally, run
+`python -m http.server` in this folder and open http://localhost:8000.
 
 Fan-made; not affiliated with Blizzard Entertainment.

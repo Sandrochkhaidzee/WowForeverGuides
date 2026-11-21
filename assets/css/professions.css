@@ -1,0 +1,267 @@
+/* Professions page styles. Loaded after core.css. */
+
+
+.portrait img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  transform: scale(1.12);
+}
+.portrait span {
+  position: absolute;
+  right: -8px;
+  bottom: -6px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 4px;
+  border-radius: 13px;
+  background: #1a1410;
+  border: 2px solid var(--gold);
+  color: var(--wow-yellow);
+  font-size: 13px;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+  box-shadow: 0 0 0 1px #000;
+}
+
+p { margin: 8px 0; }
+.hint, .foot { color: var(--muted); font-size: 15px; }
+
+/* tip line, like the one under a quest step */
+.tip {
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  font-size: 16.5px;
+  font-style: italic;
+  background: rgba(200, 162, 74, .08);
+  border-left: 3px solid #a07a35;
+  border-radius: 0 3px 3px 0;
+}
+.wowbtn.small { min-width: 0; padding: 3px 12px; font-size: 15px; }
+.glossary > div {
+  padding: 10px 14px 12px;
+  background: linear-gradient(rgba(255, 255, 255, .03), rgba(0, 0, 0, .2));
+  border: 1px solid #2f2a24;
+  border-left: 3px solid var(--gold-dark);
+  border-radius: 3px;
+}
+.glossary .sub { display: block; color: var(--muted); font-size: 14px; }
+.glossary .btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+
+/* training ranks: four cards in a row */
+.ranks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0; }
+.ranks > div {
+  text-align: center;
+  padding: 10px 6px;
+  background: linear-gradient(rgba(255, 255, 255, .03), rgba(0, 0, 0, .2));
+  border: 1px solid #2f2a24;
+  border-top: 3px solid var(--gold-dark);
+  border-radius: 3px;
+}
+.ranks b { display: block; color: var(--wow-yellow); font-weight: normal; }
+.ranks span { display: block; color: #fff; }
+.ranks em { display: block; color: var(--muted); font-size: 14px; font-style: normal; }
+
+/* ---------- tables ---------- */
+
+table { width: 100%; border-collapse: collapse; font-size: 16.5px; }
+th { text-align: left; color: var(--wow-yellow); font-weight: normal; font-size: 15px; padding: 6px 10px; border-bottom: 1px solid var(--gold-dark); }
+td { padding: 9px 10px; border-bottom: 1px solid #2f2a24; vertical-align: top; }
+.plain td:first-child { color: #fff; }
+
+.steps tbody tr:not(.milestone):hover { background: rgba(255, 209, 0, .07); }
+.steps .chk { width: 34px; padding-right: 0; }
+.steps input[type=checkbox] { width: 18px; height: 18px; margin: 4px 0 0; accent-color: var(--gold); cursor: pointer; }
+.steps .skill { white-space: nowrap; color: #fff; }
+.steps .craft { color: var(--wow-yellow); }
+.steps .num { white-space: nowrap; text-align: right; color: #fff; }
+.steps tr.done td { opacity: .5; }
+.steps tr.done .craft { color: #7d7563; text-decoration: line-through; }
+.steps tr.done .skill { color: #40bf40; }
+.where { display: block; font-size: 14px; color: var(--muted); }
+.note { display: block; font-size: 14px; color: #ff8d6b; }
+.tag {
+  display: inline-block; font-size: 12px; padding: 0 6px; margin-left: 6px;
+  border-radius: 3px; border: 1px solid; vertical-align: 2px; white-space: nowrap; font-style: normal;
+}
+.tag.vendor { color: #ffb84d; border-color: #8a5a14; }
+.tag.known { color: #40bf40; border-color: #2d6b1a; }
+.tag.alliance { color: #6fb3ff; border-color: #2a4f80; }
+.tag.horde { color: #ff6b5a; border-color: #80302a; }
+.tag.alt { color: var(--muted); border-color: var(--stone-light); }
+tr.milestone td {
+  padding: 8px 14px;
+  font-size: 15.5px;
+  font-style: italic;
+  color: var(--wow-yellow);
+  background: rgba(200, 162, 74, .08);
+  border-left: 3px solid #a07a35;
+}
+
+/* progress bar, built like the XP bar on the action bar */
+.progress { display: flex; align-items: center; gap: 12px; margin: 14px 0 6px; }
+.xp {
+  position: relative;
+  flex: 1;
+  height: 20px;
+  background: linear-gradient(#07070d, #12121f);
+  border: 1px solid #000;
+  box-shadow: 0 0 0 1px #6b5230, inset 0 0 4px #000;
+  overflow: hidden;
+}
+.xp i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: linear-gradient(#7fa8ff, #2d5ee8 45%, #133a9e);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35);
+  transition: width .5s ease;
+}
+.xp::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 calc(5% - 2px), #000 calc(5% - 2px) calc(5% - 1px), rgba(154, 122, 64, .55) calc(5% - 1px) 5%);
+  pointer-events: none;
+}
+.xp span {
+  position: relative;
+  z-index: 1;
+  display: block;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  line-height: 20px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+}
+
+/* ---------- quest paper (one step at a time, like the Quest Guide) ---------- */
+
+.questpaper {
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgba(120, 80, 20, .35) 100%),
+    linear-gradient(#f0e2bf, var(--parch));
+  border: 1px solid #000;
+  border-radius: 3px;
+  padding: 22px 28px 20px;
+  box-shadow: inset 0 0 0 2px var(--parch-dark), inset 0 0 30px rgba(110, 70, 10, .35);
+}
+.questpaper b, .questpaper strong { color: #000; }
+.questpaper.slide-next { animation: pageNext .35s ease; }
+.questpaper.slide-back { animation: pageBack .35s ease; }
+@keyframes pageNext { from { opacity: 0; transform: translateX(20px); } }
+@keyframes pageBack { from { opacity: 0; transform: translateX(-20px); } }
+.meta { margin: 0; font-size: 14px; color: #6b4e22; }
+.meta span { margin: 0 4px; }
+.questpaper h2 { margin: 2px 0 10px; font-size: 28px; color: #000; line-height: 1.2; }
+.todo { font-size: 19px; margin: 8px 0 0; }
+.todo > li { margin: 9px 0; padding-left: 4px; }
+.todo > li::marker { color: #6b4e22; font-weight: bold; }
+.questpaper .tip {
+  color: #3b2a12;
+  background: rgba(120, 80, 20, .1);
+  font-size: 16.5px;
+}
+.questpaper .tip:empty { display: none; }
+.questpaper kbd { color: #fff; }
+.need { list-style: none; padding: 0; margin: 6px 0 2px; }
+.need li { margin: 3px 0; font-size: 17px; }
+.need li::before { content: "◆"; color: #a07a35; font-size: 11px; margin-right: 8px; vertical-align: 2px; }
+.need span { color: #6b4e22; font-size: 15px; }
+.badge {
+  display: inline-block; font-size: 13px; padding: 0 7px; border-radius: 3px;
+  border: 1px solid; vertical-align: 2px; margin-left: 6px;
+}
+.badge.horde { color: #8a1a10; border-color: #8a1a10; }
+.badge.alliance { color: #12407a; border-color: #12407a; }
+.badge.alt { color: #6b4e22; border-color: #6b4e22; }
+.badge.vendor { color: #7a4a00; border-color: #7a4a00; }
+
+.nav { display: flex; justify-content: space-between; gap: 12px; margin: 16px 0 14px; }
+
+/* list of all steps */
+details { margin-top: 22px; border-top: 1px solid var(--stone-light); padding-top: 10px; }
+summary { cursor: pointer; color: var(--wow-yellow); list-style: none; padding: 4px 0; }
+summary::-webkit-details-marker { display: none; }
+summary::before {
+  content: "";
+  display: inline-block;
+  margin-right: 10px;
+  border: 6px solid transparent;
+  border-left: 8px solid var(--gold);
+  border-right: 0;
+  vertical-align: 1px;
+  transition: transform .15s;
+}
+details[open] > summary::before { transform: rotate(90deg); }
+summary:hover { color: #fff3a0; }
+.steplist { list-style: none; padding: 0; margin: 8px 0 0; max-height: 420px; overflow-y: auto; }
+.steplist li { margin: 0; }
+.steplist button {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  padding: 5px 10px;
+  font-family: var(--font);
+  font-size: 15.5px;
+  color: var(--wow-yellow);
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.steplist button:hover { background: rgba(255, 209, 0, .08); }
+.steplist .n { width: 28px; color: var(--muted); flex: none; }
+.steplist .t { flex: 1; }
+.steplist .l { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.steplist li.done .t { color: #7d7563; }
+.steplist li.done .n { color: #40bf40; }
+.steplist li.done .n::before { content: "✓"; }
+.steplist li.done .n span { display: none; }
+.steplist li.current button { background: rgba(255, 209, 0, .16); color: #fff; box-shadow: inset 3px 0 0 var(--wow-yellow); }
+
+@media (max-width: 640px) {
+  .questpaper { padding: 16px; }
+  .questpaper h2 { font-size: 23px; }
+  .todo { font-size: 17px; padding-left: 20px; }
+  .need li { font-size: 16px; }
+  .wowbtn { min-width: 110px; }
+}
+
+/* shopping list */
+.mats { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px 10px; margin-top: 8px; }
+.mats > div {
+  display: flex; justify-content: space-between; gap: 8px;
+  padding: 6px 12px;
+  font-size: 16px;
+  background: linear-gradient(rgba(255, 255, 255, .03), rgba(0, 0, 0, .2));
+  border: 1px solid #2f2a24;
+  border-left: 3px solid var(--gold-dark);
+  border-radius: 3px;
+}
+.mats b { color: var(--wow-yellow); font-weight: normal; }
+
+/* ---------- phones ---------- */
+
+@media (max-width: 640px) {
+  body { font-size: 16.5px; }
+  .glossary { grid-template-columns: 1fr; }
+  .ranks { grid-template-columns: repeat(2, 1fr); }
+
+  /* route rows become small cards */
+  .steps thead { display: none; }
+  .steps, .steps tbody, .steps tr, .steps td { display: block; width: 100%; }
+  .steps tr { position: relative; padding: 8px 6px 8px 38px; border-bottom: 1px solid #2f2a24; }
+  .steps td { border: 0; padding: 1px 0; }
+  .steps td.chk { position: absolute; left: 6px; top: 10px; width: auto; }
+  .steps td.num { text-align: left; }
+  .steps td[data-label]::before { content: attr(data-label); color: var(--muted); }
+  tr.milestone { padding: 0; border-bottom: 0; }
+  tr.milestone td { padding: 8px 12px; }
+}
