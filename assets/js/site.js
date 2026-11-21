@@ -54,6 +54,23 @@
   WF.store = store;
   WF.root = ROOT;
 
+  /* ---------- tidy up saved data left by older versions of the site ----------
+     Keys nothing reads any more are removed. Keys the shared pages still carry over
+     (old professions ticks, old addon scans) are only removed once their new key exists. */
+  (function cleanOldKeys() {
+    try {
+      const ls = localStorage;
+      const has = (k) => ls.getItem(k) !== null;
+      const drop = (k) => ls.removeItem(k);
+      ["gnomeMageAddons.v1", "nelfRogueAddons.v1", "gnomeMageForever.v1", "nelfRogueForever.v1"].forEach(drop);
+      if (has("wfAddons.scan.v1")) ["gnomeMageAddons.scan.v1", "nelfRogueAddons.scan.v1"].forEach(drop);
+      if (has("wfProfessions.v1")) {
+        const olds = ["mageProfessions.v1", "nelfRogueProfessions.v1"];
+        Object.keys(ls).filter((k) => olds.some((o) => k === o || k.startsWith(o + "."))).forEach(drop);
+      }
+    } catch (e) {}
+  })();
+
   const ICON = {
     help: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 9a3 3 0 115 2.2c-1.2.8-2 1.5-2 3"/><circle cx="12" cy="18.5" r=".6" fill="currentColor"/></svg>',
     gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3.4"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg>',
