@@ -511,6 +511,27 @@
     update();
   }
 
+  /* tab row: when it's wider than the screen, fade the edge that hides more
+     tabs (classes more-l / more-r, styled in core.css), and keep the open tab in view */
+  function setupTabEdges() {
+    $$(".tabs").forEach((row) => {
+      const edges = () => {
+        const max = row.scrollWidth - row.clientWidth;
+        row.classList.toggle("more-l", max > 1 && row.scrollLeft > 1);
+        row.classList.toggle("more-r", max > 1 && row.scrollLeft < max - 1);
+      };
+      row.addEventListener("scroll", edges, { passive: true });
+      if (window.ResizeObserver) new ResizeObserver(edges).observe(row);
+      else addEventListener("resize", edges);
+      if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(edges);
+      row.addEventListener("click", (e) => {
+        const tab = e.target.closest("button");
+        if (tab && row.scrollWidth > row.clientWidth) tab.scrollIntoView({ block: "nearest", inline: "nearest" });
+      });
+      edges();
+    });
+  }
+
   doc.addEventListener("keydown", (e) => {
     if (isTyping(e) || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === "?") { e.preventDefault(); openHelp(); }
@@ -836,6 +857,7 @@
 
   applySettings();
   buildDock();
+  setupTabEdges();
   buildSwitcher();
   visualHelpers();
   setupReveal();

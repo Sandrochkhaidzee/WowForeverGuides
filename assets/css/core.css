@@ -181,10 +181,17 @@ kbd {
   margin-bottom: -2px; /* active tab sits on top of the gold line */
 }
 .tabs::-webkit-scrollbar { display: none; }
+/* only when the row is wider than the screen (phones): fade the cut edge so
+   it's clear the row slides sideways. site.js sets these classes. */
+.tabs.more-r { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); }
+.tabs.more-l { -webkit-mask-image: linear-gradient(90deg, transparent, #000 40px); mask-image: linear-gradient(90deg, transparent, #000 40px); }
+.tabs.more-l.more-r { -webkit-mask-image: linear-gradient(90deg, transparent, #000 40px, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(90deg, transparent, #000 40px, #000 calc(100% - 40px), transparent); }
 .tabs button, .tabs .tablink {
+  flex: none;
   font-family: var(--font);
-  font-size: 15px;
-  padding: 7px 16px 6px;
+  /* tabs tighten up on narrower windows so the row stays on one line */
+  font-size: clamp(13.5px, 1.75vw, 15px);
+  padding: 7px clamp(9px, 1.3vw, 16px) 6px;
   color: var(--muted);
   background: linear-gradient(#2d2823, #1a1714);
   border: 1px solid var(--stone-light);
@@ -329,7 +336,6 @@ li { margin: 6px 0; }
   .titleplate h1 { font-size: 23px; }
   .titleplate p { font-size: 13px; }
   .tabs { padding: 0 12px; }
-  .tabs button, .tabs .tablink { padding: 7px 12px 6px; font-size: 14.5px; }
   main { padding: 26px 12px 20px; }
 }
 
