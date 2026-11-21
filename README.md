@@ -12,6 +12,13 @@ Step-by-step beginner guides for WoW: Forever, styled like the in-game UI.
 ## What visitors get
 
 - **Leveling guide**: one quest step at a time, zone maps with pins, the action bar for your level, talents and a searchable word list.
+  - A **journey strip** shows every chapter (Shadowglen, Dolanaar, …) and where you are; click one to jump there.
+  - Each step has a **badge** saying what kind it is (questing, trainer visit, talent point, travel, dungeon…).
+  - **Tick off objectives** as you do them; the Next button turns green when all are done. Back / Next and
+    "Up next" also sit under the step, so there's no scrolling back up.
+  - The **Talents** tab highlights the talent for the level you're at.
+- **How to Play** and **Profession Basics** are picture cards with a "jump to" row, an enemy level-colour scale,
+  the class combo as real ability icons, and a skill-up chance bar for recipe colours.
 - **Professions** and **Addons** pages for each character.
 - **Help button (?)** on every page: how the page works, keyboard keys, and answers for when you're stuck.
 - **First-visit welcome and a short guided tour** that points at each part of the page.

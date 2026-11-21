@@ -14,25 +14,103 @@ function persist() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(saved))
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
 
-/* Wrap known words with a clickable explanation (first match per step only). */
+/* Game words every beginner meets, whatever the class. A character's own WORDS
+   (in its data/guide.js) win when both explain the same word. */
+const COMMON_WORDS = {
+  "xp": "Experience points. Quests and kills give XP. Fill the bar at the bottom of your screen to reach the next level.",
+  "npc": "A character run by the game, not by a player: quest givers, trainers, vendors, guards.",
+  "quest log": "Your list of quests. Press L. Click a quest to read what to do and where.",
+  "spellbook": "Every ability you've learned. Press P, then drag an ability from it onto your action bar.",
+  "action bar": "The row of buttons at the bottom of your screen. Each button has a key: 1 uses the first button, 2 the second, and so on.",
+  "vendor": "An NPC who sells things and buys your junk. While talking to one, right-click an item in your bags to sell it.",
+  "humanoid": "Enemies shaped like people: humans, trolls, furbolgs, gnolls and so on. They often drop cloth and coins.",
+  "escort": "A quest where you walk with an NPC and keep them alive until they're safe. Stay close and don't run ahead.",
+  "inn": "Every town's inn has an innkeeper. Make it your home for your Hearthstone, and log out there for bonus XP.",
+  "graveyard": "Where you appear as a ghost when you die. Run back to your body and click Resurrect.",
+  "racial": "An ability you get from your race, not your class.",
+  "rank": "A stronger version of an ability you already have. Learn it at your trainer; it replaces the old one in your spellbook.",
+  "zone": "A big area of the world with its own name, like Darkshore or Dun Morogh. Its name shows above your minimap.",
+  "critical": "A critical hit (\"crit\") does about double damage. Its number pops up bigger.",
+  "respawn": "Enemies come back a few minutes after you kill them, so don't rest too long in a camp you cleared."
+};
+for (const k in COMMON_WORDS) if (!(k in WORDS)) WORDS[k] = COMMON_WORDS[k];
+
+/* Wrap known words with a clickable explanation (first match per step line only).
+   Longer words go first ("rested xp" before "xp"), and a word is never looked for
+   inside a word that's already wrapped. */
 function explainWords(html) {
   const used = new Set();
   const terms = Object.keys(WORDS).sort((a, b) => b.length - a.length);
   // work only on text outside tags
   return html.replace(/(^|>)([^<]+)/g, (m, open, text) => {
+    let parts = [text];                      // strings are plain text, objects are wrapped words
     terms.forEach((term) => {
       if (used.has(term)) return;
-      const re = new RegExp(`\\b(${term.replace(/ /g, "\\s")})\\b`, "i");
-      if (re.test(text)) {
+      const re = new RegExp(`\\b(${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "\\s")})\\b`, "i");
+      for (let k = 0; k < parts.length; k++) {
+        const p = parts[k];
+        if (typeof p !== "string") continue;
+        const hit = re.exec(p);
+        if (!hit) continue;
         used.add(term);
-        text = text.replace(re, `\u0001${term}\u0002$1\u0003`);
+        parts.splice(k, 1, p.slice(0, hit.index), { key: term, shown: hit[1] }, p.slice(hit.index + hit[1].length));
+        break;
       }
     });
-    text = text.replace(/\u0001([^\u0002]+)\u0002([^\u0003]+)\u0003/g,
-      (x, key, shown) => `<button type="button" class="word" data-word="${key}">${shown}</button>`);
-    return open + text;
+    return open + parts.map((p) => typeof p === "string" ? p
+      : `<button type="button" class="word" data-word="${p.key}">${p.shown}</button>`).join("");
   });
 }
+
+/* ---------- what kind of step is this? (badge on the parchment, icon in the step list) ---------- */
+
+const KINDS = {
+  quest:   { label: "Questing",        hint: "Take the quests, do them, hand them in." },
+  train:   { label: "Trainer visit",   hint: "Learn new abilities, then put them on your bar." },
+  talent:  { label: "Talent point",    hint: "Press N and click the talent named below." },
+  travel:  { label: "Travel",          hint: "Head to a new place." },
+  home:    { label: "New home",        hint: "Set your Hearthstone at the inn here." },
+  dungeon: { label: "Group dungeon",   hint: "Find 4 other players first." },
+  start:   { label: "Getting ready",   hint: "Set up before you fight anything." },
+  done:    { label: "Level 60",        hint: "You made it." },
+};
+const KIND_ICON = {
+  quest:   '<path d="M8 3h9a2 2 0 012 2v14a2 2 0 01-2 2H8"/><path d="M8 3a2 2 0 00-2 2v1H4V5a2 2 0 012-2M8 21a2 2 0 01-2-2v-1H4v1a2 2 0 002 2"/><path d="M12 7v6M12 16.5v.5"/>',
+  train:   '<path d="M4 5h6a2 2 0 012 2v13a2 2 0 00-2-2H4zM20 5h-6a2 2 0 00-2 2v13a2 2 0 012-2h6z"/>',
+  talent:  '<path d="M12 2l2.6 6.9L22 9.3l-5.7 4.8L18 21.5 12 17.6 6 21.5l1.7-7.4L2 9.3l7.4-.4z"/>',
+  travel:  '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  home:    '<path d="M3 11l9-8 9 8M5 10v11h14V10"/><path d="M10 21v-6h4v6"/>',
+  dungeon: '<path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/>',
+  start:   '<circle cx="12" cy="12" r="3.4"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/>',
+  done:    '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0zM7 6H4a3 3 0 003 4M17 6h3a3 3 0 01-3 4"/>',
+};
+const kindIcon = (k) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${KIND_ICON[k]}</svg>`;
+
+function stepKind(i) {
+  const s = STEPS[i];
+  if (s.kind && KINDS[s.kind]) return s.kind;                 // a step can say it outright
+  if (i === 0) return "start";
+  if (i === STEPS.length - 1) return "done";
+  if (/dungeon/i.test(s.title)) return "dungeon";
+  if (/^Talents/i.test(s.place)) return "talent";
+  if (/^Level \d+:|trainer/i.test(s.title) || /trainer|\((fly|teleport)\)/i.test(s.place)) return "train";
+  if (/\bhome\b|^Settle/i.test(s.title)) return "home";
+  if (/^(Visit|Fly|Move|Travel|Leave|Into)\b|→/.test(s.title + " " + s.place)) return "travel";
+  return "quest";
+}
+
+/* ---------- chapters (a step with chapter:"…" starts one) ---------- */
+
+const lvNums = (lv) => String(lv).split(/[–-]/).map((n) => parseInt(n, 10)).filter((n) => !isNaN(n));
+const CHAPTERS = [];
+STEPS.forEach((s, i) => {
+  if (s.chapter || !CHAPTERS.length) CHAPTERS.push({ name: s.chapter || s.place, from: i, to: i, lo: 99, hi: 0 });
+  const c = CHAPTERS[CHAPTERS.length - 1];
+  c.to = i;
+  lvNums(s.lv).forEach((n) => { c.lo = Math.min(c.lo, n); c.hi = Math.max(c.hi, n); });
+});
+const chapterOf = (i) => CHAPTERS.findIndex((c) => i >= c.from && i <= c.to);
+const chapterLevels = (c) => (c.lo === c.hi ? `Level ${c.lo}` : `Levels ${c.lo}–${c.hi}`);
 
 /* ---------- step card ---------- */
 
@@ -53,23 +131,30 @@ function showStep(i, direction) {
   void card.offsetWidth; // restart animation
   if (!document.querySelector(".mapbox.big")) card.classList.add(direction === "back" ? "slide-back" : "slide-next");
 
-  $("#stepmeta").innerHTML = `Step ${i + 1} of ${STEPS.length} <span>·</span> Level ${s.lv} <span>·</span> ${s.place}`;
+  const kind = stepKind(i);
+  $("#stepmeta").innerHTML = `<span class="kind k-${kind}" title="${KINDS[kind].hint}">${kindIcon(kind)}${KINDS[kind].label}</span>`
+    + `Step ${i + 1} of ${STEPS.length} <span>·</span> Level ${s.lv} <span>·</span> ${s.place}`;
   $("#steptitle").textContent = s.title;
-  $("#steptodo").innerHTML = s.todo.map((t) => `<li>${explainWords(t)}</li>`).join("");
+  $("#steptodo").innerHTML = s.todo.map((t, n) =>
+    `<li><button type="button" class="tick" data-tick="${n}" aria-pressed="false" aria-label="Mark objective ${n + 1} done"><span>${n + 1}</span></button><div>${explainWords(t)}</div></li>`).join("");
   drawMap(i);
   $("#steptip").innerHTML = s.tip ? `<b>Tip:</b> ${explainWords(s.tip)}` : "";
   $("#steptip").hidden = !s.tip;
 
   $("#back").disabled = i === 0;
-  $("#next").textContent = i === STEPS.length - 1 ? "Finished!" : "Next Step ›";
   $("#bar").style.width = `${((i + 1) / STEPS.length) * 100}%`;
   $("#xptext").textContent = `Level ${s.lv} · Guide step ${i + 1} / ${STEPS.length}`;
   if (window.syncBarsToStep) window.syncBarsToStep(stepLevel(i), i);
 
-  $$("#steplist li").forEach((li, n) => {
+  $$("#steplist li[data-i]").forEach((li) => {
+    const n = +li.dataset.i;
     li.classList.toggle("current", n === i);
     li.classList.toggle("done", n < i);
   });
+  syncTicks();
+  drawJourney(i);
+  drawFootNav(i);
+  syncTalents(stepLevel(i));
   closeWord();
 
   /* tell the shared site layer (assets/js/site.js): progress summary, effects, landing-page "continue" */
@@ -80,19 +165,132 @@ function showStep(i, direction) {
   } }));
 }
 
+/* bring the step into view, just under the sticky header */
+function scrollToStep() {
+  const top = $("#panel-steps .journey, #panel-steps .nav").getBoundingClientRect().top + window.scrollY - $(".top").offsetHeight - 12;
+  if (window.scrollY > top) window.scrollTo({ top, behavior: "smooth" });
+}
+
 function buildStepList() {
   $("#steplist").innerHTML = STEPS.map((s, i) => {
-    return `<li data-i="${i}"><button type="button"><span class="n"><span>${i + 1}</span></span><span class="t">${s.title}</span><span class="l">Lv ${s.lv}</span></button></li>`;
+    const c = CHAPTERS.find((ch) => ch.from === i);
+    const head = c ? `<li class="chap"><b>${c.name}</b><small>${chapterLevels(c)} · ${c.to - c.from + 1} steps</small></li>` : "";
+    const k = stepKind(i);
+    return `${head}<li data-i="${i}"><button type="button"><span class="n"><span>${i + 1}</span></span><span class="sk k-${k}" title="${KINDS[k].label}">${kindIcon(k)}</span><span class="t">${s.title}</span><span class="l">Lv ${s.lv}</span></button></li>`;
   }).join("");
-  $$("#steplist li").forEach((li) => {
+  $$("#steplist li[data-i]").forEach((li) => {
     li.querySelector("button").addEventListener("click", () => {
       showStep(+li.dataset.i, "next");
       $("#allsteps").open = false;
-      // bring the Back/Next buttons into view, just under the sticky header
-      const top = $("#panel-steps .nav").getBoundingClientRect().top + window.scrollY - $(".top").offsetHeight - 12;
-      window.scrollTo({ top, behavior: "smooth" });
+      scrollToStep();
     });
   });
+}
+
+/* ---------- objectives you can tick off ---------- */
+
+function ticksFor(i) { return Array.isArray(saved.done[i]) ? saved.done[i] : []; }
+
+function syncTicks() {
+  const i = saved.step, s = STEPS[i], got = ticksFor(i);
+  $$("#steptodo .tick").forEach((b) => {
+    const on = got.includes(+b.dataset.tick);
+    b.setAttribute("aria-pressed", String(on));
+    b.closest("li").classList.toggle("ticked", on);
+  });
+  const all = got.length >= s.todo.length;
+  const count = $("#tickcount");
+  count.textContent = got.length ? `${got.length} of ${s.todo.length} done` : "Tick each one off as you go";
+  count.classList.toggle("all", all);
+  const last = i === STEPS.length - 1;
+  $$("#next, #next2").forEach((b) => {
+    b.textContent = last ? "Finished!" : all ? "All done · Next Step ›" : "Next Step ›";
+    b.classList.toggle("ready", all && !last);
+  });
+}
+
+$("#steptodo").addEventListener("click", (e) => {
+  const b = e.target.closest(".tick");
+  if (!b) return;
+  const i = saved.step, n = +b.dataset.tick;
+  const got = ticksFor(i).filter((x) => x !== n);
+  if (b.getAttribute("aria-pressed") !== "true") got.push(n);
+  saved.done[i] = got;
+  if (!got.length) delete saved.done[i];
+  persist();
+  const wasAll = $("#tickcount").classList.contains("all");
+  syncTicks();
+  if (b.getAttribute("aria-pressed") === "true" && window.WF && WF.sparksFrom) WF.sparksFrom(b, 8, { min: 14, max: 40, small: 3, big: 6 });
+  if (!wasAll && $("#tickcount").classList.contains("all") && saved.step < STEPS.length - 1 && window.WF && WF.toast) {
+    WF.toast("Step done!", "Press Next Step when you're ready.", "good");
+  }
+});
+
+/* ---------- journey strip: every chapter, where you are, what's left ---------- */
+
+function buildJourney() {
+  const box = document.createElement("div");
+  box.className = "journey";
+  box.innerHTML = `<div class="j-head"><span class="j-now" id="jnow"></span><span class="j-left" id="jleft"></span></div>
+    <div class="j-road" id="jroad" role="list">${CHAPTERS.map((c, n) =>
+      `<button type="button" class="jc" role="listitem" data-ch="${n}" title="${attr(`${c.name}: ${chapterLevels(c)}. Click to jump to its first step.`)}">
+         <span class="jc-dot" aria-hidden="true"><i>${n + 1}</i></span><b>${c.name}</b><small>${c.lo === c.hi ? `Lv ${c.lo}` : `Lv ${c.lo}–${c.hi}`}</small>
+         <span class="jc-fill" aria-hidden="true"><i></i></span>
+       </button>`).join("")}</div>`;
+  $("#panel-steps .nav").before(box);
+  box.addEventListener("click", (e) => {
+    const b = e.target.closest(".jc");
+    if (!b) return;
+    const c = CHAPTERS[+b.dataset.ch];
+    showStep(c.from, c.from >= saved.step ? "next" : "back");
+  });
+}
+
+function drawJourney(i) {
+  const at = chapterOf(i), c = CHAPTERS[at];
+  $$("#jroad .jc").forEach((b, n) => {
+    b.classList.toggle("done", n < at);
+    b.classList.toggle("now", n === at);
+    b.setAttribute("aria-current", n === at ? "step" : "false");
+    const ch = CHAPTERS[n];
+    const part = n < at ? 1 : n > at ? 0 : (i - ch.from + 1) / (ch.to - ch.from + 1);
+    b.querySelector(".jc-fill i").style.width = `${part * 100}%`;
+  });
+  $("#jnow").innerHTML = `Chapter ${at + 1} of ${CHAPTERS.length}: <b>${c.name}</b> <small>· step ${i - c.from + 1} of ${c.to - c.from + 1} here</small>`;
+  const left = STEPS.length - 1 - i;
+  $("#jleft").textContent = left ? `${Math.round((i / (STEPS.length - 1)) * 100)}% of the way to 60` : "Journey complete!";
+  // keep the current chapter in view inside the strip (without moving the page)
+  const road = $("#jroad"), cur = road.querySelector(".jc.now");
+  if (cur && road.scrollWidth > road.clientWidth) {
+    const want = cur.offsetLeft - road.clientWidth / 2 + cur.offsetWidth / 2;
+    road.scrollTo({ left: want, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }
+}
+
+/* ---------- Back / Next again under the step, with a peek at what's next ---------- */
+
+function buildFootNav() {
+  const nav = document.createElement("div");
+  nav.className = "footnav";
+  nav.innerHTML = `<button type="button" id="back2" class="wowbtn">‹ Back</button>
+    <div class="upnext" id="upnext"></div>
+    <button type="button" id="next2" class="wowbtn">Next Step ›</button>`;
+  $("#card").after(nav);
+  $("#back2").addEventListener("click", () => { showStep(saved.step - 1, "back"); scrollToStep(); });
+  $("#next2").addEventListener("click", () => { showStep(saved.step + 1, "next"); scrollToStep(); });
+  $("#upnext").addEventListener("click", (e) => {
+    if (!e.target.closest("button")) return;
+    showStep(saved.step + 1, "next");
+    scrollToStep();
+  });
+}
+
+function drawFootNav(i) {
+  $("#back2").disabled = i === 0;
+  const n = STEPS[i + 1];
+  if (!n) { $("#upnext").innerHTML = `<small>That's the last step.</small><span>Well played, champion!</span>`; return; }
+  const k = stepKind(i + 1);
+  $("#upnext").innerHTML = `<small>Up next</small><button type="button" class="k-${k}">${kindIcon(k)}<span>${n.title}</span><em>Lv ${n.lv} · ${n.place}</em></button>`;
 }
 
 /* ---------- "Where to go" map: drag, zoom, clickable pins ---------- */
@@ -582,14 +780,36 @@ function showTab(name) {
 /* ---------- talents and glossary ---------- */
 
 function buildTalents() {
-  $("#talentrows").innerHTML = TALENTS.map((t) =>
-    `<tr><td class="lv">${t[0]}</td><td><b>${t[1]}</b><div class="how">${t[2]}</div></td><td>${t[3]}</td></tr>`
-  ).join("");
+  $("#talentrows").innerHTML = TALENTS.map((t) => {
+    const [lo, hi] = lvNums(t[0]);
+    return `<tr data-lo="${lo}" data-hi="${hi || lo}"><td class="lv">${t[0]}</td><td><b>${t[1]}</b><div class="how">${t[2]}</div></td><td>${t[3]}</td></tr>`;
+  }).join("");
+  const note = document.createElement("p");
+  note.className = "talentnow";
+  note.id = "talentnow";
+  $("table.talents").before(note);
+}
+
+/* light up the talent for the level of the step you're on */
+function syncTalents(level) {
+  let now = null;
+  $$("#talentrows tr").forEach((tr) => {
+    const lo = +tr.dataset.lo, hi = +tr.dataset.hi;
+    tr.classList.toggle("past", hi < level);
+    const isNow = lo <= level && level <= hi;
+    tr.classList.toggle("now", isNow);
+    if (isNow) now = tr;
+  });
+  const first = TALENTS.length ? lvNums(TALENTS[0][0])[0] : 10;
+  $("#talentnow").innerHTML = level < first
+    ? `<b>You're level ${level}</b> on the Quest Guide. Your first talent point comes at level ${first}: come back then.`
+    : now ? `<b>You're level ${level}</b> on the Quest Guide. Your talent right now: <b class="gold">${now.querySelector("b").textContent}</b> (highlighted below). Ticked rows are already done.`
+    : `<b>You're level ${level}</b> on the Quest Guide. Ticked rows are already done.`;
 }
 
 function buildGlossary() {
   const skip = new Set(["elites"]);
-  const label = { pvp: "PvP", "rested xp": "Rested XP" };
+  const label = { pvp: "PvP", "rested xp": "Rested XP", xp: "XP", npc: "NPC" };
   $("#glossary").innerHTML = Object.keys(WORDS).filter((w) => !skip.has(w)).sort().map((w) =>
     `<div><dt>${label[w] || w.charAt(0).toUpperCase() + w.slice(1)}</dt><dd>${WORDS[w]}</dd></div>`
   ).join("");
@@ -597,9 +817,13 @@ function buildGlossary() {
 
 /* ---------- start ---------- */
 
+if (!saved.done || typeof saved.done !== "object" || Array.isArray(saved.done)) saved.done = {};
+$("#card h4").insertAdjacentHTML("beforeend", ' <span class="tickcount" id="tickcount" aria-live="polite"></span>');
 buildStepList();
 buildTalents();
 buildGlossary();
+buildJourney();
+buildFootNav();
 showStep(saved.step, "next");
 
 $("#next").addEventListener("click", () => showStep(saved.step + 1, "next"));

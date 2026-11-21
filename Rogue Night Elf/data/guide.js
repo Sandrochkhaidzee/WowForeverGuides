@@ -18,12 +18,14 @@ const GUIDE_PAGE = {
    PART 1 — CONTENT
    Each step: lv = your level, place = where, title,
    todo = list of things to do, tip = optional extra help.
+   chapter = optional: this step starts a new chapter (shown in the
+   journey strip above the step and in the "All steps" list).
    --------------------------------------------------------- */
 
 const STEPS = [
 
 /* ---------- Shadowglen, levels 1–6 ---------- */
-{ lv:"1", place:"Shadowglen", title:"Before you do anything", map:[["teldrassil",[58.7,44.3,"You start here, under Aldrassil"]]], learn:["sinister","eviscerate","throw","shadowmeld","eluneslight","hearth","food1"],
+{ chapter:"Shadowglen", lv:"1", place:"Shadowglen", title:"Before you do anything", map:[["teldrassil",[58.7,44.3,"You start here, under Aldrassil"]]], learn:["sinister","eviscerate","throw","shadowmeld","eluneslight","hearth","food1"],
   todo:[
     "Press <kbd>P</kbd> to open your spellbook.",
     "Drag each ability from your spellbook to the key shown in the <b>Action bar</b> box below. If the extra bars aren't showing yet, see <b>How to set this up in game</b> on the Action Bars tab.",
@@ -78,7 +80,7 @@ const STEPS = [
   ] },
 
 /* ---------- Dolanaar, levels 6–11 ---------- */
-{ lv:"6", place:"Dolanaar", title:"Make Dolanaar your home", map:[["teldrassil",[55.6,59.8,"Innkeeper Keldamyr"],[56.1,61.7,"Corithras Moonrage"]]],
+{ chapter:"Dolanaar", lv:"6", place:"Dolanaar", title:"Make Dolanaar your home", map:[["teldrassil",[55.6,59.8,"Innkeeper Keldamyr"],[56.1,61.7,"Corithras Moonrage"]]],
   todo:[
     "Find <b>Innkeeper Keldamyr</b> and choose <b>Make this inn your home</b>.",
     "Your <b>Hearthstone</b> (in your bag) now teleports you back here. It has a 1 hour cooldown.",
@@ -130,7 +132,7 @@ const STEPS = [
   tip:"New fight: Sinister Strike twice, Slice and Dice (you attack faster), then Sinister Strike until you have 3 to 5 combo points, then Eviscerate. Keep Slice and Dice running." },
 
 /* ---------- Darnassus ---------- */
-{ lv:"10", place:"Darnassus", title:"Visit Darnassus", map:[["teldrassil",[39,49,"The road west to Darnassus"]],["darnassus",[63,61,"You come in here"],[37,22,"Rogue trainers (Cenarion Enclave)"],[57.6,46.7,"Ilyenia Moonfire (weapon trainer)"]]], learn:["firstaid","bandage1"],
+{ chapter:"Darnassus", lv:"10", place:"Darnassus", title:"Visit Darnassus", map:[["teldrassil",[39,49,"The road west to Darnassus"]],["darnassus",[63,61,"You come in here"],[37,22,"Rogue trainers (Cenarion Enclave)"],[57.6,46.7,"Ilyenia Moonfire (weapon trainer)"]]], learn:["firstaid","bandage1"],
   todo:[
     "Follow the road west from Dolanaar to the city of <b>Darnassus</b>.",
     "Find the rogue trainers. Ask any guard: click them and they'll mark the place on your map.",
@@ -170,7 +172,7 @@ const STEPS = [
   ] },
 
 /* ---------- Darkshore, levels 12–19 ---------- */
-{ lv:"12", place:"Auberdine", title:"Your new home: Auberdine", map:[["darkshore",[37,44.1,"Innkeeper Shaussiy"],[36.3,45.6,"Flight master"]]],
+{ chapter:"Darkshore", lv:"12", place:"Auberdine", title:"Your new home: Auberdine", map:[["darkshore",[37,44.1,"Innkeeper Shaussiy"],[36.3,45.6,"Flight master"]]],
   todo:[
     "Make the inn your home. Talk to the flight master so you can fly here later.",
     "Take every quest in town: <b>Buzzbox 827</b>, <b>Washed Ashore</b>, <b>Plagued Lands</b>, <b>How Big a Threat?</b>, <b>Tools of the Highborne</b>, <b>The Red Crystal</b>, <b>Cave Mushrooms</b> and more."
@@ -234,7 +236,7 @@ const STEPS = [
   ] },
 
 /* ---------- Level 20 ---------- */
-{ lv:"20", place:"Darnassus", title:"Level 20: poisons", map:[["darnassus",[37,22,"Rogue trainers (Cenarion Enclave)"]]],
+{ chapter:"Poisons quest", lv:"20", place:"Darnassus", title:"Level 20: poisons", map:[["darnassus",[37,22,"Rogue trainers (Cenarion Enclave)"]]],
   todo:[
     "Learn <b>Rupture</b> and new ranks. Rupture is a bleeding finisher. Slice and Dice and Eviscerate are better while questing, so you can leave it in the spellbook.",
     "Ask your trainer about <b>poisons</b>. Rogues learn them from a quest at this level: see the next step."
@@ -256,7 +258,7 @@ const STEPS = [
   tip:"Riposte only lights up right after you parry an attack. When it lights up, press it." },
 
 /* ---------- Ashenvale, levels 20–25 ---------- */
-{ lv:"20–24", place:"Ashenvale", title:"Quest Ashenvale", map:[["ashenvale",[36.5,49.5,"Astranaar"],[20.3,42.4,"Raene's Cleansing (Raene Wolfrunner)"],[14.5,26,"Zoram Strand"],[30.5,31,"Bathran's Haunt"]]],
+{ chapter:"Ashenvale & Wetlands", lv:"20–24", place:"Ashenvale", title:"Quest Ashenvale", map:[["ashenvale",[36.5,49.5,"Astranaar"],[20.3,42.4,"Raene's Cleansing (Raene Wolfrunner)"],[14.5,26,"Zoram Strand"],[30.5,31,"Bathran's Haunt"]]],
   todo:[
     "Take every quest in Astranaar: <b>Raene's Cleansing</b>, <b>Bear Necessities</b> and more.",
     "<b>The Zoram Strand</b> (naga on the west coast) and <b>Bathran's Haunt</b> (ghosts in the ruins north of the road).",
@@ -319,7 +321,7 @@ const STEPS = [
   ] },
 
 /* ---------- 28–36 ---------- */
-{ lv:"28–32", place:"Duskwood or Hillsbrad", title:"Two zones to choose from", map:[["duskwood",[73.5,46,"Darkshire"]],["hillsbrad",[50,55,"Southshore"]]],
+{ chapter:"Duskwood to Stranglethorn", lv:"28–32", place:"Duskwood or Hillsbrad", title:"Two zones to choose from", map:[["duskwood",[73.5,46,"Darkshire"]],["hillsbrad",[50,55,"Southshore"]]],
   todo:[
     "<b>Duskwood</b> (town: Darkshire) or <b>Hillsbrad Foothills</b> (town: Southshore). Pick one, or do both. Southshore also has a boat to Auberdine.",
     "In Southshore, talk to <b>Emissary Jacques</b> to start the new <b>City of Dalaran</b> dungeon (levels 28–35)."
@@ -351,7 +353,7 @@ const STEPS = [
   ] },
 
 /* ---------- 35–60 ---------- */
-{ lv:"35–40", place:"Riverglades (new zone)", title:"Riverglades", map:[["riverglades"]],
+{ chapter:"Riverglades to 60", lv:"35–40", place:"Riverglades (new zone)", title:"Riverglades", map:[["riverglades"]],
   todo:[
     "A brand new zone for levels 35–45. From Redridge, take the road toward Burning Steppes, turn right into the hills, and follow the road south to <b>Farholde Keep</b>.",
     "Make it your home and unlock the flight path. It flies straight back to Redridge.",

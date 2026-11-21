@@ -18,12 +18,14 @@ const GUIDE_PAGE = {
    PART 1 — CONTENT
    Each step: lv = your level, place = where, title,
    todo = list of things to do, tip = optional extra help.
+   chapter = optional: this step starts a new chapter (shown in the
+   journey strip above the step and in the "All steps" list).
    --------------------------------------------------------- */
 
 const STEPS = [
 
 /* ---------- Coldridge Valley, levels 1–6 ---------- */
-{ lv:"1", place:"Coldridge Valley", title:"Before you do anything", map:[["dunmorogh",[29.9,71.2,"You start here, outside Anvilmar"]]], learn:["fireball","frostarmor","arcaneint","eureka","escape","hearth"],
+{ chapter:"Coldridge Valley", lv:"1", place:"Coldridge Valley", title:"Before you do anything", map:[["dunmorogh",[29.9,71.2,"You start here, outside Anvilmar"]]], learn:["fireball","frostarmor","arcaneint","eureka","escape","hearth"],
   todo:[
     "Press <kbd>P</kbd> to open your spellbook.",
     "Drag each spell from your spellbook to the key shown in the <b>Action bar</b> box below. If the extra bars aren't showing yet, see <b>How to set this up in game</b> on the Action Bars tab.",
@@ -91,7 +93,7 @@ const STEPS = [
   ] },
 
 /* ---------- Kharanos, levels 6–11 ---------- */
-{ lv:"6", place:"Kharanos", title:"Make Kharanos your home", map:[["dunmorogh",[47.3,52.4,"Thunderbrew Distillery (inn)"]]],
+{ chapter:"Kharanos", lv:"6", place:"Kharanos", title:"Make Kharanos your home", map:[["dunmorogh",[47.3,52.4,"Thunderbrew Distillery (inn)"]]],
   todo:[
     "Find the innkeeper in the Thunderbrew Distillery (the big inn) and choose <b>Make this inn your home</b>.",
     "Your <b>Hearthstone</b> (in your bag) now teleports you back here. It has a 1 hour cooldown.",
@@ -159,7 +161,7 @@ const STEPS = [
   ] },
 
 /* ---------- Ironforge ---------- */
-{ lv:"10–11", place:"Ironforge", title:"Visit Ironforge", map:[["dunmorogh",[53.5,34.9,"Gates of Ironforge"]],["ironforge",[15,85,"You come in here"],[55.5,47.7,"Gryphon master"]]],
+{ chapter:"Ironforge", lv:"10–11", place:"Ironforge", title:"Visit Ironforge", map:[["dunmorogh",[53.5,34.9,"Gates of Ironforge"]],["ironforge",[15,85,"You come in here"],[55.5,47.7,"Gryphon master"]]],
   todo:[
     "Follow the road north from Kharanos to the big gate of <b>Ironforge</b>.",
     "Inside, find the gryphon master and talk to him to unlock the <b>flight path</b>.",
@@ -182,7 +184,7 @@ const STEPS = [
   ] },
 
 /* ---------- Loch Modan, levels 11–19 ---------- */
-{ lv:"11", place:"Road to Loch Modan", title:"Move to Loch Modan", map:[["dunmorogh",[46.7,53,"Kharanos"],[87.5,50,"Tunnel to Loch Modan"]],["lochmodan",[23.3,74,"Guard tower"]]],
+{ chapter:"Loch Modan", lv:"11", place:"Road to Loch Modan", title:"Move to Loch Modan", map:[["dunmorogh",[46.7,53,"Kharanos"],[87.5,50,"Tunnel to Loch Modan"]],["lochmodan",[23.3,74,"Guard tower"]]],
   todo:[
     "From Kharanos, follow the road east through the mountain tunnel into <b>Loch Modan</b>.",
     "At the first guard tower, take <b>The Trogg Threat</b> and <b>In Defense of the King's Lands</b>."
@@ -252,7 +254,7 @@ const STEPS = [
   ] },
 
 /* ---------- Level 20 ---------- */
-{ lv:"20", place:"Ironforge", title:"Level 20: the big one", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["blink","blizzard","evocation","manashield","tp_if","tp_sw"],
+{ chapter:"Level 20 training", lv:"20", place:"Ironforge", title:"Level 20: the big one", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["blink","blizzard","evocation","manashield","tp_if","tp_sw"],
   todo:[
     "Learn everything: <b>Blink</b>, <b>Blizzard</b>, <b>Evocation</b>, <b>Teleport: Ironforge</b>, <b>Teleport: Stormwind</b> and new ranks.",
     "Buy a few <b>Runes of Teleportation</b> from the reagent vendor. Teleports use them up.",
@@ -275,7 +277,7 @@ const STEPS = [
   ] },
 
 /* ---------- Wetlands, levels 20–28 ---------- */
-{ lv:"20–22", place:"Menethil Harbor", title:"Settle in Menethil", map:[["wetlands",[10.5,60,"Menethil Harbor"]]],
+{ chapter:"Wetlands", lv:"20–22", place:"Menethil Harbor", title:"Settle in Menethil", map:[["wetlands",[10.5,60,"Menethil Harbor"]]],
   todo:[
     "Make the inn your home. Unlock the flight path.",
     "Take every quest in town: <b>Claws from the Deep</b>, <b>Young Crocolisk Skins</b>, <b>Digging Through the Ooze</b>, <b>Daily Delivery</b> and more."
@@ -319,7 +321,7 @@ const STEPS = [
   ] },
 
 /* ---------- 28–36 ---------- */
-{ lv:"28–30", place:"Duskwood or Hillsbrad", title:"Two zones to choose from", map:[["duskwood",[73.5,46,"Darkshire"]],["hillsbrad",[50,55,"Southshore"]]],
+{ chapter:"Duskwood to Stranglethorn", lv:"28–30", place:"Duskwood or Hillsbrad", title:"Two zones to choose from", map:[["duskwood",[73.5,46,"Darkshire"]],["hillsbrad",[50,55,"Southshore"]]],
   todo:[
     "<b>Duskwood</b> (town: Darkshire) or <b>Hillsbrad Foothills</b> (town: Southshore). Pick one, or do both.",
     "In Southshore, talk to <b>Emissary Jacques</b> to start the new <b>City of Dalaran</b> dungeon (levels 28–35)."
@@ -367,7 +369,7 @@ const STEPS = [
   ] },
 
 /* ---------- 35–60 ---------- */
-{ lv:"35–40", place:"Riverglades (new zone)", title:"Riverglades", map:[["riverglades"]],
+{ chapter:"Riverglades to 60", lv:"35–40", place:"Riverglades (new zone)", title:"Riverglades", map:[["riverglades"]],
   todo:[
     "A brand new zone for levels 35–45. From Redridge, take the road toward Burning Steppes, turn right into the hills, and follow the road south to <b>Farholde Keep</b>.",
     "Make it your home and unlock the flight path. It flies straight back to Redridge.",
