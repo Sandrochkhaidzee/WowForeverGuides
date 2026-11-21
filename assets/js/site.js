@@ -71,7 +71,7 @@
   const SETTINGS_KEY = "wf.settings.v1";
   /* motion "on" by default: full effects even when the device asks for less motion.
      Visitors can pick Auto (follow the device) or Off in Settings. */
-  const DEFAULTS = { text: "1", contrast: "normal", font: "classic", motion: "on", fx: "on" };
+  const DEFAULTS = { text: "1", contrast: "normal", font: "classic", motion: "on", fx: "on", simple: "off" };
   const settings = Object.assign({}, DEFAULTS, store.get(SETTINGS_KEY, {}));
   if (!["auto", "on", "off"].includes(settings.motion)) settings.motion = "auto";
   const osReduced = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -85,6 +85,11 @@
     html.dataset.contrast = settings.contrast;
     html.dataset.font = settings.font;
     html.dataset.motion = settings.motion;
+    html.dataset.simple = settings.simple;   // Quest Guide shows just the step (see fx.css)
+    $$(".wf-simple-toggle").forEach((b) => {
+      b.setAttribute("aria-pressed", String(settings.simple === "on"));
+      b.querySelector("b").textContent = settings.simple === "on" ? "On" : "Off";
+    });
     embers.toggle(settings.fx === "on" && !reduced() && settings.contrast !== "high");
     // the guide map measures itself; let it re-measure after a text-size change
     window.dispatchEvent(new Event("resize"));
@@ -245,6 +250,7 @@
     ["font", "Easy-read font", "A plain font instead of the fancy game-style one.", [["classic", "Off"], ["readable", "On"]]],
     ["motion", "Animations", "Off if movement is distracting. Auto follows your device's motion setting.", [["on", "On"], ["auto", "Auto"], ["off", "Off"]]],
     ["fx", "Floating embers", "The little sparks drifting behind the page.", [["on", "On"], ["off", "Off"]]],
+    ["simple", "Simple view", "Quest Guide shows only the step: what to do, when it's done, and Back / Next. Hides the chapter strip, map and action bar.", [["off", "Off"], ["on", "On"]]],
   ];
   let setDlg = null;
   function openSettings() {
@@ -706,7 +712,7 @@
     [/addon/i, "trade_engineering"], [/key/i, "inv_misc_key_03"],
     [/what is/i, "trade_blacksmithing"], [/how to start/i, "inv_misc_book_09"],
     [/colou?r/i, "inv_misc_gem_variety_01"], [/stop/i, "inv_misc_book_07"],
-    [/gathering/i, "trade_herbalism"], [/pair/i, "inv_misc_bag_08"], [/fits|class/i, "inv_chest_leather_01"],
+    [/gathering/i, "trade_herbalism"], [/pair/i, "inv_misc_bag_08"], [/fits|class/i, "inv_chest_leather_01"], [/gear/i, "inv_chest_leather_01"],
   ];
   const secIcon = (title) => {
     const r = SEC_RULES.find((rule) => rule.slice(0, -1).every((re) => re.test(title)));
@@ -849,6 +855,21 @@
   /* =========================================================
      start
      ========================================================= */
+
+  /* a one-click Simple view switch at the top of the Quest Guide (same as Settings → Simple view) */
+  if (PAGE === "guide" && $("#panel-steps .lead")) {
+    const b = make("button", "wf-simple-toggle",
+      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6"/></svg>Simple view: <b>Off</b>`);
+    b.type = "button";
+    b.title = "Show only the current step: what to do, when it's done, and Back / Next";
+    b.addEventListener("click", () => {
+      settings.simple = settings.simple === "on" ? "off" : "on";
+      store.set(SETTINGS_KEY, settings);
+      applySettings();
+      if (setDlg) syncSettings();
+    });
+    $("#panel-steps .lead").append(" ", b);
+  }
 
   applySettings();
   buildDock();

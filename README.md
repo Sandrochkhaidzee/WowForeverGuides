@@ -16,7 +16,13 @@ Step-by-step beginner guides for WoW: Forever, styled like the in-game UI.
   - Each step has a **badge** saying what kind it is (questing, trainer visit, talent point, travel, dungeon…).
   - **Tick off objectives** as you do them; the Next button turns green when all are done. Back / Next and
     "Up next" also sit under the step, so there's no scrolling back up.
+  - Every step ends with a **Done when** line (how to tell it's finished) and, for quest steps, a
+    **Still short of the level?** fallback saying where to fight for the last bit of XP.
+  - **Simple view** (switch at the top of the Quest Guide, or in Settings) shows only the step:
+    what to do, when it's done, Back / Next. The chapter strip, map and action bar are hidden.
   - The **Talents** tab highlights the talent for the level you're at.
+- **How to Play** has a **Gear** card: item colours, the stats each class wants, a side-by-side
+  "is this better?" example, and how to compare items in game.
 - **How to Play** and **Profession Basics** are picture cards with a "jump to" row, an enemy level-colour scale,
   the class combo as real ability icons, and a skill-up chance bar for recipe colours.
 - **Professions** and **Addons** pages for each character.
@@ -83,6 +89,19 @@ It reads the WoW: Forever install (nothing there is changed), finds every icon n
 (`inv_…`, `ability_…`, `spell_…`, `trade_…`, `achievement_…`, `classicon_…`) and saves the ones that
 are missing. Needs Python with Pillow (`pip install pillow`). An icon that isn't in `assets/icons` yet
 loads from Wowhead instead, so nothing breaks in the meantime.
+
+## Zone maps
+
+The "Where to go" maps are stored with the site in `assets/maps/<id>.jpg`. After adding a zone to a
+character's `ZONES` table, run:
+
+```
+python tools/get-maps.py "E:/World of Warcraft/_forever_"
+```
+
+Numeric ids (e.g. `10` = Duskwood) are copied from Wowhead's classic map server. A word id (e.g.
+`"hyjal"`) is a map only the game has; it's read from your install. A map that isn't saved yet loads
+from Wowhead instead. Riverglades has no map yet (`id: null`).
 
 ## Hosting on GitHub Pages
 

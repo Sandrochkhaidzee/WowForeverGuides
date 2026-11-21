@@ -52,6 +52,7 @@
           <h2 id="steptitle"></h2>
           <h4>Objectives</h4>
           <ol class="todo" id="steptodo"></ol>
+          <div class="donewhen" id="stepdone" hidden></div>
           <div class="map-veil" id="mapveil" hidden></div>
           <div class="mapbox" id="mapbox" hidden>
             <div class="map-head">
@@ -162,6 +163,31 @@
           <li>New abilities go into your spellbook (<kbd>P</kbd>). The <a href="#" data-goto="bars">Action Bars</a> tab shows where to put them.</li>
         </ul>
 
+        <h3>Gear: is this item better?</h3>
+        <p>The colour of an item's name tells you how good it is:</p>
+        <div class="qualities" role="list">
+          <span role="listitem" class="q-poor"><b>Grey</b> Poor: sell it</span>
+          <span role="listitem" class="q-common"><b>White</b> Common: basic</span>
+          <span role="listitem" class="q-uncommon"><b>Green</b> Uncommon: a good upgrade</span>
+          <span role="listitem" class="q-rare"><b>Blue</b> Rare: great, often from dungeons</span>
+          <span role="listitem" class="q-epic"><b>Purple</b> Epic: the best, from raids</span>
+        </div>
+        <div class="gearcompare">
+          <div class="itip q-common"><span class="itip-tag">You're wearing</span><img src="../assets/icons/inv_chest_leather_01.jpg" alt="" width="40" height="40"><div><b class="iname">Leather Vest</b><span>Chest · Leather</span><span>60 Armor</span></div></div>
+          <span class="gc-vs" aria-hidden="true">vs</span>
+          <div class="itip q-uncommon"><span class="itip-tag">You just found</span><img src="../assets/icons/inv_chest_leather_01.jpg" alt="" width="40" height="40"><div><b class="iname">Vest of the Monkey</b><span>Chest · Leather</span><span>64 Armor</span><span class="up">+5 Agility</span><span class="up">+4 Stamina</span></div></div>
+          <p class="gc-verdict">Better: it has <b>Agility</b>, the stat rogues want most. Put it on.</p>
+        </div>
+        <ul>
+          <li><b>What you can wear:</b> <b>leather</b> armor (cloth too, but leather is better). Rogues can't wear mail or plate.</li>
+          <li><b>Stats to look for:</b> <b>Agility</b> first (more damage, more critical hits, more dodging), then <b>Stamina</b> (more health) and <b>Strength</b>. Skip Intellect and Spirit: they're for spellcasters.</li>
+          <li><b>Name endings:</b> green items often end in a word that tells you their stats. <b>of the Monkey</b> (Agility + Stamina) and <b>of the Tiger</b> (Strength + Agility) are great for you. <b>of the Owl</b> and <b>of the Eagle</b> are for casters.</li>
+          <li><b>Weapons:</b> one in each hand. Look at the <b>damage per second</b> number: higher is better. A slow weapon (speed 2.4 or more) goes in your main hand, a fast one in your off hand. Your talents like swords; daggers are fine early on.</li>
+          <li><b>How to compare:</b> point at the new item and hold <kbd>Shift</kbd>. The game shows what you're wearing right next to it. Right-click an item in your bags to put it on.</li>
+          <li><b>Easy mode:</b> the <b>Pawn</b> addon (see <a href="NightElf-Rogue-Addons.html">Addons</a>) puts a green arrow on items that are an upgrade for you.</li>
+          <li><b>Quest rewards:</b> when you can pick one, take the one with Agility. If none fits, take the one that sells for the most.</li>
+        </ul>
+
         <h3>Getting around</h3>
         <ul>
           <li>Talk to the innkeeper in each new town and choose "Make this inn your home". Your Hearthstone then brings you back there.</li>
@@ -219,7 +245,7 @@
     </div>
   </section>
 
-  <p class="foot">Fan-made guide for World of Warcraft: Forever. Ability icons and maps © Blizzard Entertainment. Icons from the game files; maps shown from Wowhead.</p>
+  <p class="foot">Fan-made guide for World of Warcraft: Forever. Ability icons and maps © Blizzard Entertainment. Icons from the game files; zone maps from Wowhead, Mount Hyjal from the game files.</p>
 </main>
 
 <!-- ===== BOTTOM HUD: XP bar + main action bar ===== -->

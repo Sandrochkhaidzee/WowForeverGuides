@@ -138,6 +138,10 @@ function showStep(i, direction) {
   $("#steptitle").textContent = s.title;
   $("#steptodo").innerHTML = s.todo.map((t, n) =>
     `<li><button type="button" class="tick" data-tick="${n}" aria-pressed="false" aria-label="Mark objective ${n + 1} done"><span>${n + 1}</span></button><div>${explainWords(t)}</div></li>`).join("");
+  /* "Done when": how to tell the step is finished, plus what to do if you're short of the level */
+  $("#stepdone").innerHTML = (s.done ? `<p><b>Done when:</b> ${explainWords(s.done)}</p>` : "")
+    + (s.stuck ? `<p class="stuck"><b>Still short of the level?</b> ${explainWords(s.stuck)}</p>` : "");
+  $("#stepdone").hidden = !(s.done || s.stuck);
   drawMap(i);
   $("#steptip").innerHTML = s.tip ? `<b>Tip:</b> ${explainWords(s.tip)}` : "";
   $("#steptip").hidden = !s.tip;
@@ -296,8 +300,10 @@ function drawFootNav(i) {
 
 /* ---------- "Where to go" map: drag, zoom, clickable pins ---------- */
 
-/* Zone maps from Wowhead's classic map server. id: null = no classic map exists. */
-const MAP_URL = "https://wow.zamimg.com/images/wow/classic/maps/enus/original/";
+/* Zone maps are stored with the site in assets/maps/<id>.jpg (tools/get-maps.py saves them).
+   If one is missing, numeric ids fall back to Wowhead's classic map server. id: null = no map exists. */
+const MAP_URL = document.currentScript ? new URL("../maps/", document.currentScript.src).href : "assets/maps/";
+const MAP_CDN = "https://wow.zamimg.com/images/wow/classic/maps/enus/original/";
 const TOMTOM_URL = "https://www.curseforge.com/wow/addons/tomtom";
 /* ZONES comes from the character's data/guide.js */
 
@@ -729,7 +735,11 @@ document.addEventListener("keydown", (e) => {
 
 /* no picture (offline): say so instead of an empty box */
 $map.img.addEventListener("error", () => {
-  if (!$map.img.getAttribute("src")) return;
+  const src = $map.img.getAttribute("src");
+  if (!src) return;
+  const id = src.startsWith(MAP_URL) && src.slice(MAP_URL.length).replace(/\.jpg$/, "");
+  if (id && /^\d+$/.test(id)) { $map.img.src = `${MAP_CDN}${id}.jpg`; return; }   // not saved locally yet
+  $map.img.removeAttribute("src");
   $("#mapnone").textContent = "The map needs an internet connection. The places and coordinates below still work.";
   $("#mapnone").hidden = false;
 });

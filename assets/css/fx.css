@@ -836,3 +836,24 @@ html[data-contrast="high"] .howcard { background: #000; border-color: #555; }
   .cf-step .slot { width: 42px; height: 42px; }
   .cf-arrow { margin-top: 6px; font-size: 20px; }
 }
+
+/* ---------- Simple view (Settings → Simple view, or the switch on the Quest Guide) ----------
+   The Quest Guide shows only the step: objectives, "Done when", tip, Back / Next. */
+.wf-simple-toggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-left: 4px; padding: 3px 10px;
+  font: inherit; font-size: 15px; color: var(--text);
+  background: linear-gradient(#3a332b, #221e19);
+  border: 1px solid var(--gold-dark); border-radius: 14px;
+  cursor: pointer; vertical-align: middle;
+}
+.wf-simple-toggle svg { width: 16px; height: 16px; color: var(--gold); }
+.wf-simple-toggle b { color: var(--wow-yellow); }
+.wf-simple-toggle:hover { border-color: var(--gold); }
+.wf-simple-toggle[aria-pressed="true"] { background: linear-gradient(#4b3d1a, #2a2210); border-color: var(--wow-yellow); }
+
+html[data-simple="on"] body[data-page="guide"] { padding-bottom: 40px; }
+html[data-simple="on"] body[data-page="guide"] :is(
+  .hud, #panel-steps .journey, #mapbox, #mapveil, #stepbars, #panel-steps .keys, #allsteps, #wf-embers
+) { display: none !important; }
+html[data-simple="on"] body[data-page="guide"] .questpaper { font-size: 1.05em; }
