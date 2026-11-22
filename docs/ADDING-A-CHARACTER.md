@@ -45,9 +45,22 @@ const GUIDE_PAGE = {
 ```
 
 Then rewrite `STEPS`, `TALENTS`, `WORDS`, `ZONES`, `SPELLBOOK`, `ICONS` and `BARS`.
+`TALENTS` names one talent per row, exactly as the game spells it; the Talents tab draws the trees
+from `data/talents/<class>.js`. For a class that has no file there yet, run
+`python tools/extract-talents.py "E:/World of Warcraft/_forever_"` and add
+`<script src="../data/talents/<class>.js"></script>` before `assets/js/talents.js` in the page.
 Each section has a comment explaining its fields. `WORDS` only needs the class's own words
 (energy, combo points, …): words every player meets come from `data/words.js`. A word in
 `WORDS` replaces the shared one, for a class-flavored version.
+
+Two more data files are made by tools, not by hand (the copied folder has the old character's; replace them):
+
+- `data/quests.js` (the quests each step names, with givers, hand-ins and objectives):
+  `node tools/build-quest-data.js "E:/World of Warcraft/_forever_/Interface/AddOns/QuestieDB"`.
+- `data/gear.js` (the Gear tab): first add the class to `CLASSES` at the top of `tools/build-gear.py`
+  (armour type, weapons, stat weights) and to `POOL_LISTS` (which item lists to read), then run
+  `python tools/build-gear.py dwarf-hunter`. Items the guide names that the item sites get wrong go in
+  `tools/gear-extra.json` under the character's id. Then run `tools/extract-icons.py` for the item icons.
 
 Shared pages, in the site root:
 

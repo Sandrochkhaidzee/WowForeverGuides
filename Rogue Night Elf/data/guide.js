@@ -18,8 +18,10 @@ const GUIDE_PAGE = {
    PART 1 — CONTENT
    Each step: lv = your level, place = where, title,
    todo = list of things to do, tip = optional extra help.
-   chapter = optional: this step starts a new chapter (shown in the
-   journey strip above the step and in the "All steps" list).
+   chapter = optional: this step starts a new chapter (shown as a
+   heading in the "All steps" list).
+   quests = optional: the quests handed in on this step, as {id:"name"}.
+   "Find my step from the game" uses them to work out where you are.
    --------------------------------------------------------- */
 
 const STEPS = [
@@ -34,7 +36,7 @@ const STEPS = [
   ],
   tip:"Sinister Strike is already on key <kbd>1</kbd> and Eviscerate on <kbd>2</kbd>. Strike three times, then Eviscerate. That's your whole fight for now." },
 
-{ lv:"1", place:"Shadowglen", title:"Your first quest", map:[["teldrassil",[58.7,44.3,"Conservator Ilthalaine"],[60.5,48.5,"Young nightsabers and thistle boars"]]],
+{ lv:"1", place:"Shadowglen", title:"Your first quest", quests:{456:"The Balance of Nature"}, pickup:{3118:"Encrypted Sigil"}, map:[["teldrassil",[58.7,44.3,"Conservator Ilthalaine"],[60.5,48.5,"Young nightsabers and thistle boars"]]],
   done:"you've handed in <b>The Balance of Nature</b>, and its second part and <b>Encrypted Sigil</b> are in your quest log.",
   todo:[
     "Talk to <b>Conservator Ilthalaine</b>, the night elf right in front of you. He has a yellow <b>!</b> over his head. Accept <b>The Balance of Nature</b>.",
@@ -43,7 +45,7 @@ const STEPS = [
   ],
   tip:"How to fight: click a nightsaber to target it, walk up to it and press <kbd>1</kbd>. Your character also hits by itself while you stand next to the enemy." },
 
-{ lv:"1–2", place:"Shadowglen", title:"Meet your trainer", map:[["teldrassil",[59.6,38.6,"Frahun Shadewhisper (inside Aldrassil)"],[58.7,44.3,"Ilthalaine"]]], learn:["stealth"],
+{ lv:"1–2", place:"Shadowglen", title:"Meet your trainer", quests:{3118:"Encrypted Sigil"}, map:[["teldrassil",[59.6,38.6,"Frahun Shadewhisper (inside Aldrassil)"],[58.7,44.3,"Ilthalaine"]]], learn:["stealth"],
   done:"you've handed in <b>Encrypted Sigil</b> and Stealth is on key <kbd>=</kbd>.",
   todo:[
     "<b>Encrypted Sigil</b> sends you to <b>Frahun Shadewhisper</b>, the rogue trainer inside the big tree, Aldrassil. Walk up the ramp into the tree to find him.",
@@ -52,7 +54,7 @@ const STEPS = [
   ],
   tip:"After every fight, if your health is low, sit and eat (<kbd>Alt</kbd> + <kbd>2</kbd>) before the next one. It saves you from dying." },
 
-{ lv:"2–4", place:"Shadowglen", title:"Grells, boars and a friend in need", map:[["teldrassil",[59.9,42.5,"Melithar Staghelm"],[57.8,45.2,"Tarindrella"],[55,42,"Grells"],[60.9,42,"Dirania Silvershine"],[54.6,33,"Iverron"]]],
+{ lv:"2–4", place:"Shadowglen", title:"Grells, boars and a friend in need", quests:{458:"The Woodland Protector", 459:"The Woodland Protector", 457:"The Balance of Nature", 3519:"A Friend in Need"}, pickup:{916:"Webwood Venom", 4495:"A Good Friend", 3521:"Iverron's Antidote"}, map:[["teldrassil",[59.9,42.5,"Melithar Staghelm"],[57.8,45.2,"Tarindrella"],[55,42,"Grells"],[60.9,42,"Dirania Silvershine"],[54.6,33,"Iverron"]]],
   done:"you've handed in both parts of <b>The Woodland Protector</b> and <b>The Balance of Nature</b> part 2, and Dirania has given you <b>Iverron's Antidote</b>.", stuck:"Fight grells and thistle boars near Aldrassil until you're level 4.",
   todo:[
     "Take <b>The Woodland Protector</b> from <b>Melithar Staghelm</b> at the foot of Aldrassil and talk to <b>Tarindrella</b>, the dryad just south of the tree. She gives part 2: kill grells and grellkin west of the tree for <b>Fel Moss</b>, then hand it back to her.",
@@ -70,7 +72,7 @@ const STEPS = [
     "Pick Pocket steals a little money from humanoids while you're in Stealth. Put it on the right bar and use it on every humanoid before you attack."
   ] },
 
-{ lv:"4–5", place:"Shadowglen", title:"Spiders, the antidote and the egg", map:[["teldrassil",[57,32.5,"Shadowthread Cave (webwood spiders)"],[54.6,33,"Iverron"],[56.5,37.5,"Ponds north-west of the tree (Moonpetal Lilies)"],[60.9,42,"Dirania Silvershine"],[59.6,38.6,"Gilshalan (foot of the ramp)"]]],
+{ lv:"4–5", place:"Shadowglen", title:"Spiders, the antidote and the egg", quests:{3521:"Iverron's Antidote", 916:"Webwood Venom", 917:"Webwood Egg"}, map:[["teldrassil",[57,32.5,"Shadowthread Cave (webwood spiders)"],[54.6,33,"Iverron"],[56.5,37.5,"Ponds north-west of the tree (Moonpetal Lilies)"],[60.9,42,"Dirania Silvershine"],[59.6,38.6,"Gilshalan (foot of the ramp)"]]],
   done:"you've handed in <b>Iverron's Antidote</b> to Iverron, and <b>Webwood Venom</b> and <b>Webwood Egg</b> to Gilshalan.", stuck:"Fight the webwood spiders outside the cave until you're level 5.",
   todo:[
     "Gather the things for <b>Iverron's Antidote</b>: <b>7 Hyacinth Mushrooms</b> (they grow on the ground around the grell camps, and grells can drop them), <b>4 Moonpetal Lilies</b> (white flowers around the ponds north-west of Aldrassil) and <b>1 Webwood Ichor</b> (from a webwood spider).",
@@ -80,7 +82,7 @@ const STEPS = [
   ],
   tip:"In caves, enemies stand close together. Fight them one at a time and step back so you don't pull their friends." },
 
-{ lv:"5–6", place:"Shadowglen", title:"Leave Shadowglen", map:[["teldrassil",[59.6,38.6,"Tenaron Stormgrip (top of Aldrassil)"],[62.5,32.5,"Moonwell"],[61.2,47.6,"Porthannius"],[55.6,59.8,"Dolanaar"]]],
+{ lv:"5–6", place:"Shadowglen", title:"Leave Shadowglen", quests:{920:"Tenaron's Summons", 921:"Crown of the Earth"}, pickup:{2159:"Dolanaar Delivery"}, map:[["teldrassil",[59.6,38.6,"Tenaron Stormgrip (top of Aldrassil)"],[62.5,32.5,"Moonwell"],[61.2,47.6,"Porthannius"],[55.6,59.8,"Dolanaar"]]],
   done:"you've reached Dolanaar with <b>Dolanaar Delivery</b> and <b>Crown of the Earth</b> in your quest log.", stuck:"Fight nightsabers and boars along the road until you're level 6.",
   todo:[
     "Gilshalan gives <b>Tenaron's Summons</b>. Walk all the way up Aldrassil to <b>Tenaron Stormgrip</b> at the top and hand it in.",
@@ -90,7 +92,7 @@ const STEPS = [
   ] },
 
 /* ---------- Dolanaar, levels 6–12 ---------- */
-{ chapter:"Dolanaar", lv:"6", place:"Dolanaar", title:"Make Dolanaar your home", map:[["teldrassil",[55.6,59.8,"Innkeeper Keldamyr"],[56.1,61.7,"Corithras Moonrage"]]], learn:["food2"],
+{ chapter:"Dolanaar", lv:"6", place:"Dolanaar", title:"Make Dolanaar your home", quests:{2159:"Dolanaar Delivery", 928:"Crown of the Earth"}, map:[["teldrassil",[55.6,59.8,"Innkeeper Keldamyr"],[56.1,61.7,"Corithras Moonrage"]]], learn:["food2"],
   done:"your Hearthstone says <b>Dolanaar</b> when you hover over it, and you've handed in <b>Dolanaar Delivery</b> and <b>Crown of the Earth</b>.",
   todo:[
     "Find <b>Innkeeper Keldamyr</b> and choose <b>Make this inn your home</b>. Hand <b>Dolanaar Delivery</b> to him too.",
@@ -108,7 +110,7 @@ const STEPS = [
   ],
   tip:"Trick to learn now: Gouge, walk behind the enemy, Backstab. It only works while you have a dagger in your main hand." },
 
-{ lv:"6–7", place:"Dolanaar", title:"Grab every quest in town", map:[["teldrassil",[55.6,59.8,"Dolanaar"],[60.5,56.3,"Zenn Foulhoof"]]],
+{ lv:"6–7", place:"Dolanaar", title:"Grab every quest in town", pickup:{475:"A Troubling Breeze", 2438:"The Emerald Dreamcatcher", 488:"Zenn's Bidding", 929:"Crown of the Earth"}, map:[["teldrassil",[55.6,59.8,"Dolanaar"],[60.5,56.3,"Zenn Foulhoof"]]],
   done:"your quest log (<kbd>L</kbd>) has <b>A Troubling Breeze</b>, <b>The Emerald Dreamcatcher</b>, <b>Crown of the Earth</b> and <b>Zenn's Bidding</b>.",
   todo:[
     "<b>Athridas Bearmantle</b>: <b>A Troubling Breeze</b>. Talk to Gaerolas in Starbreeze Village.",
@@ -117,7 +119,7 @@ const STEPS = [
     "Press <kbd>L</kbd> to open your quest log. Each quest says how many you need and where to go. More quests open in town once you finish these."
   ] },
 
-{ lv:"7", place:"Starbreeze Village", title:"Starbreeze Village", map:[["teldrassil",[66.3,58.5,"Starbreeze Village"],[60.5,56.3,"Zenn Foulhoof"],[55.6,59.8,"Dolanaar"]]],
+{ lv:"7", place:"Starbreeze Village", title:"Starbreeze Village", quests:{475:"A Troubling Breeze", 476:"Gnarlpine Corruption", 2438:"The Emerald Dreamcatcher", 929:"Crown of the Earth", 488:"Zenn's Bidding"}, map:[["teldrassil",[66.3,58.5,"Starbreeze Village"],[60.5,56.3,"Zenn Foulhoof"],[55.6,59.8,"Dolanaar"]]],
   done:"you've handed in <b>A Troubling Breeze</b>, <b>Gnarlpine Corruption</b>, <b>The Emerald Dreamcatcher</b>, the Starbreeze phial and <b>Zenn's Bidding</b>.", stuck:"Fight nightsabers and owls between Dolanaar and Starbreeze until you're level 7.",
   todo:[
     "Go east to <b>Starbreeze Village</b>. <b>Gaerolas Talvethren</b> is on the top floor of the biggest house: hand in <b>A Troubling Breeze</b> and take <b>Gnarlpine Corruption</b>. You only need to take his message back to Athridas.",
@@ -126,7 +128,7 @@ const STEPS = [
     "Back in Dolanaar, hand it all in: Gnarlpine Corruption to Athridas, the Dreamcatcher to Tallonkai and the phial to Corithras. Give the pelts, feathers and silk to Zenn on the road. Take every new quest they offer."
   ] },
 
-{ lv:"7–8", place:"Around Dolanaar", title:"Ferocitas, Lord Melenas and the fel cones", map:[["teldrassil",[69.4,53.4,"Ferocitas the Dream Eater (furbolg camp)"],[51.2,50.8,"Fel Rock (Lord Melenas)"],[55.6,59.8,"Dolanaar"],[60.5,56.3,"Zenn Foulhoof"]]],
+{ lv:"7–8", place:"Around Dolanaar", title:"Ferocitas, Lord Melenas and the fel cones", quests:{2459:"Ferocitas the Dream Eater", 932:"Twisted Hatred", 489:"Seek Redemption!"}, pickup:{997:"Denalan's Earth"}, map:[["teldrassil",[69.4,53.4,"Ferocitas the Dream Eater (furbolg camp)"],[51.2,50.8,"Fel Rock (Lord Melenas)"],[55.6,59.8,"Dolanaar"],[60.5,56.3,"Zenn Foulhoof"]]],
   done:"you've handed in <b>Ferocitas the Dream Eater</b>, <b>Twisted Hatred</b> and <b>Seek Redemption!</b>, and you're level 8.", stuck:"Fight the Gnarlpine furbolgs north of Starbreeze until you are.",
   todo:[
     "Tallonkai gives <b>Ferocitas the Dream Eater</b>. The furbolg camp is just north of Starbreeze: kill the Gnarlpine Mystics your quest log asks for and <b>Ferocitas</b>. Right-click the necklace Ferocitas drops to get <b>Tallonkai's Jewel</b>, then bring it to Tallonkai.",
@@ -142,7 +144,7 @@ const STEPS = [
     "Evasion makes you dodge most attacks for a while. Press it when two or more enemies attack you at once, or when your health drops fast."
   ] },
 
-{ lv:"8–10", place:"Lake Al'Ameth", title:"Denalan's seeds", map:[["teldrassil",[60.9,68.5,"Denalan"],[56,72,"Timberlings"],[53.8,75.1,"Oakenscowl's cave (elite)"]]],
+{ lv:"8–10", place:"Lake Al'Ameth", title:"Denalan's seeds", quests:{997:"Denalan's Earth", 918:"Timberling Seeds", 919:"Timberling Sprouts"}, pickup:{922:"Rellian Greenspyre"}, map:[["teldrassil",[60.9,68.5,"Denalan"],[56,72,"Timberlings"],[53.8,75.1,"Oakenscowl's cave (elite)"]]],
   done:"you've handed in <b>Denalan's Earth</b>, <b>Timberling Seeds</b> and <b>Timberling Sprouts</b> to Denalan, and you're level 10.", stuck:"Fight timberlings around the lake until you are.",
   todo:[
     "Go south to <b>Denalan</b>, who camps on the north-east shore of <b>Lake Al'Ameth</b>. Hand in <b>Denalan's Earth</b>.",
@@ -151,7 +153,7 @@ const STEPS = [
     "Skip <b>Oakenscowl</b> unless you have a group. He's an <b>elite</b>."
   ] },
 
-{ lv:"10", place:"Jannok Breezesong (trainer, Dolanaar)", title:"Level 10: Slice and Dice and your first talent", map:[["teldrassil",[56.4,60.1,"Jannok Breezesong (rogue trainer)"]]], learn:["slicedice","sprint","sap"],
+{ lv:"10", place:"Jannok Breezesong (trainer, Dolanaar)", title:"Level 10: Slice and Dice and your first talent", pickup:{2241:"The Apple Falls"}, map:[["teldrassil",[56.4,60.1,"Jannok Breezesong (rogue trainer)"]]], learn:["slicedice","sprint","sap"],
   done:"Slice and Dice is on <kbd>3</kbd>, Sprint on <kbd>7</kbd>, Sap on <kbd>Shift</kbd> + <kbd>=</kbd>, your talent point is spent, and <b>The Apple Falls</b> is in your quest log.",
   todo:[
     "Learn <b>Slice and Dice</b>, <b>Sprint</b>, <b>Sap</b> and <b>Dual Wield</b>. Dual Wield lets you hold a weapon in each hand. It works by itself, no button.",
@@ -162,7 +164,7 @@ const STEPS = [
   tip:"New fight: Sinister Strike twice, Slice and Dice (you attack faster), then Sinister Strike until you have 3 to 5 combo points, then Eviscerate. Keep Slice and Dice running." },
 
 /* ---------- Darnassus and western Teldrassil ---------- */
-{ chapter:"Darnassus", lv:"10", place:"Darnassus", title:"Visit Darnassus", map:[["teldrassil",[39,49,"The road west to Darnassus"]],["darnassus",[63,61,"You come in here"],[37,22,"Rogue trainers and Syurna (Cenarion Enclave)"],[57.6,46.7,"Ilyenia Moonfire (weapon trainer)"]]], learn:["firstaid","bandage1","stone1"],
+{ chapter:"Darnassus", lv:"10", place:"Darnassus", title:"Visit Darnassus", quests:{2241:"The Apple Falls", 922:"Rellian Greenspyre"}, pickup:{487:"The Road to Darnassus", 2242:"Destiny Calls"}, map:[["teldrassil",[39,49,"The road west to Darnassus"]],["darnassus",[63,61,"You come in here"],[37,22,"Rogue trainers and Syurna (Cenarion Enclave)"],[57.6,46.7,"Ilyenia Moonfire (weapon trainer)"]]], learn:["firstaid","bandage1","stone1"],
   done:"you've learned First Aid and Cooking, handed in <b>The Apple Falls</b> and <b>Rellian Greenspyre</b>, and <b>Destiny Calls</b> is in your quest log.",
   todo:[
     "Follow the road west from Dolanaar to the city of <b>Darnassus</b>. On the road, <b>Moon Priestess Amara</b> gives <b>The Road to Darnassus</b>: kill the Gnarlpine Ambushers that jump out along the road. Hand it back to her.",
@@ -173,7 +175,7 @@ const STEPS = [
   ],
   tip:"Bandages: open First Aid (spellbook, <kbd>P</kbd>), make <b>Linen Bandages</b> from the Linen Cloth that humanoids drop, and put them on <kbd>Alt</kbd> + <kbd>1</kbd>. Bandage after a fight while you eat." },
 
-{ lv:"10–11", place:"Western Teldrassil", title:"Ban'ethil Barrow Den", map:[["teldrassil",[44.9,61.6,"Oben Rageclaw (inside the den)"],[44.5,59.5,"Ban'ethil Barrow Den"],[42,67,"Pools of Arlithrien (moonwell, Ursal)"],[55.6,59.8,"Dolanaar"]]],
+{ lv:"10–11", place:"Western Teldrassil", title:"Ban'ethil Barrow Den", quests:{2541:"The Sleeping Druid", 2561:"Druid of the Claw"}, pickup:{483:"The Relics of Wakening", 486:"Ursal the Mauler", 933:"Crown of the Earth"}, map:[["teldrassil",[44.9,61.6,"Oben Rageclaw (inside the den)"],[44.5,59.5,"Ban'ethil Barrow Den"],[42,67,"Pools of Arlithrien (moonwell, Ursal)"],[55.6,59.8,"Dolanaar"]]],
   done:"you've finished <b>The Relics of Wakening</b> and <b>Druid of the Claw</b>, and the Pools of Arlithrien phial is full.", stuck:"Fight the furbolgs around Ban'ethil Barrow until you're level 11.",
   todo:[
     "Back in Dolanaar, take <b>The Relics of Wakening</b> and <b>Ursal the Mauler</b> from Athridas and the next <b>Crown of the Earth</b> phial from Corithras.",
@@ -182,7 +184,7 @@ const STEPS = [
     "Fill the phial at the moonwell by the <b>Pools of Arlithrien</b>, south-west of the den (Crown of the Earth). <b>Ursal the Mauler</b> is the furbolg leader in the camps there: leave him until you're level 11, he hits hard."
   ] },
 
-{ lv:"11–12", place:"Oracle Glade", title:"Rogue quest: Sethir's journal", map:[["teldrassil",[38.3,34.4,"Sentinel Arynia Cloudsbreak (Oracle Glade)"],[37,22,"Sethir the Ancient (on a branch)"],[31.5,31.6,"Mist (nightsaber cub)"],[55.6,59.8,"Dolanaar"]]],
+{ lv:"11–12", place:"Oracle Glade", title:"Rogue quest: Sethir's journal", quests:{483:"The Relics of Wakening", 486:"Ursal the Mauler", 938:"Mist", 933:"Crown of the Earth"}, pickup:{2242:"Destiny Calls"}, map:[["teldrassil",[38.3,34.4,"Sentinel Arynia Cloudsbreak (Oracle Glade)"],[37,22,"Sethir the Ancient (on a branch)"],[31.5,31.6,"Mist (nightsaber cub)"],[55.6,59.8,"Dolanaar"]]],
   done:"<b>Sethir's Journal</b> is in your bags, Mist is home, you've handed in your Dolanaar quests, and you're level 12.", stuck:"Fight the furbolgs at the Pools of Arlithrien until you are.",
   todo:[
     "Ride north past Darnassus to the <b>Oracle Glade</b>. On the way, fill the next phial at the moonwell on the road north of Darnassus (Crown of the Earth).",
@@ -201,7 +203,7 @@ const STEPS = [
   ],
   tip:"From now on, train every even level and spend a talent point every level." },
 
-{ lv:"12", place:"Darnassus → Rut'theran Village", title:"Your dagger, then fly to Darkshore", map:[["darnassus",[37,22,"Syurna and Fandral Staghelm (Cenarion Enclave)"]],["teldrassil",[56.3,92.4,"Nessa Shadowsong"],[58.4,94,"Vesprystus (flight master)"]],["darkshore",[36.3,45.6,"Auberdine: you land here"]]],
+{ lv:"12", place:"Darnassus → Rut'theran Village", title:"Your dagger, then fly to Darkshore", quests:{2242:"Destiny Calls", 6344:"Nessa Shadowsong", 6341:"The Bounty of Teldrassil"}, pickup:{952:"Grove of the Ancients", 6342:"Flight to Auberdine"}, map:[["darnassus",[37,22,"Syurna and Fandral Staghelm (Cenarion Enclave)"]],["teldrassil",[56.3,92.4,"Nessa Shadowsong"],[58.4,94,"Vesprystus (flight master)"]],["darkshore",[36.3,45.6,"Auberdine: you land here"]]],
   done:"the <b>Blade of Cunning</b> is in your main hand and you've landed in Auberdine.",
   todo:[
     "In Darnassus, hand in <b>Destiny Calls</b> to Syurna. Equip the <b>Blade of Cunning</b> (right-click it in your bags): a much better dagger than the one you started with.",
@@ -212,7 +214,7 @@ const STEPS = [
   tip:"Your talents are for Combat, which likes swords, maces, axes and fist weapons. Until you find a good one, a strong dagger is fine." },
 
 /* ---------- Darkshore, levels 12–19 ---------- */
-{ chapter:"Darkshore", lv:"12", place:"Auberdine", title:"Your new home: Auberdine", map:[["darkshore",[37,44.1,"Innkeeper Shaussiy"],[36.3,45.6,"Flight master"]]],
+{ chapter:"Darkshore", lv:"12", place:"Auberdine", title:"Your new home: Auberdine", quests:{6342:"Flight to Auberdine"}, pickup:{983:"Buzzbox 827", 3524:"Washed Ashore", 2118:"Plagued Lands", 984:"How Big a Threat?", 954:"Bashal'Aran", 958:"Tools of the Highborne", 953:"The Fall of Ameth'Aran", 4811:"The Red Crystal", 947:"Cave Mushrooms"}, map:[["darkshore",[37,44.1,"Innkeeper Shaussiy"],[36.3,45.6,"Flight master"]]],
   done:"Auberdine is your home and the quests above are in your log.",
   todo:[
     "Hand in <b>Flight to Auberdine</b> to Laird. Make the inn your home and talk to the flight master so you can fly here later.",
@@ -221,7 +223,7 @@ const STEPS = [
   ],
   tip:"There's no rogue trainer here. Every two levels, fly back to Rut'theran and take the portal up to Darnassus to train." },
 
-{ lv:"12–13", place:"Darkshore beach", title:"The beach and the hills by town", map:[["darkshore",[36.7,46.3,"Buzzbox 827"],[36.5,51,"Beached Sea Creature"],[39,52,"Furbolg camp"]]],
+{ lv:"12–13", place:"Darkshore beach", title:"The beach and the hills by town", quests:{983:"Buzzbox 827", 3524:"Washed Ashore", 984:"How Big a Threat?", 2118:"Plagued Lands"}, pickup:{1001:"Buzzbox 411", 2138:"Cleansing of the Infected"}, map:[["darkshore",[36.7,46.3,"Buzzbox 827"],[36.5,51,"Beached Sea Creature"],[39,52,"Furbolg camp"]]],
   done:"you've handed in <b>Buzzbox 827</b>, <b>Washed Ashore</b>, <b>How Big a Threat?</b> and <b>Plagued Lands</b>.", stuck:"Fight crawlers on the beach until you're level 13.",
   todo:[
     "<b>Buzzbox 827</b>: kill crawlers (crabs) on the beach just south of town for their legs. Hand them in at the <b>Buzzbox 827</b> machine on the beach and take <b>Buzzbox 411</b>.",
@@ -230,7 +232,7 @@ const STEPS = [
     "<b>Plagued Lands</b>: Tharnariun gives you a trap item. Find a <b>rabid thistle bear</b> in the hills east of town, use the item to put the trap down, and pull the bear onto it. Hand it in and take <b>Cleansing of the Infected</b>."
   ] },
 
-{ lv:"13–14", place:"Bashal'Aran and Ameth'Aran", title:"The two ruins", map:[["darkshore",[44.2,36.3,"Asterion (Bashal'Aran)"],[42.5,62,"Ameth'Aran (blue flame, spirits, tablets)"],[47,49,"The Red Crystal"]]],
+{ lv:"13–14", place:"Bashal'Aran and Ameth'Aran", title:"The two ruins", quests:{954:"Bashal'Aran", 955:"Bashal'Aran", 956:"Bashal'Aran", 957:"Bashal'Aran", 958:"Tools of the Highborne", 953:"The Fall of Ameth'Aran", 4811:"The Red Crystal", 4812:"As Water Cascades", 4813:"The Fragments Within"}, map:[["darkshore",[44.2,36.3,"Asterion (Bashal'Aran)"],[42.5,62,"Ameth'Aran (blue flame, spirits, tablets)"],[47,49,"The Red Crystal"]]],
   done:"you've finished the <b>Bashal'Aran</b> chain, <b>Tools of the Highborne</b>, <b>The Fall of Ameth'Aran</b> and <b>The Red Crystal</b> chain, and you're level 14.", stuck:"Fight the grells and satyrs at Bashal'Aran until you are.",
   todo:[
     "<b>Bashal'Aran</b>: follow the road north-east to the ruins and talk to the ghost <b>Asterion</b> on the hill. He wants <b>8 Grell Earrings</b> (kill the wild grells around the ruins), then the <b>Ancient Moonstone Seal</b>: kill the satyrs there until one drops it.",
@@ -248,7 +250,7 @@ const STEPS = [
     "<b>Expose Armor</b> (<kbd>Shift</kbd> + <kbd>9</kbd>) makes an enemy take more damage. Only worth it on enemies that live a long time, like bosses."
   ] },
 
-{ lv:"14–16", place:"Northern Darkshore", title:"The north: Buzzboxes, Blackwood camps and the tower", map:[["darkshore",[51,35,"Blackwood camps"],[54.4,31.8,"Cliffspring Falls (cave)"],[55,25,"Tower of Althalaxx"],[38,29,"Northern beach (threshers, Buzzbox 411)"]]],
+{ lv:"14–16", place:"Northern Darkshore", title:"The north: Buzzboxes, Blackwood camps and the tower", quests:{1001:"Buzzbox 411", 985:"How Big a Threat?", 2138:"Cleansing of the Infected", 4763:"The Blackwood Corrupted", 965:"The Tower of Althalaxx", 966:"The Tower of Althalaxx"}, pickup:{1002:"Buzzbox 323", 947:"Cave Mushrooms"}, map:[["darkshore",[51,35,"Blackwood camps"],[54.4,31.8,"Cliffspring Falls (cave)"],[55,25,"Tower of Althalaxx"],[38,29,"Northern beach (threshers, Buzzbox 411)"]]],
   done:"you've handed in <b>Buzzbox 411</b>, <b>How Big a Threat?</b> part 2, <b>Cleansing of the Infected</b>, <b>The Blackwood Corrupted</b> and the first <b>Tower of Althalaxx</b> quests, and you're level 16.", stuck:"Fight the Blackwood furbolgs at their camps until you are.",
   todo:[
     "Follow the coast north. Kill <b>threshers</b> in the water for <b>3 Thresher Eyes</b> and hand them in at the <b>Buzzbox 411</b> machine on the northern beach. It gives <b>Buzzbox 323</b>: kill moonstalkers for it as you go.",
@@ -267,7 +269,7 @@ const STEPS = [
     "Upgrade your supplies: <b>Snapvine Watermelons</b> from a food vendor and <b>Coarse Sharpening Stones</b> from the auction house."
   ] },
 
-{ lv:"17–19", place:"Southern Darkshore", title:"The southern loop", map:[["darkshore",[36,76,"Murkdeep's camp"],[43.6,76.3,"Onu (Grove of the Ancients)"],[45,85.3,"Volcor"],[35.7,83.7,"Prospector Remtravel (group quest)"]]],
+{ lv:"17–19", place:"Southern Darkshore", title:"The southern loop", quests:{982:"Deep Ocean, Vast Sea", 4740:"WANTED: Murkdeep!", 948:"Onu", 944:"The Master's Glaive", 949:"The Twilight Camp", 950:"Return to Onu"}, pickup:{947:"Cave Mushrooms", 952:"Grove of the Ancients", 986:"A Lost Master", 995:"Escape Through Stealth", 5321:"The Sleeper Has Awakened"}, map:[["darkshore",[36,76,"Murkdeep's camp"],[43.6,76.3,"Onu (Grove of the Ancients)"],[45,85.3,"Volcor"],[35.7,83.7,"Prospector Remtravel (group quest)"]]],
   done:"Murkdeep is dead, you've handed in <b>Deep Ocean, Vast Sea</b> and Onu's quests, Volcor is free, Kerlonian is following you, and you're level 19.", stuck:"Fight the murlocs and bears in southern Darkshore until you are.",
   todo:[
     "<b>Deep Ocean, Vast Sea</b> (Gorbold Steelhand, Auberdine): swim out to the two sunken ships off the coast and loot the lockboxes in the wrecks. Watch your breath bar and the murlocs.",
@@ -286,7 +288,7 @@ const STEPS = [
     "Ambush is a big hit from Stealth, but it needs a <b>dagger</b>. You're Combat, so leave it in the spellbook unless you're still using the Blade of Cunning."
   ] },
 
-{ lv:"19–20", place:"Darkshore → Ashenvale", title:"Into Ashenvale", map:[["darkshore",[44,92,"Road south to Ashenvale"]],["ashenvale",[26.2,38.7,"Maestra's Post"],[36.5,49.5,"Astranaar"]]],
+{ lv:"19–20", place:"Darkshore → Ashenvale", title:"Into Ashenvale", quests:{5321:"The Sleeper Has Awakened", 967:"The Tower of Althalaxx"}, map:[["darkshore",[44,92,"Road south to Ashenvale"]],["ashenvale",[26.2,38.7,"Maestra's Post"],[36.5,49.5,"Astranaar"]]],
   done:"you've handed in <b>The Sleeper Has Awakened</b>, Astranaar is your home and you've unlocked its flight path.",
   todo:[
     "Follow the road south out of Darkshore into <b>Ashenvale</b>, with Kerlonian behind you.",
@@ -304,7 +306,7 @@ const STEPS = [
   ],
   tip:"Riposte only lights up right after you parry an attack. When it lights up, press it." },
 
-{ lv:"20", place:"Stormwind and Redridge", title:"Thieves' Tools for Pick Lock", map:[["darkshore",[32.4,43.8,"Auberdine docks"]],["stormwind",[75.8,59.8,"Old Town: Renzik the Shiv and SI:7"],[66.3,62.1,"Flight master"]],["redridge",[30.6,59.4,"Lakeshire (Lucius on the pier)"]]],
+{ lv:"20", place:"Stormwind and Redridge", title:"Thieves' Tools for Pick Lock", quests:{2281:"Redridge Rendezvous"}, pickup:{2282:"Alther's Mill"}, map:[["darkshore",[32.4,43.8,"Auberdine docks"]],["stormwind",[75.8,59.8,"Old Town: Renzik the Shiv and SI:7"],[66.3,62.1,"Flight master"]],["redridge",[30.6,59.4,"Lakeshire (Lucius on the pier)"]]],
   done:"<b>Thieves' Tools</b> are in your bags and your Pick Lock skill is at least 80.",
   todo:[
     "Go to <b>Stormwind</b>. From Auberdine, take the ship to Stormwind (new in WoW Forever). If you can't find it, take the boat to Menethil Harbor and travel through Ironforge and the Deeprun Tram. Unlock the Stormwind flight path.",
@@ -314,7 +316,7 @@ const STEPS = [
   ],
   tip:"The poisons quest needs Pick Lock 75, so do this first. Your Pick Lock skill can go up to 5 times your level. Now open the lockboxes you've been saving." },
 
-{ lv:"20", place:"Stormwind and Westfall", title:"Rogue quest: poisons", map:[["stormwind",[75.8,59.8,"Master Mathias Shaw (SI:7, Old Town)"]],["westfall",[56.4,47.5,"Sentinel Hill (inn and flight path)"]]], learn:["poisons","ipois1","opois1"],
+{ lv:"20", place:"Stormwind and Westfall", title:"Rogue quest: poisons", quests:{2360:"Mathias and the Defias", 2359:"Klaven's Tower"}, map:[["stormwind",[75.8,59.8,"Master Mathias Shaw (SI:7, Old Town)"]],["westfall",[56.4,47.5,"Sentinel Hill (inn and flight path)"]]], learn:["poisons","ipois1","opois1"],
   done:"you've learned Poisons, made Instant Poison, and both weapons have poison on them.",
   todo:[
     "In <b>Old Town</b>, take <b>Mathias and the Defias</b> from <b>Master Mathias Shaw</b> at SI:7. Go to <b>Sentinel Hill</b> in Westfall, unlock the flight path, and make the inn your home for now.",
@@ -326,7 +328,7 @@ const STEPS = [
   tip:"Opening the box gives you a poison called <b>Touch of Zanzil</b>. To cure it, do Mathias's next quest, <b>The Touch of Zanzil</b>: Doc Mixilpixil in the cellar of the Stormwind Barracks wants Simple Wildflowers (from Bernard Gump), a Spool of Light Chartreuse Silk Thread (on the floor of the Finest Thread shop), a Bronze Tube and a Leaded Vial. How poisons work: open Poisons from your spellbook (<kbd>P</kbd>) and make them. Click the poison on your right bar, then click your weapon on the character window (<kbd>C</kbd>). In WoW Forever, poisons have more charges and work together with sharpening stones." },
 
 /* ---------- Ashenvale, levels 20–25 ---------- */
-{ chapter:"Ashenvale & Wetlands", lv:"20–24", place:"Ashenvale", title:"Quest Ashenvale", map:[["ashenvale",[36.5,49.5,"Astranaar"],[14.5,26,"Zoram Strand (naga)"],[30.5,31,"Bathran's Haunt"],[33,67,"Ruins of Stardust"],[20.3,42.4,"Raene's Cleansing (first part)"]]],
+{ chapter:"Ashenvale & Wetlands", lv:"20–24", place:"Ashenvale", title:"Quest Ashenvale", quests:{1008:"The Zoram Strand", 1010:"Bathran's Hair", 1034:"The Ruins of Stardust", 1025:"An Aggressive Defense"}, pickup:{1020:"Orendil's Cure", 1033:"Elune's Tear", 1023:"Raene's Cleansing"}, map:[["ashenvale",[36.5,49.5,"Astranaar"],[14.5,26,"Zoram Strand (naga)"],[30.5,31,"Bathran's Haunt"],[33,67,"Ruins of Stardust"],[20.3,42.4,"Raene's Cleansing (first part)"]]],
   done:"you're level 24 and have handed in <b>The Zoram Strand</b>, <b>Bathran's Hair</b>, <b>The Ruins of Stardust</b> and <b>An Aggressive Defense</b>.", stuck:"Fight the Foulweald furbolgs or the bears near Astranaar until you are.",
   todo:[
     "Take the ship back to Auberdine and fly to <b>Astranaar</b>. Make Astranaar your home again.",
@@ -351,7 +353,7 @@ const STEPS = [
     "Put Shank on <kbd>Shift</kbd> + <kbd>-</kbd>. Use it between your Sinister Strikes when it's ready."
   ] },
 
-{ lv:"22–27", place:"Ashenvale", title:"Dungeon: Blackfathom Deeps (optional)", map:[["ashenvale",[14.5,14.2,"Blackfathom Deeps entrance"],[36.5,49.5,"Astranaar"]]],
+{ lv:"22–27", place:"Ashenvale", title:"Dungeon: Blackfathom Deeps (optional)", quests:{1275:"Researching the Corruption", 1198:"In Search of Thaelrid", 1199:"Twilight Falls", 971:"Knowledge in the Deeps"}, map:[["ashenvale",[14.5,14.2,"Blackfathom Deeps entrance"],[36.5,49.5,"Astranaar"]]],
   done:"your group has beaten the last boss, Aku'mai, or you've decided to skip it.",
   todo:[
     "A dungeon is a private area for a group of 5 players. Blackfathom Deeps is in the far north-west of Ashenvale, on the coast.",
@@ -377,7 +379,7 @@ const STEPS = [
   ],
   tip:"New fight: Stealth → walk up → Cheap Shot → Slice and Dice → Sinister Strike until 5 combo points → Eviscerate." },
 
-{ lv:"24–28", place:"Wetlands", title:"The Wetlands", map:[["darkshore",[32.4,43.8,"Auberdine docks: boat to Menethil"]],["wetlands",[10.5,60,"Menethil Harbor"],[34,42,"Whelgar's Excavation Site"],[56.4,40.4,"The Greenwarden"],[48,15,"Dun Modr"],[44,25,"Ironbeard's Tomb"]]],
+{ lv:"24–28", place:"Wetlands", title:"The Wetlands", quests:{279:"Claws from the Deep", 484:"Young Crocolisk Skins", 276:"Tramping Paws"}, pickup:{470:"Digging Through the Ooze", 463:"The Greenwarden", 472:"Fall of Dun Modr"}, map:[["darkshore",[32.4,43.8,"Auberdine docks: boat to Menethil"]],["wetlands",[10.5,60,"Menethil Harbor"],[34,42,"Whelgar's Excavation Site"],[56.4,40.4,"The Greenwarden"],[48,15,"Dun Modr"],[44,25,"Ironbeard's Tomb"]]],
   done:"you're level 28 and the Menethil Harbor quests are handed in.", stuck:"Fight the murlocs or crocolisks along the Wetlands coast until you are.",
   todo:[
     "Take the boat from Auberdine to <b>Menethil Harbor</b>. Make the inn your home and unlock the flight path.",
@@ -396,7 +398,7 @@ const STEPS = [
   ] },
 
 /* ---------- 28–34: Duskwood, Arathi, Southshore ---------- */
-{ chapter:"Duskwood to Arathi", lv:"28–30", place:"Darkshire, Duskwood", title:"Duskwood", map:[["duskwood",[73.5,46,"Darkshire"],[64,36,"Brightwood Grove (worgen)"],[20,45,"Raven Hill Cemetery (skeletons)"],[80,70,"Tranquil Gardens Cemetery"]]],
+{ chapter:"Duskwood to Arathi", lv:"28–30", place:"Darkshire, Duskwood", title:"Duskwood", quests:{173:"Worgen in the Woods", 56:"The Night Watch"}, pickup:{55:"Morbent Fel", 228:"Mor'Ladim"}, map:[["duskwood",[73.5,46,"Darkshire"],[64,36,"Brightwood Grove (worgen)"],[20,45,"Raven Hill Cemetery (skeletons)"],[80,70,"Tranquil Gardens Cemetery"]]],
   done:"you're level 30 and have handed in <b>Worgen in the Woods</b> and <b>The Night Watch</b>.", stuck:"Fight the worgen in Brightwood Grove until you are.",
   todo:[
     "Go to Stormwind (from Menethil Harbor: fly to Ironforge and take the Deeprun Tram), then follow the road south-east through Elwynn Forest into <b>Duskwood</b>, a dark forest. The town is <b>Darkshire</b>, on the east side. Make the inn your home and unlock the flight path.",
@@ -422,7 +424,7 @@ const STEPS = [
     "When two enemies fight you, press it: for 15 seconds you attack faster and every hit also hits a second enemy."
   ] },
 
-{ lv:"30–32", place:"Arathi Highlands", title:"Arathi Highlands", map:[["arathi",[44,89,"Thandol Span (from the Wetlands)"],[45.8,47.6,"Refuge Pointe"],[32,28,"Northfold Manor (Syndicate)"],[66,68,"Witherbark Village (trolls)"],[25,30,"Stromgarde Keep (elites)"],[73,33,"Hammerfall (Horde town)"]]],
+{ lv:"30–32", place:"Arathi Highlands", title:"Arathi Highlands", quests:{681:"Northfold Manor"}, map:[["arathi",[44,89,"Thandol Span (from the Wetlands)"],[45.8,47.6,"Refuge Pointe"],[32,28,"Northfold Manor (Syndicate)"],[66,68,"Witherbark Village (trolls)"],[25,30,"Stromgarde Keep (elites)"],[73,33,"Hammerfall (Horde town)"]]],
   done:"you're level 32 and have handed in <b>Northfold Manor</b>.", stuck:"Fight the Syndicate around Northfold Manor until you are.",
   todo:[
     "Fly to <b>Menethil Harbor</b> and ride north over the big bridge (Thandol Span) into <b>Arathi Highlands</b>, a wide open grassland.",
@@ -439,7 +441,7 @@ const STEPS = [
     "You can also learn <b>Wound Poison</b>. You don't need it while questing: Instant Poison is better."
   ] },
 
-{ lv:"32", place:"Southshore, Hillsbrad", title:"Southshore", map:[["arathi",[20,30,"Gate in Thoradin's Wall (west)"]],["hillsbrad",[50,55,"Southshore"],[40,74,"Murloc beach"]]],
+{ lv:"32", place:"Southshore, Hillsbrad", title:"Southshore", quests:{536:"Down the Coast", 505:"Syndicate Assassins"}, map:[["arathi",[20,30,"Gate in Thoradin's Wall (west)"]],["hillsbrad",[50,55,"Southshore"],[40,74,"Murloc beach"]]],
   done:"you're level 33 and have handed in <b>Down the Coast</b> and <b>Syndicate Assassins</b>.", stuck:"Fight the murlocs on the beach south of Southshore until you are.",
   todo:[
     "From Refuge Pointe, ride west through the gate in the huge wall (Thoradin's Wall) into Hillsbrad Foothills. Follow the road south to <b>Southshore</b>. Unlock the flight path.",
@@ -450,7 +452,7 @@ const STEPS = [
   tip:"From here on, on PvP servers, Horde players can attack you. Stealth, Sprint and Vanish are your escape." },
 
 /* ---------- 33–37: Stranglethorn Vale ---------- */
-{ chapter:"Stranglethorn Vale", lv:"33–35", place:"Stranglethorn Vale (north)", title:"Stranglethorn: Rebel Camp and the hunters", map:[["stranglethorn",[38,3.5,"Rebel Camp"],[35.6,10.6,"Nesingwary's Expedition"],[44,10,"Kurzen's Compound"],[32,28,"Grom'gol (Horde camp)"]]],
+{ chapter:"Stranglethorn Vale", lv:"33–35", place:"Stranglethorn Vale (north)", title:"Stranglethorn: Rebel Camp and the hunters", quests:{185:"Tiger Mastery", 190:"Panther Mastery", 194:"Raptor Mastery"}, pickup:{338:"The Green Hills of Stranglethorn"}, map:[["stranglethorn",[38,3.5,"Rebel Camp"],[35.6,10.6,"Nesingwary's Expedition"],[44,10,"Kurzen's Compound"],[32,28,"Grom'gol (Horde camp)"]]],
   done:"you're level 35 and have handed in the first parts of <b>Tiger Mastery</b>, <b>Panther Mastery</b> and <b>Raptor Mastery</b>.", stuck:"Fight the tigers and panthers around Nesingwary's camp until you are.",
   todo:[
     "Fly to <b>Darkshire</b> and follow the road south out of Duskwood into <b>Stranglethorn Vale</b>, a big jungle. Right at the zone edge, turn west to the <b>Rebel Camp</b>.",
@@ -467,7 +469,7 @@ const STEPS = [
     "Blind takes one enemy out of the fight for a while. Use it when a second enemy joins: Blind it, kill the first one, then deal with the blinded one."
   ] },
 
-{ lv:"35–37", place:"Booty Bay, Stranglethorn", title:"Stranglethorn: Booty Bay", map:[["stranglethorn",[27,77,"Booty Bay"],[38,3.5,"Rebel Camp"],[35.6,10.6,"Nesingwary's Expedition"]]], learn:["stone4","food5"],
+{ lv:"35–37", place:"Booty Bay, Stranglethorn", title:"Stranglethorn: Booty Bay", quests:{605:"Singing Blue Shards"}, pickup:{595:"The Bloodsail Buccaneers"}, map:[["stranglethorn",[27,77,"Booty Bay"],[38,3.5,"Rebel Camp"],[35.6,10.6,"Nesingwary's Expedition"]]], learn:["stone4","food5"],
   done:"you're level 37 and have handed in <b>Singing Blue Shards</b>.", stuck:"Fight the pirates or raptors along the coast near Booty Bay until you are.",
   todo:[
     "Follow the main road all the way south to <b>Booty Bay</b>, a goblin port built into a cliff. Unlock the flight path and make the inn your home.",
@@ -477,7 +479,7 @@ const STEPS = [
   ],
   tip:"Upgrade your supplies: <b>Solid Sharpening Stones</b> (auction house) and <b>Moon Harvest Pumpkins</b> (food vendors). Booty Bay also has a boat to Ratchet in Kalimdor." },
 
-{ lv:"35–40", place:"Tirisfal Glades", title:"Dungeon: Scarlet Monastery (optional)", map:[["tirisfal",[83,33,"Scarlet Monastery"]]],
+{ lv:"35–40", place:"Tirisfal Glades", title:"Dungeon: Scarlet Monastery (optional)", quests:{1050:"Mythology of the Titans", 1053:"In the Name of the Light"}, map:[["tirisfal",[83,33,"Scarlet Monastery"]]],
   done:"your group has finished the wings you wanted, or you've decided to skip it.",
   todo:[
     "Four short dungeon wings, run by crazed crusaders: <b>Graveyard</b> (around level 30), <b>Library</b> (around 33), <b>Armory</b> (around 36) and <b>Cathedral</b> (around 38).",
@@ -532,7 +534,7 @@ const STEPS = [
   ],
   tip:"At level 40 you can also unlock a second talent setup (Dual Specialization) at a trainer in a big city." },
 
-{ lv:"40–43", place:"Riverglades (north)", title:"Riverglades: Sunnyglade and the north", map:[["riverglades"]],
+{ lv:"40–43", place:"Riverglades (north)", title:"Riverglades: Sunnyglade and the north", quests:{94877:"Saving Sunnyglade"}, map:[["riverglades"]],
   done:"you're level 43 and have handed in <b>Saving Sunnyglade</b>.", stuck:"Fight the enemies around Sunnyglade until you are.",
   todo:[
     "Fly back to Farholde Keep. Demar Brant's <b>Saving Sunnyglade</b> sends you north to the village of <b>Sunnyglade</b>.",
@@ -566,7 +568,7 @@ const STEPS = [
     "Gadgetzan is neutral: its guards attack anyone who starts a fight in town."
   ] },
 
-{ lv:"43–46", place:"Gadgetzan, Tanaris", title:"Tanaris", map:[["tanaris",[51,28,"Gadgetzan"],[63,30,"Wastewander bandit camps"],[35,45,"Noxious Lair (giant insects)"],[72,46,"Lost Rigger Cove (pirates)"],[39,20,"Zul'Farrak"]]],
+{ lv:"43–46", place:"Gadgetzan, Tanaris", title:"Tanaris", quests:{1690:"Wastewander Justice", 1707:"Water Pouch Bounty"}, pickup:{82:"Noxious Lair Investigation", 8366:"Southsea Shakedown", 8365:"Pirate Hats Ahoy!"}, map:[["tanaris",[51,28,"Gadgetzan"],[63,30,"Wastewander bandit camps"],[35,45,"Noxious Lair (giant insects)"],[72,46,"Lost Rigger Cove (pirates)"],[39,20,"Zul'Farrak"]]],
   done:"you're level 46 and have handed in <b>Wastewander Justice</b> and <b>Water Pouch Bounty</b>.", stuck:"Fight the Wastewander bandits east of Gadgetzan until you are.",
   todo:[
     "Take every quest in Gadgetzan. <b>Wastewander Justice</b> and <b>Water Pouch Bounty</b> send you to the bandit camps east of town.",
@@ -583,7 +585,7 @@ const STEPS = [
     "Make it and put it on your main-hand weapon. Hearth back to Gadgetzan."
   ] },
 
-{ lv:"44–48", place:"Tanaris", title:"Dungeon: Zul'Farrak (optional)", map:[["tanaris",[39,20,"Zul'Farrak"],[51,28,"Gadgetzan"]]],
+{ lv:"44–48", place:"Tanaris", title:"Dungeon: Zul'Farrak (optional)", quests:{2768:"Divino-matic Rod", 3042:"Troll Temper"}, map:[["tanaris",[39,20,"Zul'Farrak"],[51,28,"Gadgetzan"]]],
   done:"your group has finished, or you've decided to skip it.",
   todo:[
     "A troll city in the north-west of Tanaris, for levels 44–48. Lots of quests from Gadgetzan.",
@@ -614,7 +616,7 @@ const STEPS = [
     "Upgrade your supplies: <b>Dense Sharpening Stones</b> (auction house) and <b>Deep Fried Plantains</b> (food vendors)."
   ] },
 
-{ lv:"46–48", place:"Feathermoon, Feralas", title:"Feralas", map:[["feralas",[30.5,43.5,"Feathermoon Stronghold"],[43.5,43,"Ferry dock"],[59,44,"Dire Maul (for later)"]]],
+{ lv:"46–48", place:"Feathermoon, Feralas", title:"Feralas", quests:{2821:"The Mark of Quality", 7003:"Zapped Giants"}, pickup:{4267:"Rise of the Silithid"}, map:[["feralas",[30.5,43.5,"Feathermoon Stronghold"],[43.5,43,"Ferry dock"],[59,44,"Dire Maul (for later)"]]],
   done:"you're level 48 and have handed in <b>Zapped Giants</b> and <b>The Mark of Quality</b>.", stuck:"Fight the yetis in the hills or the giants on the coast until you are.",
   todo:[
     "Take every quest in Feathermoon Stronghold, like <b>The Mark of Quality</b> from Pratt McGrubben (yeti hides) and the <b>Rise of the Silithid</b> chain.",
@@ -630,7 +632,7 @@ const STEPS = [
     "You're now in Rut'theran, close to the boat at Auberdine: go straight on to the Hinterlands (next step)."
   ] },
 
-{ lv:"47–50", place:"Aerie Peak, Hinterlands", title:"The Hinterlands", map:[["hinterlands",[14,46,"Aerie Peak"],[55,42,"Skulk Rock (oozes)"],[63,73,"Jintha'Alor (trolls)"]]],
+{ lv:"47–50", place:"Aerie Peak, Hinterlands", title:"The Hinterlands", quests:{2877:"Skulk Rock Clean-up", 2880:"Troll Necklace Bounty"}, pickup:{2988:"Witherbark Cages"}, map:[["hinterlands",[14,46,"Aerie Peak"],[55,42,"Skulk Rock (oozes)"],[63,73,"Jintha'Alor (trolls)"]]],
   done:"you're level 50 and have handed in <b>Skulk Rock Clean-up</b> and <b>Troll Necklace Bounty</b>.", stuck:"Fight Witherbark trolls (their necklaces count for the bounty) until you are.",
   todo:[
     "Back to the Eastern Kingdoms: fly to Auberdine and take the boat to <b>Southshore</b> (or the boat to Menethil Harbor, then fly to Southshore). From Southshore, ride north-east into <b>The Hinterlands</b>. <b>Aerie Peak</b>, the Wildhammer dwarf town, is right at the entrance.",
@@ -641,7 +643,7 @@ const STEPS = [
   tip:"WoW Forever adds a new dungeon for these levels: <b>Alcaz Prison</b> (about 48–53). Look for it in the Looking For Group tool." },
 
 /* ---------- 49–60 ---------- */
-{ chapter:"Un'Goro to 60", lv:"49–52", place:"Marshal's Refuge, Un'Goro", title:"Un'Goro Crater", map:[["ungoro",[43.5,8.5,"Marshal's Refuge"],[50,48,"Fire Plume Ridge (volcano)"],[70,75,"Entrance from Tanaris"]]],
+{ chapter:"Un'Goro to 60", lv:"49–52", place:"Marshal's Refuge, Un'Goro", title:"Un'Goro Crater", quests:{4284:"Crystals of Power", 4243:"Chasing A-Me 01"}, map:[["ungoro",[43.5,8.5,"Marshal's Refuge"],[50,48,"Fire Plume Ridge (volcano)"],[70,75,"Entrance from Tanaris"]]],
   done:"you're level 52 and have handed in <b>Crystals of Power</b> and <b>Chasing A-Me 01</b>.", stuck:"Fight the raptors and stegodons near Marshal's Refuge until you are.",
   todo:[
     "Fly to Gadgetzan (from the Hinterlands: fly to Menethil Harbor, take the boat to Auberdine, then fly to Gadgetzan) and ride west out of Tanaris. The road goes down a long ramp into <b>Un'Goro Crater</b>, a jungle full of dinosaurs.",
@@ -651,7 +653,7 @@ const STEPS = [
   ],
   tip:"Devilsaurs can't see you in Stealth. If one comes your way, Stealth and step aside." },
 
-{ lv:"50", place:"Darnassus (fly from Marshal's Refuge)", title:"Level 50: new ranks", map:[["darnassus",[37,22,"Rogue trainers (Cenarion Enclave)"]]],
+{ lv:"50", place:"Darnassus (fly from Marshal's Refuge)", title:"Level 50: new ranks", pickup:{8233:"A Simple Request"}, map:[["darnassus",[37,22,"Rogue trainers (Cenarion Enclave)"]]],
   done:"you've learned every new rank your trainer offers and your talent point is spent.",
   todo:[
     "Fly to Rut'theran Village, take the portal up to Darnassus and learn every new rank.",
@@ -665,7 +667,7 @@ const STEPS = [
     "Learn new ranks and <b>Instant Poison V</b>. Put it on your main-hand weapon."
   ] },
 
-{ lv:"52–54", place:"Felwood", title:"Felwood", map:[["felwood",[51,82,"Emerald Sanctuary"],[37,60,"Jaedenar (Shadow Council)"],[62.5,24.5,"Talonbranch Glade"],[64.5,8,"Timbermaw Hold (tunnel to Winterspring)"]]],
+{ lv:"52–54", place:"Felwood", title:"Felwood", quests:{5155:"Forces of Jaedenar", 8461:"Deadwood of the North"}, map:[["felwood",[51,82,"Emerald Sanctuary"],[37,60,"Jaedenar (Shadow Council)"],[62.5,24.5,"Talonbranch Glade"],[64.5,8,"Timbermaw Hold (tunnel to Winterspring)"]]],
   done:"you're level 54 and have handed in <b>Forces of Jaedenar</b> and <b>Deadwood of the North</b>.", stuck:"Fight Deadwood furbolgs in northern Felwood until you are. It also makes the Timbermaw like you.",
   todo:[
     "Fly to <b>Astranaar</b> in Ashenvale and follow the road north into <b>Felwood</b>, a forest poisoned by demons.",
@@ -680,7 +682,7 @@ const STEPS = [
     "Learn new ranks and <b>Deadly Poison IV</b>. Put it on your off-hand weapon."
   ] },
 
-{ lv:"54–56", place:"Morgan's Vigil, Burning Steppes", title:"Burning Steppes", map:[["burning",[84,68,"Morgan's Vigil"],[65,24,"Flame Crest (black dragons)"],[28,36,"Blackrock Mountain"]]],
+{ lv:"54–56", place:"Morgan's Vigil, Burning Steppes", title:"Burning Steppes", quests:{4182:"Dragonkin Menace"}, map:[["burning",[84,68,"Morgan's Vigil"],[65,24,"Flame Crest (black dragons)"],[28,36,"Blackrock Mountain"]]],
   done:"you're level 56 and have handed in <b>Dragonkin Menace</b>.", stuck:"Fight the Blackrock orcs around the zone until you are.",
   todo:[
     "Fly to Lakeshire and ride north into <b>Burning Steppes</b>, a scorched land of orcs and dragons. <b>Morgan's Vigil</b>, the Alliance camp, is just over the border. Unlock the flight path.",
@@ -690,7 +692,7 @@ const STEPS = [
   ],
   tip:"WoW Forever adds new dungeons for these levels too: <b>Blackmaw Hold</b> (55–60) and <b>Shaper's Terrace</b> (58–60). Look for them in the Looking For Group tool." },
 
-{ lv:"55–57", place:"Chillwind Camp, Western Plaguelands", title:"Western Plaguelands", map:[["wpl",[43,84,"Chillwind Camp"],[37,57,"Felstone Field"],[46,52,"Dalson's Tears"],[53,66,"Writhing Haunt"],[62,58,"Gahrron's Withering"],[43,70,"Andorhal"]]],
+{ lv:"55–57", place:"Chillwind Camp, Western Plaguelands", title:"Western Plaguelands", quests:{5215:"The Scourge Cauldrons"}, map:[["wpl",[43,84,"Chillwind Camp"],[37,57,"Felstone Field"],[46,52,"Dalson's Tears"],[53,66,"Writhing Haunt"],[62,58,"Gahrron's Withering"],[43,70,"Andorhal"]]],
   done:"you're level 57 and all four cauldrons are done.", stuck:"Fight the undead around Andorhal until you are.",
   todo:[
     "Fly to Southshore and ride north through the Alterac Mountains into <b>Western Plaguelands</b>. <b>Chillwind Camp</b> is just inside, in the south. Unlock the flight path.",
@@ -724,7 +726,7 @@ const STEPS = [
     "Then head for Winterspring (next step): take the boat to Auberdine and fly to Talonbranch Glade in Felwood."
   ] },
 
-{ lv:"58–60", place:"Everlook, Winterspring", title:"Winterspring", map:[["felwood",[64.5,8,"Timbermaw Hold (tunnel)"]],["winterspring",[61,38.5,"Everlook"],[31,45,"Donova Snowden (hot springs)"],[67,36,"Winterfall Village (furbolgs)"]]],
+{ lv:"58–60", place:"Everlook, Winterspring", title:"Winterspring", quests:{3783:"Are We There, Yeti?"}, map:[["felwood",[64.5,8,"Timbermaw Hold (tunnel)"]],["winterspring",[61,38.5,"Everlook"],[31,45,"Donova Snowden (hot springs)"],[67,36,"Winterfall Village (furbolgs)"]]],
   done:"you're level 60!", stuck:"Fight Winterfall furbolgs, or run Blackrock Depths with a group, until you are.",
   todo:[
     "Fly to Talonbranch Glade in Felwood and walk north through the <b>Timbermaw Hold</b> tunnel. It comes out in <b>Winterspring</b>, a snowy valley.",

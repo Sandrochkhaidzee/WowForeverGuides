@@ -18,8 +18,10 @@ const GUIDE_PAGE = {
    PART 1 — CONTENT
    Each step: lv = your level, place = where, title,
    todo = list of things to do, tip = optional extra help.
-   chapter = optional: this step starts a new chapter (shown in the
-   journey strip above the step and in the "All steps" list).
+   chapter = optional: this step starts a new chapter (shown as a
+   heading in the "All steps" list).
+   quests = optional: the quests handed in on this step, as {id:"name"}.
+   "Find my step from the game" uses them to work out where you are.
    --------------------------------------------------------- */
 
 const STEPS = [
@@ -34,7 +36,7 @@ const STEPS = [
   ],
   tip:"Fireball is already on key <kbd>1</kbd>. That's your attack for now." },
 
-{ lv:"1", place:"Coldridge Valley", title:"Your first quest", map:[["dunmorogh",[29.9,71.2,"Sten Stoutarm"],[26.5,75.5,"Wolves"]]],
+{ lv:"1", place:"Coldridge Valley", title:"Your first quest", quests:{179:"Dwarven Outfitters"}, pickup:{3114:"Glyphic Memorandum"}, map:[["dunmorogh",[29.9,71.2,"Sten Stoutarm"],[26.5,75.5,"Wolves"]]],
   done:"you've handed in <b>Dwarven Outfitters</b> and have <b>Glyphic Memorandum</b> in your quest log.",
   todo:[
     "Talk to <b>Sten Stoutarm</b>, the dwarf right in front of you. He has a yellow <b>!</b> over his head. Accept <b>Dwarven Outfitters</b>.",
@@ -43,7 +45,7 @@ const STEPS = [
   ],
   tip:"How to fight: click a wolf to target it, then press <kbd>1</kbd> while standing still. Start casting before it reaches you." },
 
-{ lv:"1–3", place:"Coldridge Valley", title:"Meet your trainer and the troggs", map:[["dunmorogh",[28.7,66.4,"Marryk Nurribit (inside Anvilmar)"],[29.9,71.2,"Sten and Balir"],[28,79,"Troggs"]]],
+{ lv:"1–3", place:"Coldridge Valley", title:"Meet your trainer and the troggs", quests:{3114:"Glyphic Memorandum", 170:"A New Threat"}, pickup:{233:"Coldridge Valley Mail Delivery", 3361:"A Refugee's Quandary"}, map:[["dunmorogh",[28.7,66.4,"Marryk Nurribit (inside Anvilmar)"],[29.9,71.2,"Sten and Balir"],[28,79,"Troggs"]]],
   done:"Marryk has the <b>Glyphic Memorandum</b> and you've handed in <b>A New Threat</b>.", stuck:"Fight the troggs south of Anvilmar until you're level 3.",
   todo:[
     "Take <b>Glyphic Memorandum</b> to <b>Marryk Nurribit</b>, the mage trainer inside Anvilmar, the building behind Sten.",
@@ -52,7 +54,7 @@ const STEPS = [
   ],
   tip:"After every fight, if your health or mana is low, sit and eat or drink before the next one. It saves you from dying." },
 
-{ lv:"3–5", place:"Coldridge Valley", title:"Deliver the mail", map:[["dunmorogh",[22.6,71.4,"Talin Keeneye"],[25.1,75.7,"Grelin Whitebeard's camp"],[26.8,79.2,"Troll cave"],[22.8,79.9,"Felix's things (troll camps)"]]],
+{ lv:"3–5", place:"Coldridge Valley", title:"Deliver the mail", quests:{233:"Coldridge Valley Mail Delivery", 234:"Coldridge Valley Mail Delivery", 182:"The Troll Cave", 218:"The Stolen Journal"}, pickup:{183:"The Boar Hunter", 3364:"Scalding Mornbrew Delivery", 282:"Senir's Observations"}, map:[["dunmorogh",[22.6,71.4,"Talin Keeneye"],[25.1,75.7,"Grelin Whitebeard's camp"],[26.8,79.2,"Troll cave"],[22.8,79.9,"Felix's things (troll camps)"]]],
   done:"Grik'nir is dead, <b>The Stolen Journal</b> is handed in, and <b>Scalding Mornbrew Delivery</b> is in your quest log.", stuck:"Fight the young trolls in the cave until you're level 5.",
   todo:[
     "Walk west from Anvilmar to <b>Talin Keeneye</b> and give him the mail. Take <b>The Boar Hunter</b> (kill small crag boars around his camp) and the next mail delivery.",
@@ -70,7 +72,7 @@ const STEPS = [
     "Cast Conjure Water a few times. It makes <b>Conjured Water</b> in your bags. Drag that water onto <kbd>Alt</kbd> + <kbd>1</kbd> and drink it (press <kbd>Alt</kbd> + <kbd>1</kbd>) whenever your mana is low."
   ] },
 
-{ lv:"5", place:"Anvilmar", title:"Hot mornbrew and Felix's things", map:[["dunmorogh",[28.7,66.4,"Anvilmar"],[25.1,75.7,"Nori Pridedrift (Grelin's camp)"]]],
+{ lv:"5", place:"Anvilmar", title:"Hot mornbrew and Felix's things", quests:{3364:"Scalding Mornbrew Delivery", 3365:"Bring Back the Mug", 3361:"A Refugee's Quandary"}, pickup:{97277:"Grund and Gozwin"}, map:[["dunmorogh",[28.7,66.4,"Anvilmar"],[25.1,75.7,"Nori Pridedrift (Grelin's camp)"]]],
   done:"you've handed in <b>Scalding Mornbrew Delivery</b>, <b>Bring Back the Mug</b> and <b>A Refugee's Quandary</b>.",
   todo:[
     "<b>Scalding Mornbrew Delivery</b>: run the hot mornbrew straight to <b>Durnan Furcutter</b> in Anvilmar before it goes cold. Don't stop to fight on the way.",
@@ -88,7 +90,7 @@ const STEPS = [
   ],
   tip:"Comprehend Scroll is a mage-only skill in Forever. Monsters sometimes drop odd scrolls; use it on them to get free buffs and small spells." },
 
-{ lv:"6", place:"Coldridge Pass", title:"Leave the valley", map:[["dunmorogh",[33.9,72.2,"Coldridge Pass: Thalos and Hands Springsprocket"],[46.7,53,"Kharanos"]]],
+{ lv:"6", place:"Coldridge Pass", title:"Leave the valley", quests:{282:"Senir's Observations"}, pickup:{2160:"Supplies to Tannok"}, map:[["dunmorogh",[33.9,72.2,"Coldridge Pass: Thalos and Hands Springsprocket"],[46.7,53,"Kharanos"]]],
   done:"you're in Kharanos with <b>Supplies to Tannok</b> in your quest log.",
   todo:[
     "At the tunnel out of the valley (Coldridge Pass), hand <b>Senir's Observations</b> to <b>Mountaineer Thalos</b> and do the second part he gives you.",
@@ -97,7 +99,7 @@ const STEPS = [
   ] },
 
 /* ---------- Kharanos, levels 6–11 ---------- */
-{ chapter:"Kharanos", lv:"6", place:"Kharanos", title:"Make Kharanos your home", map:[["dunmorogh",[47.3,52.4,"Thunderbrew Distillery (inn)"]]],
+{ chapter:"Kharanos", lv:"6", place:"Kharanos", title:"Make Kharanos your home", quests:{2160:"Supplies to Tannok"}, map:[["dunmorogh",[47.3,52.4,"Thunderbrew Distillery (inn)"]]],
   done:"your Hearthstone says <b>Kharanos</b> when you hover over it, and <b>Supplies to Tannok</b> is handed in.",
   todo:[
     "Find the innkeeper in the Thunderbrew Distillery (the big inn) and choose <b>Make this inn your home</b>.",
@@ -106,7 +108,7 @@ const STEPS = [
   ],
   tip:"Always log out inside an inn. You'll get bonus XP (called rested XP) when you come back." },
 
-{ lv:"6", place:"Kharanos", title:"Learn Cooking", map:[["dunmorogh",[47.3,52.4,"Thunderbrew Distillery"]]],
+{ lv:"6", place:"Kharanos", title:"Learn Cooking", quests:{384:"Beer Basted Boar Ribs"}, map:[["dunmorogh",[47.3,52.4,"Thunderbrew Distillery"]]],
   done:"you've learned Cooking and handed in <b>Beer Basted Boar Ribs</b>.",
   todo:[
     "Find the cooking trainer in Kharanos and learn Cooking.",
@@ -114,7 +116,7 @@ const STEPS = [
     "Cooked food gives the <b>Well Fed</b> buff: 5% more XP from kills."
   ] },
 
-{ lv:"6–7", place:"Kharanos", title:"Grab every quest in town", map:[["dunmorogh",[46.7,53,"Kharanos"],[49.4,48.4,"Steelgrill's Depot"],[42.5,53,"The Grizzled Den"],[44,56,"Wrecked camp (ammo crate)"],[40.6,65.1,"Hegnar Rumbleshot"]]],
+{ lv:"6–7", place:"Kharanos", title:"Grab every quest in town", quests:{420:"Senir's Observations", 317:"Stocking Jetsteam", 313:"The Grizzled Den", 5541:"Ammo for Rumbleshot"}, pickup:{287:"Frostmane Hold", 412:"Operation Recombobulation"}, map:[["dunmorogh",[46.7,53,"Kharanos"],[49.4,48.4,"Steelgrill's Depot"],[42.5,53,"The Grizzled Den"],[44,56,"Wrecked camp (ammo crate)"],[40.6,65.1,"Hegnar Rumbleshot"]]],
   done:"you've handed in <b>Stocking Jetsteam</b>, <b>The Grizzled Den</b> and <b>Ammo for Rumbleshot</b>.", stuck:"Fight the boars, bears and wendigos near Kharanos until you're level 7.",
   todo:[
     "At <b>Steelgrill's Depot</b>, the gnome hangar just north-east of town, take <b>Stocking Jetsteam</b> (Pilot Bellowfiz: <b>4 Chunks of Boar Meat</b> and <b>2 Thick Bear Furs</b>), <b>The Grizzled Den</b> (Pilot Stonegear: <b>Wendigo Manes</b> from the wendigos in the cave west of town) and <b>Ammo for Rumbleshot</b> (Loslor Rudge).",
@@ -123,7 +125,7 @@ const STEPS = [
     "Hand the Depot quests back at the Depot. Press <kbd>L</kbd> to open your quest log: each quest says how many you need."
   ] },
 
-{ lv:"7–8", place:"West of Kharanos", title:"Gnome quest: fix the machines", map:[["dunmorogh",[45.9,49.4,"Razzle Sprysprocket"],[25.5,41.5,"Leper Gnomes"]]],
+{ lv:"7–8", place:"West of Kharanos", title:"Gnome quest: fix the machines", quests:{412:"Operation Recombobulation"}, map:[["dunmorogh",[45.9,49.4,"Razzle Sprysprocket"],[25.5,41.5,"Leper Gnomes"]]],
   done:"Razzle has his gears and cogs.", stuck:"Fight the Leper Gnomes west of Kharanos until you're level 8.",
   todo:[
     "For <b>Operation Recombobulation</b>, go west toward Gnomeregan and kill the Leper Gnomes outside it for <b>Gyromechanic Gears</b> and <b>Restabilization Cogs</b>. Don't go into Gnomeregan itself.",
@@ -138,7 +140,7 @@ const STEPS = [
   ],
   tip:"If two enemies attack you, cast Polymorph on one of them. It turns into a sheep and can't fight for a while. Kill the other one, then deal with the sheep. Don't hit the sheep, or it wakes up." },
 
-{ lv:"8–10", place:"Brewnall Village and the troll camps", title:"Trolls, stout and the beer feud", map:[["dunmorogh",[30.5,45.5,"Brewnall Village (Rejold and Marleth)"],[37,42,"Shimmer Ridge (path up at the camp)"],[25,51,"Frostmane Hold"],[47.3,52.4,"Kharanos inn (Jarven)"]]],
+{ lv:"8–10", place:"Brewnall Village and the troll camps", title:"Trolls, stout and the beer feud", quests:{287:"Frostmane Hold", 315:"The Perfect Stout", 413:"Shimmer Stout", 319:"A Favor for Evershine", 310:"Bitter Rivals", 308:"Distracting Jarven", 311:"Return to Marleth"}, map:[["dunmorogh",[30.5,45.5,"Brewnall Village (Rejold and Marleth)"],[37,42,"Shimmer Ridge (path up at the camp)"],[25,51,"Frostmane Hold"],[47.3,52.4,"Kharanos inn (Jarven)"]]],
   done:"you've handed in <b>Frostmane Hold</b>, <b>Shimmer Stout</b>, <b>Return to Marleth</b> and <b>A Favor for Evershine</b>, and you're level 10.", stuck:"Fight the Frostmane trolls at Shimmer Ridge until you are.",
   todo:[
     "<b>Frostmane Hold</b>: go to the troll cave in the south-west, walk in far enough to get the <b>Explore</b> message, and kill <b>5 Frostmane Headhunters</b>. Hand it back to Senir in Kharanos.",
@@ -148,7 +150,7 @@ const STEPS = [
   ],
   tip:"Trolls come in groups. Pull one at a time with Frostbolt from far away." },
 
-{ lv:"10", place:"Magis Sparkmantle (trainer, Kharanos)", title:"Level 10: Frost Nova and your first talent", map:[["dunmorogh",[47.3,52.4,"Magis Sparkmantle (Kharanos)"]]], learn:["frostnova","water2"],
+{ lv:"10", place:"Magis Sparkmantle (trainer, Kharanos)", title:"Level 10: Frost Nova and your first talent", pickup:{1879:"Speak with Bink"}, map:[["dunmorogh",[47.3,52.4,"Magis Sparkmantle (Kharanos)"]]], learn:["frostnova","water2"],
   done:"Frost Nova is on <kbd>3</kbd>, your new water is on <kbd>Alt</kbd> + <kbd>1</kbd>, and your talent point is in Precision.",
   todo:[
     "Learn <b>Frost Nova</b> and the new rank of <b>Conjure Water</b>. Put Frost Nova on key <kbd>3</kbd> and the new water on <kbd>Alt</kbd> + <kbd>1</kbd>.",
@@ -157,7 +159,7 @@ const STEPS = [
   ],
   tip:"The combo to learn now: Frostbolt the enemy. When it reaches you, press Frost Nova. It freezes in place. Walk a few steps away and keep casting Frostbolt." },
 
-{ lv:"10", place:"Gol'Bolar Quarry (east)", title:"The quarry", map:[["dunmorogh",[68.9,56,"Gol'Bolar Quarry"],[74,53,"Dark Iron Spies"]]],
+{ lv:"10", place:"Gol'Bolar Quarry (east)", title:"The quarry", quests:{432:"Those Blasted Troggs!", 433:"The Public Servant", 96390:"Nip 'Em in the Bud", 96391:"Underground Map"}, pickup:{96393:"Old Ironforge Incursion"}, map:[["dunmorogh",[68.9,56,"Gol'Bolar Quarry"],[74,53,"Dark Iron Spies"]]],
   done:"you've handed in <b>Those Blasted Troggs!</b>, <b>The Public Servant</b> and <b>Nip 'Em in the Bud</b>.", stuck:"Fight the troggs at the quarry until you're level 11.",
   todo:[
     "Follow the road east to Gol'Bolar Quarry.",
@@ -166,7 +168,7 @@ const STEPS = [
     "One spy drops a <b>Dark Iron Map</b>. Right-click it, bring it to Farsen and take <b>Old Ironforge Incursion</b>. That's a dungeon quest for later."
   ] },
 
-{ lv:"10–11", place:"Dun Morogh", title:"Wrap up Dun Morogh", map:[["dunmorogh",[46.7,53,"Kharanos"],[86,48,"South Gate Outpost (Mountaineer Barleybrew)"]]],
+{ lv:"10–11", place:"Dun Morogh", title:"Wrap up Dun Morogh", pickup:{414:"Stout to Kadrell"}, map:[["dunmorogh",[46.7,53,"Kharanos"],[86,48,"South Gate Outpost (Mountaineer Barleybrew)"]]],
   done:"Kharanos and Brewnall have nothing left for you and <b>Stout to Kadrell</b> is in your log.",
   todo:[
     "Turn in everything in Kharanos and Brewnall.",
@@ -184,7 +186,7 @@ const STEPS = [
   ],
   tip:"Lost in Ironforge? Ask any guard. Click them and they'll mark the place on your map." },
 
-{ lv:"10–11", place:"Ironforge, Mystic Ward", title:"Mage quest: Bink", map:[["ironforge",[26.5,8.5,"Bink (Hall of Mysteries)"]],["dunmorogh",[27,36,"Hut north of Gnomeregan (chest)"]]],
+{ lv:"10–11", place:"Ironforge, Mystic Ward", title:"Mage quest: Bink", quests:{1879:"Speak with Bink", 1880:"Mage-tastic Gizmonitor"}, map:[["ironforge",[26.5,8.5,"Bink (Hall of Mysteries)"]],["dunmorogh",[27,36,"Hut north of Gnomeregan (chest)"]]],
   done:"you've handed in <b>Mage-tastic Gizmonitor</b> to Bink and picked the Ley Orb or Ley Staff.",
   todo:[
     "Go to the Mystic Ward and find <b>Bink</b> in the Hall of Mysteries. Turn in <b>Speak with Bink</b>.",
@@ -193,7 +195,7 @@ const STEPS = [
     "Bring it back to Bink and choose your reward: the <b>Ley Orb</b> or the <b>Ley Staff</b>."
   ] },
 
-{ lv:"10–13", place:"Ironforge", title:"Get a wand and a dungeon quest", map:[["ironforge",[25,74,"Auction house"],[39,55,"Thom Filch (below the High Seat)"]]], learn:["shoot"],
+{ lv:"10–13", place:"Ironforge", title:"Get a wand and a dungeon quest", pickup:{96403:"Important Heirlooms"}, map:[["ironforge",[25,74,"Auction house"],[39,55,"Thom Filch (below the High Seat)"]]], learn:["shoot"],
   done:"a wand is equipped, Shoot is on <kbd>6</kbd>, and <b>Important Heirlooms</b> is in your log.",
   todo:[
     "Buy a <b>Lesser Magic Wand</b> from the auction house, or ask an enchanter to make you one. At level 13, upgrade to a <b>Greater Magic Wand</b>.",
@@ -202,7 +204,7 @@ const STEPS = [
   ] },
 
 /* ---------- Loch Modan, levels 11–19 ---------- */
-{ chapter:"Loch Modan", lv:"11", place:"Road to Loch Modan", title:"Move to Loch Modan", map:[["dunmorogh",[46.7,53,"Kharanos"],[87.5,50,"Tunnel to Loch Modan"]],["lochmodan",[23.3,74,"Southern guard tower"]]],
+{ chapter:"Loch Modan", lv:"11", place:"Road to Loch Modan", title:"Move to Loch Modan", pickup:{267:"The Trogg Threat", 224:"In Defense of the King's Lands"}, map:[["dunmorogh",[46.7,53,"Kharanos"],[87.5,50,"Tunnel to Loch Modan"]],["lochmodan",[23.3,74,"Southern guard tower"]]],
   done:"you have <b>The Trogg Threat</b> and <b>In Defense of the King's Lands</b>.",
   todo:[
     "From Kharanos, follow the road east through the mountain tunnel into <b>Loch Modan</b>.",
@@ -210,7 +212,7 @@ const STEPS = [
     "Both are done in <b>Stonesplinter Valley</b>, south of Thelsamar: the troggs drop the teeth."
   ] },
 
-{ lv:"12", place:"Thelsamar", title:"Your new home: Thelsamar", map:[["lochmodan",[35,47,"Thelsamar"]]],
+{ lv:"12", place:"Thelsamar", title:"Your new home: Thelsamar", quests:{414:"Stout to Kadrell"}, pickup:{416:"Rat Catching", 1339:"Mountaineer Stormpike's Task", 418:"Thelsamar Blood Sausages", 436:"Ironband's Excavation"}, map:[["lochmodan",[35,47,"Thelsamar"]]],
   done:"Thelsamar is your home, the flight path is unlocked and the quests above are in your log.",
   todo:[
     "Follow the road to the town of <b>Thelsamar</b>.",
@@ -227,7 +229,7 @@ const STEPS = [
   ],
   tip:"From now on, train every even level and spend a talent point every level. The Talents tab of this guide tells you which one." },
 
-{ lv:"12–14", place:"Loch Modan", title:"Troggs, rats and the mine", map:[["lochmodan",[24.8,18.4,"Mountaineer Stormpike (Algaz Station)"],[35,19,"Silver Stream Mine"],[30,70,"Stonesplinter Valley (troggs)"],[30,40,"Tunnel rat kobolds (hills west of town)"]]],
+{ lv:"12–14", place:"Loch Modan", title:"Troggs, rats and the mine", quests:{267:"The Trogg Threat", 224:"In Defense of the King's Lands", 416:"Rat Catching", 1339:"Mountaineer Stormpike's Task", 307:"Filthy Paws"}, pickup:{1338:"Stormpike's Order"}, map:[["lochmodan",[24.8,18.4,"Mountaineer Stormpike (Algaz Station)"],[35,19,"Silver Stream Mine"],[30,70,"Stonesplinter Valley (troggs)"],[30,40,"Tunnel rat kobolds (hills west of town)"]]],
   done:"you've handed in <b>The Trogg Threat</b>, <b>In Defense of the King's Lands</b>, <b>Rat Catching</b> and <b>Filthy Paws</b>, and you're level 14.", stuck:"Fight the troggs in Stonesplinter Valley until you are.",
   todo:[
     "<b>Rat Catching</b>: kill the tunnel rat kobolds on the mountainside west of Thelsamar for <b>12 Tunnel Rat Ears</b>.",
@@ -236,7 +238,7 @@ const STEPS = [
     "Take any new quests you see. Loch Modan has 11 new ones in Forever."
   ] },
 
-{ lv:"13–18", place:"Under Ironforge", title:"Your first dungeon: Hall of Thanes", map:[["ironforge"]],
+{ lv:"13–18", place:"Under Ironforge", title:"Your first dungeon: Hall of Thanes", quests:{96403:"Important Heirlooms", 96393:"Old Ironforge Incursion", 96394:"The Restless Dead", 96395:"An Ancient Grudge"}, map:[["ironforge"]],
   done:"your group has beaten the last boss, or you've decided to skip it.",
   todo:[
     "A dungeon is a private area for a group of 5 players. Hall of Thanes is new in Forever and sits under Ironforge.",
@@ -253,7 +255,7 @@ const STEPS = [
     "You don't need it much while questing alone. It's for later, when you fight groups."
   ] },
 
-{ lv:"15", place:"Stormwind", title:"Mage quest: a free robe", map:[["ironforge",[76.5,51,"Deeprun Tram"]],["stormwind",[64,8,"The tram arrives here"],[49,86,"Jennea Cannon (Mage Quarter)"],[51.8,83.5,"Wynne Larson (Larson Clothiers)"],[66.3,62.1,"Flight master"]],["lochmodan",[35,19,"Silver Stream Mine (Charged Rift Gems)"]]],
+{ lv:"15", place:"Stormwind", title:"Mage quest: a free robe", quests:{1338:"Stormpike's Order", 1920:"Investigate the Blue Recluse", 1921:"Gathering Materials", 1941:"Manaweave Robe"}, pickup:{1919:"Report to Jennea"}, map:[["ironforge",[76.5,51,"Deeprun Tram"]],["stormwind",[64,8,"The tram arrives here"],[49,86,"Jennea Cannon (Mage Quarter)"],[51.8,83.5,"Wynne Larson (Larson Clothiers)"],[66.3,62.1,"Flight master"]],["lochmodan",[35,19,"Silver Stream Mine (Charged Rift Gems)"]]],
   done:"you're wearing the <b>Manaweave Robe</b>, <b>Stormpike's Order</b> is handed in, and Stormwind's flight path is unlocked.",
   todo:[
     "Magis Sparkmantle in Kharanos gives <b>Report to Jennea</b> (optional). In Ironforge, go to Tinker Town and take the <b>Deeprun Tram</b> to Stormwind. Unlock the flight path, and hand <b>Stormpike's Order</b> to <b>Furen Longbeard</b> in the Dwarven District.",
@@ -262,7 +264,7 @@ const STEPS = [
     "Give it all to <b>Wynne Larson</b> at Larson Clothiers in the Mage Quarter, then talk to her again for the <b>Manaweave Robe</b>."
   ] },
 
-{ lv:"15–18", place:"Loch Modan", title:"Finish Loch Modan", map:[["lochmodan",[35,47,"Thelsamar"],[65,65,"Ironband's Excavation"]]],
+{ lv:"15–18", place:"Loch Modan", title:"Finish Loch Modan", quests:{418:"Thelsamar Blood Sausages", 436:"Ironband's Excavation"}, map:[["lochmodan",[35,47,"Thelsamar"],[65,65,"Ironband's Excavation"]]],
   done:"you're level 18 and the Thelsamar quests are handed in.", stuck:"Fight the troggs and bears around Thelsamar until you are.",
   todo:[
     "<b>Thelsamar Blood Sausages</b>: bear meat, boar intestines and spider ichor from the bears, boars and spiders around town. Hand it to Vidra.",
@@ -279,12 +281,43 @@ const STEPS = [
     "Flamestrike burns an area on the ground. Cast it right after Frost Nova when several enemies are frozen together."
   ] },
 
+{ lv:"18", place:"Loch Modan", title:"Last of Loch Modan: ogres and Ol' Sooty", quests:{255:"Mercenaries", 271:"Vyrin's Revenge", 531:"Vyrin's Revenge", 86614:"Silver of the Waves"}, pickup:{161:"A Dark Threat Looms"}, map:[["lochmodan",[34.6,44.5,"Magistrate Bluntnose (Thelsamar)"],[71,24,"Mo'grosh Stronghold (ogres)"],[37.9,63.4,"Ol' Sooty"],[82.5,64.5,"Farstrider Lodge (Vyrin and Daryl)"],[45.7,43.3,"Discarded Fishing Toolbox"],[40.3,39.3,"Khara Deepwater"],[46,13.6,"Chief Engineer Hinderweir (the dam)"]]],
+  done:"you've handed in <b>Mercenaries</b> and both parts of <b>Vyrin's Revenge</b>.", stuck:"Fight the ogres at Mo'grosh Stronghold until you're level 19.",
+  todo:[
+    "In Thelsamar, <b>Magistrate Bluntnose</b> gives <b>Mercenaries</b>: kill 4 Mo'grosh Ogres, 4 Mo'grosh Brutes and 4 Mo'grosh Enforcers at <b>Mo'grosh Stronghold</b> in the north-east. Ogres hit hard, so pull one at a time with Frostbolt and use Frost Nova when it reaches you.",
+    "At the <b>Farstrider Lodge</b> in the east, <b>Vyrin Swiftwind</b> now gives <b>Vyrin's Revenge</b>, because you did Daryl's hunting quests. Kill the bear <b>Ol' Sooty</b> in the hills south of Thelsamar, show its head to <b>Daryl the Youngling</b>, then take it back to Vyrin. Ol' Sooty is level 20: fight it with full mana.",
+    "On the lake shore just east of Thelsamar, click the <b>Discarded Fishing Toolbox</b> for <b>Silver of the Waves</b>, and bring the hair clip inside to <b>Khara Deepwater</b>, north of town.",
+    "<b>Chief Engineer Hinderweir</b> at the dam has the next part of <b>A Dark Threat Looms</b>. It sends you to Dun Modr in the north of the Wetlands, which is too dangerous now. Keep it in your quest log: the guide takes you there later."
+  ],
+  tip:"Running low on quests? Every kill here still gives XP. The ogres give the most." },
+
 { lv:"18", place:"Ironforge (fly)", title:"Level 18: Remove Lesser Curse", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["removecurse"],
   done:"Remove Lesser Curse is on <kbd>Shift</kbd> + <kbd>9</kbd>.",
   todo:[
     "Learn <b>Remove Lesser Curse</b> and new ranks.",
     "In dungeons, when a party member has a curse on them, click them and cast it. Groups love mages who do this."
   ] },
+
+{ lv:"18–19", place:"Ironforge → Redridge Mountains", title:"Travel to Redridge Mountains", pickup:{244:"Encroaching Gnolls"}, map:[["ironforge",[76.5,51,"Deeprun Tram"]],["stormwind",[64,8,"The tram arrives here"],[66.3,62.1,"Flight master"]],["elwynn",[42,65,"Goldshire"],[84,69,"Eastvale: the road east to Redridge"]],["redridge",[10.4,71.3,"Guard Parker (where you come in)"],[26.5,46.5,"Lakeshire"],[30.6,59.4,"Lakeshire flight path"]]],
+  done:"you're in Lakeshire, you've unlocked its flight path, and <b>Encroaching Gnolls</b> is in your quest log.",
+  todo:[
+    "From Ironforge, take the <b>Deeprun Tram</b> in Tinker Town to Stormwind.",
+    "Leave Stormwind by the main gate and follow the road east through Elwynn Forest, past Goldshire, until it climbs into <b>Redridge Mountains</b>. It's a long walk the first time.",
+    "Where the road enters Redridge, <b>Guard Parker</b> gives <b>Encroaching Gnolls</b>.",
+    "Follow the road east to the town of <b>Lakeshire</b> by the lake, and talk to the gryphon master to unlock the flight path. From now on you can fly here from Stormwind."
+  ],
+  tip:"Leave your Hearthstone set to Thelsamar. You go back that way to reach the Wetlands at level 20." },
+
+{ lv:"19–20", place:"Lakeshire, Redridge Mountains", title:"Redridge: the Lakeshire quests", quests:{244:"Encroaching Gnolls", 246:"Assessing the Threat", 98407:"Show of Force", 129:"A Free Lunch", 130:"Visit the Herbalist", 131:"Delivering Daffodils", 125:"The Lost Tools", 92:"Redridge Goulash", 122:"Underbelly Scales"}, map:[["redridge",[25.6,60,"Deputy Feldon"],[27.1,48.6,"Foreman Oslow (broken bridge)"],[17.6,43.8,"Chef Breanna (inn)"],[25.9,47.3,"Verner Osgood"],[36.4,54.7,"Oslow's Toolbox (lake bottom)"],[24,84,"Gnolls south of town"],[10.6,49.3,"Goretusks"],[47.5,38.4,"Tarantulas"],[54.7,76.1,"Condors"],[29.8,68.4,"Black dragon whelps"]]],
+  done:"you've handed in <b>Assessing the Threat</b>, <b>Show of Force</b>, <b>The Lost Tools</b>, <b>Redridge Goulash</b> and <b>Underbelly Scales</b>, and you're level 20.", stuck:"Fight the gnolls south of Lakeshire until you are.",
+  todo:[
+    "Hand <b>Encroaching Gnolls</b> to <b>Deputy Feldon</b> at the south end of town. He gives <b>Assessing the Threat</b> (10 Redridge Mongrels and 6 Redridge Poachers, the gnolls south of town) and <b>Show of Force</b> (5 Spiked Collars from the Redridge Thrashers).",
+    "<b>Foreman Oslow</b> by the broken bridge gives <b>The Lost Tools</b>: his toolbox is at the bottom of the lake, east of the bridge. The breath bar at the top of your screen shows how long you can stay under.",
+    "<b>Chef Breanna</b> in the inn gives <b>Redridge Goulash</b>: goretusk snouts from the boars west of town, spider meat from the tarantulas in the north-east, and condor meat from the condors in the south.",
+    "<b>Verner Osgood</b> gives <b>Underbelly Scales</b>: the black dragon whelps south of town drop them.",
+    "In the inn, <b>Darcy</b> gives <b>A Free Lunch</b>: take it to Guard Parker on the west road, then <b>Visit the Herbalist</b> and bring <b>Delivering Daffodils</b> back to Darcy. Easy XP on your way past."
+  ],
+  tip:"At level 20, Verner gives <b>A Baying of Gnolls</b> and Dockmaster Baren gives <b>Murloc Poachers</b>. Take them if you have time. Then fly to Stormwind and take the tram to Ironforge to train." },
 
 /* ---------- Level 20 ---------- */
 { chapter:"Level 20 training", lv:"20", place:"Ironforge", title:"Level 20: the big one", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["blink","blizzard","evocation","manashield","tp_if","tp_sw","water3"],
@@ -304,17 +337,17 @@ const STEPS = [
   ],
   tip:"Ice Lance does triple damage to a frozen enemy. New combo: Frostbolt → enemy reaches you → Frost Nova → step back → Ice Lance → Frostbolt." },
 
-{ lv:"20", place:"Loch Modan → Wetlands", title:"Travel to the Wetlands", map:[["lochmodan",[24.8,18.4,"Algaz Station: road north"]],["wetlands",[53,72,"Dun Algaz: you come in here"],[49.8,39.4,"Einar Stonegrip (crossroads)"],[10.5,60,"Menethil Harbor"]]],
+{ lv:"20", place:"Loch Modan → Wetlands", title:"Travel to the Wetlands", pickup:{469:"Daily Delivery"}, map:[["lochmodan",[24.8,18.4,"Algaz Station: road north"]],["wetlands",[53,72,"Dun Algaz: you come in here"],[49.8,39.4,"Einar Stonegrip (crossroads)"],[10.5,60,"Menethil Harbor"]]],
   done:"you've reached Menethil Harbor with <b>Daily Delivery</b> in your quest log.",
   todo:[
-    "From Loch Modan, take the road north through the pass (Dun Algaz) into the <b>Wetlands</b>.",
+    "Fly from Ironforge to Thelsamar (or use your Hearthstone), then take the road north from Loch Modan through the pass (Dun Algaz) into the <b>Wetlands</b>.",
     "Stay on the road. Some enemies along it are stronger than you.",
     "At the crossroads, <b>Einar Stonegrip</b> gives <b>Daily Delivery</b>: a bundle of skins for the tanner in Menethil.",
     "Follow the road west to <b>Menethil Harbor</b> on the coast."
   ] },
 
 /* ---------- Wetlands, levels 20–28 ---------- */
-{ chapter:"Wetlands", lv:"20–22", place:"Menethil Harbor", title:"Settle in Menethil", map:[["wetlands",[10.5,60,"Menethil Harbor"]]],
+{ chapter:"Wetlands", lv:"20–22", place:"Menethil Harbor", title:"Settle in Menethil", pickup:{469:"Daily Delivery", 484:"Young Crocolisk Skins", 279:"Claws from the Deep", 463:"The Greenwarden", 470:"Digging Through the Ooze", 305:"In Search of The Excavation Team"}, map:[["wetlands",[10.5,60,"Menethil Harbor"]]],
   done:"Menethil Harbor is your home, the flight path is unlocked and the town's quests are in your log.",
   todo:[
     "Make the inn your home. Unlock the flight path.",
@@ -329,7 +362,7 @@ const STEPS = [
     "Hearth back to Menethil Harbor."
   ] },
 
-{ lv:"21–24", place:"Wetlands", title:"Quest the Wetlands", map:[["wetlands",[17,39,"Gobbler and the murloc coast"],[56.4,40.4,"Rethiel the Greenwarden"],[44,24,"Ironbeard's Tomb (oozes)"],[34,42,"Whelgar's Excavation Site"]]],
+{ lv:"21–24", place:"Wetlands", title:"Quest the Wetlands", quests:{279:"Claws from the Deep", 484:"Young Crocolisk Skins", 276:"Tramping Paws"}, pickup:{463:"The Greenwarden", 277:"Fire Taboo", 275:"Blisters on The Land", 305:"In Search of The Excavation Team", 470:"Digging Through the Ooze"}, map:[["wetlands",[17,39,"Gobbler and the murloc coast"],[56.4,40.4,"Rethiel the Greenwarden"],[44,24,"Ironbeard's Tomb (oozes)"],[34,42,"Whelgar's Excavation Site"]]],
   done:"you're level 24 and have handed in <b>Claws from the Deep</b>, <b>Young Crocolisk Skins</b> and <b>Tramping Paws</b>.", stuck:"Fight the murlocs along the coast until you are.",
   todo:[
     "Coast first: <b>Claws from the Deep</b>: kill <b>12 Bluegill murlocs</b> and <b>Gobbler</b>, north of Menethil, for his head. Kill young crocolisks in the marsh for <b>Young Crocolisk Skins</b>.",
@@ -359,7 +392,7 @@ const STEPS = [
     "Find a group the same way as Hall of Thanes."
   ] },
 
-{ lv:"26", place:"Stormwind (teleport)", title:"Level 26: Cone of Cold and another mage quest", map:[["stormwind",[49,86,"Jennea Cannon and Andromath (Mage Quarter)"],[51.8,83.5,"Wynne Larson"]],["redridge",[79,49,"Tower of Ilgalar (the book)"]],["duskwood",[20,45,"Raven Hill Cemetery (spiders)"]]], learn:["coneofcold"],
+{ lv:"26", place:"Stormwind (teleport)", title:"Level 26: Cone of Cold and another mage quest", quests:{1939:"High Sorcerer Andromath", 1940:"Pristine Spider Silk"}, pickup:{1938:"Ur's Treatise on Shadow Magic"}, map:[["stormwind",[49,86,"Jennea Cannon and Andromath (Mage Quarter)"],[51.8,83.5,"Wynne Larson"]],["redridge",[79,49,"Tower of Ilgalar (the book)"]],["duskwood",[20,45,"Raven Hill Cemetery (spiders)"]]], learn:["coneofcold"],
   done:"Cone of Cold is on <kbd>8</kbd> and you're wearing the <b>Astral Knot Robe</b> or <b>Blouse</b>.",
   todo:[
     "Learn <b>Cone of Cold</b> and put it on key <kbd>8</kbd>. It hits and slows everything in front of you.",
@@ -369,11 +402,12 @@ const STEPS = [
   ],
   tip:"The tower is dangerous alone at this level. If you die inside, you can come back to life anywhere in the tower: next to the book, then grab it and leave." },
 
-{ lv:"27–28", place:"Wetlands", title:"Finish the Wetlands", map:[["wetlands",[10.5,60,"Menethil Harbor"],[48,15,"Dun Modr"]]],
+{ lv:"27–28", place:"Wetlands", title:"Finish the Wetlands", quests:{472:"Fall of Dun Modr", 161:"A Dark Threat Looms"}, map:[["wetlands",[10.5,60,"Menethil Harbor"],[48,15,"Dun Modr"]]],
   done:"you're level 28 and your Wetlands quests are handed in.", stuck:"Fight the crocolisks or gnolls in the Wetlands until you are.",
   todo:[
     "Finish your Wetlands quests: the Greenwarden chain, the excavation team and Sida's bag.",
     "At level 25 Harlo Barnaby in Menethil gives <b>Fall of Dun Modr</b>: find <b>Longbraid the Grim</b> near the ruins of Dun Modr in the north. His next quest is for a group.",
+    "Still have <b>A Dark Threat Looms</b> from Loch Modan? Hand the powder to <b>Ashlan Stonesmirk</b> in Dun Modr while you're there.",
     "If the north part feels too hard, go to <b>Redridge Mountains</b> or <b>Duskwood</b> (both near Stormwind) for a few levels."
   ] },
 
@@ -392,7 +426,7 @@ const STEPS = [
   ] },
 
 /* ---------- 28–34: Duskwood, Arathi, Southshore ---------- */
-{ chapter:"Duskwood to Arathi", lv:"28–30", place:"Darkshire, Duskwood", title:"Duskwood", map:[["duskwood",[73.5,46,"Darkshire"],[64,36,"Brightwood Grove (worgen)"],[20,45,"Raven Hill Cemetery (skeletons)"],[80,70,"Tranquil Gardens Cemetery"]]],
+{ chapter:"Duskwood to Arathi", lv:"28–30", place:"Darkshire, Duskwood", title:"Duskwood", quests:{173:"Worgen in the Woods", 56:"The Night Watch"}, pickup:{55:"Morbent Fel", 228:"Mor'Ladim"}, map:[["duskwood",[73.5,46,"Darkshire"],[64,36,"Brightwood Grove (worgen)"],[20,45,"Raven Hill Cemetery (skeletons)"],[80,70,"Tranquil Gardens Cemetery"]]],
   done:"you're level 30 and have handed in <b>Worgen in the Woods</b> and <b>The Night Watch</b>.", stuck:"Fight the worgen in Brightwood Grove until you are.",
   todo:[
     "Go to Stormwind (from Menethil Harbor: fly to Ironforge and take the Deeprun Tram), then follow the road south-east through Elwynn Forest into <b>Duskwood</b>, a dark forest. The town is <b>Darkshire</b>, on the east side. Make the inn your home and unlock the flight path.",
@@ -402,7 +436,7 @@ const STEPS = [
   ],
   tip:"Worgen walk in pairs. They're humanoids, so Polymorph works on them: turn one into a sheep, kill the other, then fight the sheep." },
 
-{ lv:"30", place:"Ironforge (teleport)", title:"Level 30: Ice Armor and the wand quest", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["icearmor","water4"],
+{ lv:"30", place:"Ironforge (teleport)", title:"Level 30: Ice Armor and the wand quest", pickup:{1947:"Journey to the Marsh"}, map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["icearmor","water4"],
   done:"Ice Armor is on, your new water is on <kbd>Alt</kbd> + <kbd>1</kbd>, your talent point is in Fingers of Frost, and <b>Journey to the Marsh</b> is in your log.",
   todo:[
     "Learn <b>Ice Armor</b> (it replaces Frost Armor and is stronger), <b>Teleport: Darnassus</b> and new ranks, including a new <b>Conjure Water</b>.",
@@ -410,7 +444,7 @@ const STEPS = [
     "Take <b>Journey to the Marsh</b> from the mage trainer. This starts the quest for the <b>Icefury Wand</b> (see the later step)."
   ] },
 
-{ lv:"30–32", place:"Arathi Highlands", title:"Arathi Highlands", map:[["arathi",[44,89,"Thandol Span (from the Wetlands)"],[45.8,47.6,"Refuge Pointe"],[32,28,"Northfold Manor (Syndicate)"],[66,68,"Witherbark Village (trolls)"],[52,50,"Circle of Outer Binding (wand quest)"],[25,30,"Stromgarde Keep (elites)"],[73,33,"Hammerfall (Horde town)"]]],
+{ lv:"30–32", place:"Arathi Highlands", title:"Arathi Highlands", quests:{681:"Northfold Manor"}, pickup:{1948:"Items of Power"}, map:[["arathi",[44,89,"Thandol Span (from the Wetlands)"],[45.8,47.6,"Refuge Pointe"],[32,28,"Northfold Manor (Syndicate)"],[66,68,"Witherbark Village (trolls)"],[52,50,"Circle of Outer Binding (wand quest)"],[25,30,"Stromgarde Keep (elites)"],[73,33,"Hammerfall (Horde town)"]]],
   done:"you're level 32 and have handed in <b>Northfold Manor</b>.", stuck:"Fight the Syndicate around Northfold Manor until you are.",
   todo:[
     "Fly to <b>Menethil Harbor</b> and ride north over the big bridge (Thandol Span) into <b>Arathi Highlands</b>, a wide open grassland.",
@@ -429,7 +463,7 @@ const STEPS = [
     "Hearth back to Refuge Pointe and carry on."
   ] },
 
-{ lv:"32", place:"Southshore, Hillsbrad", title:"Southshore", map:[["arathi",[20,30,"Gate in Thoradin's Wall (west)"]],["hillsbrad",[50,55,"Southshore"],[40,74,"Murloc beach"]]],
+{ lv:"32", place:"Southshore, Hillsbrad", title:"Southshore", quests:{536:"Down the Coast", 505:"Syndicate Assassins"}, map:[["arathi",[20,30,"Gate in Thoradin's Wall (west)"]],["hillsbrad",[50,55,"Southshore"],[40,74,"Murloc beach"]]],
   done:"you're level 33 and have handed in <b>Down the Coast</b> and <b>Syndicate Assassins</b>.", stuck:"Fight the murlocs on the beach south of Southshore until you are.",
   todo:[
     "From Refuge Pointe, ride west through the gate in the huge wall (Thoradin's Wall) into Hillsbrad Foothills. Follow the road south to <b>Southshore</b>. Unlock the flight path.",
@@ -440,7 +474,7 @@ const STEPS = [
   tip:"From here on, on PvP servers, Horde players can attack you. Frost Nova and Blink are your escape." },
 
 /* ---------- 33–37: Stranglethorn Vale ---------- */
-{ chapter:"Stranglethorn Vale", lv:"33–35", place:"Stranglethorn Vale (north)", title:"Stranglethorn: Rebel Camp and the hunters", map:[["stranglethorn",[38,3.5,"Rebel Camp"],[35.6,10.6,"Nesingwary's Expedition"],[44,10,"Kurzen's Compound"],[32,28,"Grom'gol (Horde camp)"]]],
+{ chapter:"Stranglethorn Vale", lv:"33–35", place:"Stranglethorn Vale (north)", title:"Stranglethorn: Rebel Camp and the hunters", quests:{185:"Tiger Mastery", 190:"Panther Mastery", 194:"Raptor Mastery"}, pickup:{338:"The Green Hills of Stranglethorn"}, map:[["stranglethorn",[38,3.5,"Rebel Camp"],[35.6,10.6,"Nesingwary's Expedition"],[44,10,"Kurzen's Compound"],[32,28,"Grom'gol (Horde camp)"]]],
   done:"you're level 35 and have handed in the first parts of <b>Tiger Mastery</b>, <b>Panther Mastery</b> and <b>Raptor Mastery</b>.", stuck:"Fight the tigers and panthers around Nesingwary's camp until you are.",
   todo:[
     "Fly to <b>Darkshire</b> and follow the road south out of Duskwood into <b>Stranglethorn Vale</b>, a big jungle. Right at the zone edge, turn west to the <b>Rebel Camp</b>.",
@@ -450,7 +484,7 @@ const STEPS = [
   ],
   tip:"Grom'gol, on the west coast, is a Horde camp. Stay away from it." },
 
-{ lv:"33–35", place:"Several places", title:"Finish the wand quest", map:[["dustwallow",[46,57,"Tabetha's hut"]],["needles",[78.3,75.7,"Magus Tirth (Mirage Raceway)"]],["tirisfal",[83,33,"Scarlet Monastery"]]],
+{ lv:"33–35", place:"Several places", title:"Finish the wand quest", quests:{1947:"Journey to the Marsh", 1952:"Mage's Wand"}, pickup:{1949:"Hidden Secrets", 1948:"Items of Power", 1950:"Get the Scoop", 1951:"Rituals of Power"}, map:[["dustwallow",[46,57,"Tabetha's hut"]],["needles",[78.3,75.7,"Magus Tirth (Mirage Raceway)"]],["tirisfal",[83,33,"Scarlet Monastery"]]],
   done:"the <b>Icefury Wand</b> is equipped, or you've decided to skip it.",
   todo:[
     "Take <b>Journey to the Marsh</b> to <b>Tabetha</b>, whose hut is in the middle of Dustwallow Marsh (fly to Theramore, follow the road south and cut east into the marsh: the east side has stronger enemies). She gives <b>Hidden Secrets</b> and <b>Items of Power</b>.",
@@ -460,14 +494,14 @@ const STEPS = [
   ],
   tip:"This quest sends you around the world. It's optional. If it feels like too much, skip it." },
 
-{ lv:"34", place:"Ironforge (teleport)", title:"Level 34: Mage Armor", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]], learn:["magearmor"],
+{ lv:"34", place:"Ironforge (teleport)", title:"Level 34: Mage Armor", pickup:{1953:"Return to the Marsh"}, map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]], learn:["magearmor"],
   done:"Mage Armor is on your right bar.",
   todo:[
     "Learn <b>Mage Armor</b> and new ranks at the trainer. Keep Ice Armor on while questing; swap to Mage Armor for long dungeon fights.",
     "Optional, from level 35: the trainer offers <b>Return to the Marsh</b>, a hard chain from Tabetha (an elite demon and an Uldaman boss) that ends with the <b>Celestial Orb</b>. Do it with friends or later."
   ] },
 
-{ lv:"35–37", place:"Booty Bay, Stranglethorn", title:"Stranglethorn: Booty Bay", map:[["stranglethorn",[27,77,"Booty Bay"],[38,3.5,"Rebel Camp"],[35.6,10.6,"Nesingwary's Expedition"]]],
+{ lv:"35–37", place:"Booty Bay, Stranglethorn", title:"Stranglethorn: Booty Bay", quests:{605:"Singing Blue Shards"}, pickup:{595:"The Bloodsail Buccaneers"}, map:[["stranglethorn",[27,77,"Booty Bay"],[38,3.5,"Rebel Camp"],[35.6,10.6,"Nesingwary's Expedition"]]],
   done:"you're level 37 and have handed in <b>Singing Blue Shards</b>.", stuck:"Fight the pirates or raptors along the coast near Booty Bay until you are.",
   todo:[
     "Follow the main road all the way south to <b>Booty Bay</b>, a goblin port built into a cliff. Unlock the flight path and make the inn your home.",
@@ -477,7 +511,7 @@ const STEPS = [
   ],
   tip:"Booty Bay has a boat to Ratchet in Kalimdor. That helps with the wand quest in Dustwallow Marsh." },
 
-{ lv:"35–40", place:"Tirisfal Glades", title:"Dungeon: Scarlet Monastery (optional)", map:[["tirisfal",[83,33,"Scarlet Monastery"]]],
+{ lv:"35–40", place:"Tirisfal Glades", title:"Dungeon: Scarlet Monastery (optional)", quests:{1050:"Mythology of the Titans", 1053:"In the Name of the Light"}, pickup:{1951:"Rituals of Power"}, map:[["tirisfal",[83,33,"Scarlet Monastery"]]],
   done:"your group has finished the wings you wanted, or you've decided to skip it.",
   todo:[
     "Four short dungeon wings, run by crazed crusaders: <b>Graveyard</b> (around level 30), <b>Library</b> (around 33), <b>Armory</b> (around 36) and <b>Cathedral</b> (around 38).",
@@ -531,7 +565,7 @@ const STEPS = [
     "Talent: <b>Ice Barrier</b>, a shield that absorbs damage. Use it before every fight."
   ] },
 
-{ lv:"40–43", place:"Riverglades (north)", title:"Riverglades: Sunnyglade and the north", map:[["riverglades"]],
+{ lv:"40–43", place:"Riverglades (north)", title:"Riverglades: Sunnyglade and the north", quests:{94877:"Saving Sunnyglade"}, map:[["riverglades"]],
   done:"you're level 43 and have handed in <b>Saving Sunnyglade</b>.", stuck:"Fight the enemies around Sunnyglade until you are.",
   todo:[
     "Fly back to Farholde Keep. Demar Brant's <b>Saving Sunnyglade</b> sends you north to the village of <b>Sunnyglade</b>.",
@@ -549,7 +583,7 @@ const STEPS = [
   ],
   tip:"Most dungeon XP in Forever comes from quests, so collect them before you go in." },
 
-{ lv:"42", place:"Ironforge (teleport)", title:"Level 42: better food and Arcane talents", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["food5"],
+{ lv:"42", place:"Ironforge (teleport)", title:"Level 42: better food and Arcane talents", pickup:{82084:"A Lesson in Literacy"}, map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["food5"],
   done:"the new food is on <kbd>Alt</kbd> + <kbd>2</kbd>.",
   todo:[
     "Learn new ranks, including a new rank of <b>Conjure Food</b> (Conjured Sourdough). Put it on <kbd>Alt</kbd> + <kbd>2</kbd>.",
@@ -566,7 +600,7 @@ const STEPS = [
     "Gadgetzan is neutral: its guards attack anyone who starts a fight in town."
   ] },
 
-{ lv:"43–46", place:"Gadgetzan, Tanaris", title:"Tanaris", map:[["tanaris",[51,28,"Gadgetzan"],[63,30,"Wastewander bandit camps"],[35,45,"Noxious Lair (giant insects)"],[72,46,"Lost Rigger Cove (pirates)"],[39,20,"Zul'Farrak"]]],
+{ lv:"43–46", place:"Gadgetzan, Tanaris", title:"Tanaris", quests:{1690:"Wastewander Justice", 1707:"Water Pouch Bounty"}, pickup:{82:"Noxious Lair Investigation", 8366:"Southsea Shakedown", 8365:"Pirate Hats Ahoy!"}, map:[["tanaris",[51,28,"Gadgetzan"],[63,30,"Wastewander bandit camps"],[35,45,"Noxious Lair (giant insects)"],[72,46,"Lost Rigger Cove (pirates)"],[39,20,"Zul'Farrak"]]],
   done:"you're level 46 and have handed in <b>Wastewander Justice</b> and <b>Water Pouch Bounty</b>.", stuck:"Fight the Wastewander bandits east of Gadgetzan until you are.",
   todo:[
     "Take every quest in Gadgetzan. <b>Wastewander Justice</b> and <b>Water Pouch Bounty</b> send you to the bandit camps east of town.",
@@ -590,7 +624,7 @@ const STEPS = [
     "Then travel on to Feralas (next step). Teleport: Darnassus and the flight to Feathermoon is a quick way there once you've been to Feathermoon."
   ] },
 
-{ lv:"44–48", place:"Tanaris", title:"Dungeon: Zul'Farrak (optional)", map:[["tanaris",[39,20,"Zul'Farrak"],[51,28,"Gadgetzan"]]],
+{ lv:"44–48", place:"Tanaris", title:"Dungeon: Zul'Farrak (optional)", quests:{2768:"Divino-matic Rod", 3042:"Troll Temper"}, map:[["tanaris",[39,20,"Zul'Farrak"],[51,28,"Gadgetzan"]]],
   done:"your group has finished, or you've decided to skip it.",
   todo:[
     "A troll city in the north-west of Tanaris, for levels 44–48. Lots of quests from Gadgetzan.",
@@ -607,7 +641,7 @@ const STEPS = [
     "Unlock the Feathermoon flight path and make the inn your home."
   ] },
 
-{ lv:"46–48", place:"Feathermoon, Feralas", title:"Feralas", map:[["feralas",[30.5,43.5,"Feathermoon Stronghold"],[43.5,43,"Ferry dock"],[59,44,"Dire Maul (for later)"]]],
+{ lv:"46–48", place:"Feathermoon, Feralas", title:"Feralas", quests:{2821:"The Mark of Quality", 7003:"Zapped Giants"}, pickup:{4267:"Rise of the Silithid"}, map:[["feralas",[30.5,43.5,"Feathermoon Stronghold"],[43.5,43,"Ferry dock"],[59,44,"Dire Maul (for later)"]]],
   done:"you're level 48 and have handed in <b>Zapped Giants</b> and <b>The Mark of Quality</b>.", stuck:"Fight the yetis in the hills or the giants on the coast until you are.",
   todo:[
     "Take every quest in Feathermoon Stronghold, like <b>The Mark of Quality</b> from Pratt McGrubben (yeti hides) and the <b>Rise of the Silithid</b> chain.",
@@ -616,7 +650,7 @@ const STEPS = [
     "Move on at about level 48."
   ] },
 
-{ lv:"47–50", place:"Aerie Peak, Hinterlands", title:"The Hinterlands", map:[["hinterlands",[14,46,"Aerie Peak"],[55,42,"Skulk Rock (oozes)"],[63,73,"Jintha'Alor (trolls)"]]],
+{ lv:"47–50", place:"Aerie Peak, Hinterlands", title:"The Hinterlands", quests:{2877:"Skulk Rock Clean-up", 2880:"Troll Necklace Bounty"}, pickup:{2988:"Witherbark Cages"}, map:[["hinterlands",[14,46,"Aerie Peak"],[55,42,"Skulk Rock (oozes)"],[63,73,"Jintha'Alor (trolls)"]]],
   done:"you're level 50 and have handed in <b>Skulk Rock Clean-up</b> and <b>Troll Necklace Bounty</b>.", stuck:"Fight Witherbark trolls (their necklaces count for the bounty) until you are.",
   todo:[
     "Teleport to Ironforge, fly to <b>Southshore</b>, then ride north-east into <b>The Hinterlands</b>. <b>Aerie Peak</b>, the Wildhammer dwarf town, is right at the entrance.",
@@ -634,7 +668,7 @@ const STEPS = [
   ] },
 
 /* ---------- 49–60 ---------- */
-{ chapter:"Un'Goro to 60", lv:"49–52", place:"Marshal's Refuge, Un'Goro", title:"Un'Goro Crater", map:[["ungoro",[43.5,8.5,"Marshal's Refuge"],[50,48,"Fire Plume Ridge (volcano)"],[70,75,"Entrance from Tanaris"]]],
+{ chapter:"Un'Goro to 60", lv:"49–52", place:"Marshal's Refuge, Un'Goro", title:"Un'Goro Crater", quests:{4284:"Crystals of Power", 4243:"Chasing A-Me 01"}, map:[["ungoro",[43.5,8.5,"Marshal's Refuge"],[50,48,"Fire Plume Ridge (volcano)"],[70,75,"Entrance from Tanaris"]]],
   done:"you're level 52 and have handed in <b>Crystals of Power</b> and <b>Chasing A-Me 01</b>.", stuck:"Fight the raptors and stegodons near Marshal's Refuge until you are.",
   todo:[
     "Fly to Gadgetzan and ride west out of Tanaris. The road goes down a long ramp into <b>Un'Goro Crater</b>, a jungle full of dinosaurs.",
@@ -644,7 +678,7 @@ const STEPS = [
   ],
   tip:"Devilsaurs walk the open ground and see you from far away. If one comes your way, get out of its path; if it reaches you, Frost Nova, Blink away and run." },
 
-{ lv:"50", place:"Ironforge (teleport)", title:"Level 50: Sparkling Water", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["water6"],
+{ lv:"50", place:"Ironforge (teleport)", title:"Level 50: Sparkling Water", pickup:{8250:"Magecraft"}, map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["water6"],
   done:"the new water is on <kbd>Alt</kbd> + <kbd>1</kbd>.",
   todo:[
     "Learn new ranks, including a new rank of <b>Conjure Water</b> (Conjured Sparkling Water). Put it on <kbd>Alt</kbd> + <kbd>1</kbd>.",
@@ -658,7 +692,7 @@ const STEPS = [
     "Learn new ranks, including a new rank of <b>Conjure Food</b> (Conjured Sweet Roll). Put it on <kbd>Alt</kbd> + <kbd>2</kbd>."
   ] },
 
-{ lv:"52–54", place:"Felwood", title:"Felwood", map:[["felwood",[51,82,"Emerald Sanctuary"],[37,60,"Jaedenar (Shadow Council)"],[62.5,24.5,"Talonbranch Glade"],[64.5,8,"Timbermaw Hold (tunnel to Winterspring)"]]],
+{ lv:"52–54", place:"Felwood", title:"Felwood", quests:{5155:"Forces of Jaedenar", 8461:"Deadwood of the North"}, map:[["felwood",[51,82,"Emerald Sanctuary"],[37,60,"Jaedenar (Shadow Council)"],[62.5,24.5,"Talonbranch Glade"],[64.5,8,"Timbermaw Hold (tunnel to Winterspring)"]]],
   done:"you're level 54 and have handed in <b>Forces of Jaedenar</b> and <b>Deadwood of the North</b>.", stuck:"Fight Deadwood furbolgs in northern Felwood until you are. It also makes the Timbermaw like you.",
   todo:[
     "Get to <b>Astranaar</b> in Ashenvale (no flight path there? Take the boat to Auberdine and ride south through Darkshore into Ashenvale), then follow the road north into <b>Felwood</b>, a forest poisoned by demons.",
@@ -667,7 +701,7 @@ const STEPS = [
     "Near the north end, Nafien gives <b>Deadwood of the North</b>: killing the Deadwood furbolgs makes the Timbermaw furbolgs like you, so they let you walk through their tunnel to Winterspring later. Move on at level 54."
   ] },
 
-{ lv:"54–56", place:"Morgan's Vigil, Burning Steppes", title:"Burning Steppes", map:[["burning",[84,68,"Morgan's Vigil"],[65,24,"Flame Crest (black dragons)"],[28,36,"Blackrock Mountain"]]],
+{ lv:"54–56", place:"Morgan's Vigil, Burning Steppes", title:"Burning Steppes", quests:{4182:"Dragonkin Menace"}, map:[["burning",[84,68,"Morgan's Vigil"],[65,24,"Flame Crest (black dragons)"],[28,36,"Blackrock Mountain"]]],
   done:"you're level 56 and have handed in <b>Dragonkin Menace</b>.", stuck:"Fight the Blackrock orcs around the zone until you are.",
   todo:[
     "Fly to Lakeshire and ride north into <b>Burning Steppes</b>, a scorched land of orcs and dragons. <b>Morgan's Vigil</b>, the Alliance camp, is just over the border. Unlock the flight path.",
@@ -685,7 +719,7 @@ const STEPS = [
     "Hearth back and carry on."
   ] },
 
-{ lv:"55–57", place:"Chillwind Camp, Western Plaguelands", title:"Western Plaguelands", map:[["wpl",[43,84,"Chillwind Camp"],[37,57,"Felstone Field"],[46,52,"Dalson's Tears"],[53,66,"Writhing Haunt"],[62,58,"Gahrron's Withering"],[43,70,"Andorhal"]]],
+{ lv:"55–57", place:"Chillwind Camp, Western Plaguelands", title:"Western Plaguelands", quests:{5215:"The Scourge Cauldrons"}, map:[["wpl",[43,84,"Chillwind Camp"],[37,57,"Felstone Field"],[46,52,"Dalson's Tears"],[53,66,"Writhing Haunt"],[62,58,"Gahrron's Withering"],[43,70,"Andorhal"]]],
   done:"you're level 57 and all four cauldrons are done.", stuck:"Fight the undead around Andorhal until you are.",
   todo:[
     "Fly to Southshore and ride north through the Alterac Mountains into <b>Western Plaguelands</b>. <b>Chillwind Camp</b> is just inside, in the south. Unlock the flight path.",
@@ -717,7 +751,7 @@ const STEPS = [
     "Learn new ranks, including <b>Conjure Mana Ruby</b>, your best mana gem."
   ] },
 
-{ lv:"58–60", place:"Everlook, Winterspring", title:"Winterspring", map:[["felwood",[64.5,8,"Timbermaw Hold (tunnel)"]],["winterspring",[61,38.5,"Everlook"],[31,45,"Donova Snowden (hot springs)"],[67,36,"Winterfall Village (furbolgs)"]]],
+{ lv:"58–60", place:"Everlook, Winterspring", title:"Winterspring", quests:{3783:"Are We There, Yeti?"}, map:[["felwood",[64.5,8,"Timbermaw Hold (tunnel)"]],["winterspring",[61,38.5,"Everlook"],[31,45,"Donova Snowden (hot springs)"],[67,36,"Winterfall Village (furbolgs)"]]],
   done:"you're level 60!", stuck:"Fight Winterfall furbolgs, or run Blackrock Depths with a group, until you are.",
   todo:[
     "Fly to Talonbranch Glade in Felwood and walk north through the <b>Timbermaw Hold</b> tunnel. It comes out in <b>Winterspring</b>, a snowy valley.",
@@ -726,7 +760,7 @@ const STEPS = [
     "For the last bars of XP, run end-game dungeons with groups: Blackrock Depths, Lower Blackrock Spire, Dire Maul, Stratholme and Scholomance."
   ] },
 
-{ lv:"60", place:"Ironforge (teleport)", title:"Level 60: the last ranks", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["food7"],
+{ lv:"60", place:"Ironforge (teleport)", title:"Level 60: the last ranks", pickup:{7463:"Arcane Refreshment"}, map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["food7"],
   done:"the new food is on <kbd>Alt</kbd> + <kbd>2</kbd> and all 51 talent points are spent.",
   todo:[
     "Learn the last ranks, including a new <b>Conjure Food</b> (Conjured Cinnamon Rolls). Put it on <kbd>Alt</kbd> + <kbd>2</kbd>.",
@@ -787,6 +821,7 @@ const WORDS = {
 const ZONES = {
   dunmorogh: { name: "Dun Morogh", id: 1 },       ironforge: { name: "Ironforge", id: 1537 },
   lochmodan: { name: "Loch Modan", id: 38 },      stormwind: { name: "Stormwind", id: 1519 },
+  elwynn: { name: "Elwynn Forest", id: 12 },
   wetlands: { name: "Wetlands", id: 11 },         redridge: { name: "Redridge Mountains", id: 44 },
   duskwood: { name: "Duskwood", id: 10 },         hillsbrad: { name: "Hillsbrad Foothills", id: 267 },
   arathi: { name: "Arathi Highlands", id: 45 },   stranglethorn: { name: "Stranglethorn Vale", id: 33 },

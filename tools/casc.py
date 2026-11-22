@@ -47,7 +47,9 @@ def name_hash(path):
     return (c << 32) | b
 
 # ---------- BLTE ----------
-def blte(buf):
+def blte(buf, zero_encrypted=False):
+    """zero_encrypted: fill encrypted chunks with zeros (DB2 tables mark those
+    sections as encrypted and readers skip them) instead of failing."""
     assert buf[:4] == b"BLTE", "not BLTE"
     hsize = struct.unpack_from(">I", buf, 4)[0]
     if hsize == 0:
@@ -61,13 +63,14 @@ def blte(buf):
             chunks.append((csize, dsize))
         pos = hsize
     out = bytearray()
-    for csize, _ in chunks:
+    for csize, dsize in chunks:
         chunk = buf[pos:pos + csize]
         pos += csize
         mode = chunk[:1]
         if mode == b"N": out += chunk[1:]
         elif mode == b"Z": out += zlib.decompress(chunk[1:])
-        elif mode == b"F": out += blte(chunk[1:])
+        elif mode == b"F": out += blte(chunk[1:], zero_encrypted)
+        elif mode == b"E" and zero_encrypted and dsize: out += bytes(dsize)
         elif mode == b"E": raise ValueError("encrypted chunk")
         else: raise ValueError("unknown BLTE mode %r" % mode)
     return bytes(out)
@@ -183,3 +186,9 @@ class Casc:
         if ck is None: return None
         ek = self.ckeys_to_ekeys({ck}).get(ck)
         return blte(self.read_ekey(ek)) if ek else None
+
+    def read_fdid(self, fdid, zero_encrypted=False):
+        ck = self.by_fdid.get(fdid)
+        if ck is None: return None
+        ek = self.ckeys_to_ekeys({ck}).get(ck)
+        return blte(self.read_ekey(ek), zero_encrypted) if ek else None

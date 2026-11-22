@@ -1,7 +1,6 @@
 /* Guide page styles. Loaded after core.css. */
 
 
-body { padding-bottom: 150px; /* room for the action bar */ }
 .slot:focus-visible { outline-offset: 1px; }
 /* rogue class icon inside the round frame (falls back to the blue orb offline) */
 .portrait img {
@@ -41,13 +40,14 @@ body { padding-bottom: 150px; /* room for the action bar */ }
 
 .questpaper {
   color: var(--ink);
+  /* aged, dimmer parchment: easier on the eyes next to the dark page */
   background:
-    radial-gradient(ellipse at center, transparent 55%, rgba(120, 80, 20, .35) 100%),
-    linear-gradient(#f0e2bf, var(--parch));
+    radial-gradient(ellipse at center, transparent 50%, rgba(100, 65, 15, .4) 100%),
+    linear-gradient(#d6c196, #c6ab7a);
   border: 1px solid #000;
   border-radius: 3px;
   padding: 22px 28px 20px;
-  box-shadow: inset 0 0 0 2px var(--parch-dark), inset 0 0 30px rgba(110, 70, 10, .35);
+  box-shadow: inset 0 0 0 2px #a88d58, inset 0 0 36px rgba(90, 55, 10, .4);
 }
 .questpaper b, .questpaper strong { color: #000; }
 .questpaper.slide-next { animation: pageNext .35s ease; }
@@ -55,13 +55,13 @@ body { padding-bottom: 150px; /* room for the action bar */ }
 @keyframes pageNext { from { opacity: 0; transform: translateX(20px); } }
 @keyframes pageBack { from { opacity: 0; transform: translateX(-20px); } }
 
-.meta { margin: 0; font-size: 14px; color: #6b4e22; }
+.meta { margin: 0; font-size: 14px; color: #523717; }
 .meta span { margin: 0 4px; }
 .questpaper h2 { margin: 2px 0 10px; font-size: 28px; color: #000; line-height: 1.2; }
 .questpaper h4 { margin: 14px 0 0; font-size: 18px; color: #000; border-bottom: 1px solid rgba(80, 50, 10, .35); padding-bottom: 2px; }
 .todo { font-size: 19px; margin: 8px 0 0; }
 .todo li { margin: 9px 0; padding-left: 4px; }
-.todo li::marker { color: #6b4e22; font-weight: bold; }
+.todo li::marker { color: #523717; font-weight: bold; }
 .tip {
   margin: 18px 0 0;
   padding: 10px 14px;
@@ -288,7 +288,7 @@ summary:hover { color: #fff3a0; }
 .sc-item   { background: radial-gradient(circle at 35% 30%, #d8cdb6, #7d6a4c 55%, #2a2014); }
 
 /* just-learned: golden spell-alert glow around the button */
-.slot.fresh, .mainbar .slot.fresh, .bar.main .slot.fresh {
+.slot.fresh, .bar.main .slot.fresh {
   box-shadow: 0 0 0 1px #000, 0 0 0 2px #ffd100, 0 0 10px 3px rgba(255, 190, 0, .8);
   animation: glow 1s ease-in-out infinite;
 }
@@ -309,7 +309,7 @@ summary:hover { color: #fff3a0; }
 @property --a { syntax: "<angle>"; inherits: false; initial-value: 360deg; }
 @keyframes sweep { 0% { opacity: 1; --a: 360deg; } 99% { opacity: 1; --a: 0deg; } 100% { opacity: 0; } }
 
-/* ---------- the main bar's bronze frame (bottom HUD and Action Bars tab) ---------- */
+/* ---------- the main bar's bronze frame (Action Bars tab) ---------- */
 
 .mb-frame {
   background:
@@ -320,7 +320,7 @@ summary:hover { color: #fff3a0; }
   box-shadow: inset 0 1px 0 #9a7a40, inset 0 2px 0 #000, inset 0 -1px 0 #4a3820, 0 4px 12px rgba(0, 0, 0, .6);
 }
 /* each button sits in a recessed bronze socket */
-.mainbar .slot, .bar.main .slot {
+.bar.main .slot {
   box-shadow: 0 0 0 1px #000, 0 0 0 3px #22190f, 0 0 0 4px #6b5230;
 }
 
@@ -688,6 +688,8 @@ summary:hover { color: #fff3a0; }
 .levelpick label { white-space: nowrap; color: var(--muted); }
 .levelpick label b { color: var(--wow-yellow); font-size: 22px; display: inline-block; min-width: 28px; text-align: center; }
 .levelpick input { flex: 1; min-width: 0; accent-color: var(--gold); cursor: pointer; }
+/* under the slider (Action Bars and Gear): which Quest Guide step it matches, or the level you moved it to */
+.levelnote { margin: 0 0 12px; color: var(--muted); font-size: 15.5px; }
 /* gold-gem slider like an in-game options slider */
 .levelpick input[type="range"] { -webkit-appearance: none; appearance: none; height: 22px; background: transparent; }
 .levelpick input[type="range"]::-webkit-slider-runnable-track {
@@ -740,116 +742,11 @@ summary:hover { color: #fff3a0; }
 .changes ul { margin: 0; }
 .changes li.none { list-style: none; margin-left: -24px; color: var(--muted); }
 
-/* ---------- bottom HUD: the main action bar ---------- */
-
-.hud {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 40;
-  pointer-events: none;
-}
-.mainbar {
-  position: relative;
-  width: max-content;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 72px;
-  pointer-events: auto;
-}
-.mb-body {
-  position: relative;
-  padding: 0 18px 7px;
-  border-bottom: 0;
-  box-shadow: inset 0 1px 0 #9a7a40, inset 0 2px 0 #000, 0 -4px 18px rgba(0, 0, 0, .75);
-}
-.mb-row { display: flex; align-items: center; gap: 10px; }
-.mainbar .bar { gap: 9px; flex-wrap: nowrap; }
-
-/* action page arrows with the page number */
-.pager {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  width: 16px;
-  font: bold 12px/1 Arial, sans-serif;
-  color: var(--wow-yellow);
-  text-shadow: 0 1px 1px #000;
-}
-.pager i { width: 0; height: 0; border: 5px solid transparent; }
-.pager .up { border-top: 0; border-bottom: 6px solid var(--gold); }
-.pager .down { border-bottom: 0; border-top: 6px solid var(--gold); }
-
-/* winged statues at each end of the bar */
-.cap {
-  position: absolute;
-  bottom: 0;
-  z-index: 2;
-  width: 94px;
-  height: 110px;
-  pointer-events: none;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .85));
-}
-.cap-l { left: -4px; }
-.cap-r { right: -4px; transform: scaleX(-1); }
-
-/* the bars tab has its own big bars, so hide the HUD there */
-body[data-tab="bars"] .hud { display: none; }
-
-/* segmented XP-style bar across the top of the main bar (shows guide progress) */
-.xp {
-  position: relative;
-  height: 13px;
-  margin: 0 -18px 8px;
-  background: linear-gradient(#07070d, #12121f);
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
-  box-shadow: 0 1px 0 #6b5230, 0 -1px 0 #6b5230, inset 0 0 4px #000;
-  overflow: hidden;
-}
-.xp i {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 0;
-  background: linear-gradient(#7fa8ff, #2d5ee8 45%, #133a9e);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35);
-  transition: width .5s ease;
-}
-.xp::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(90deg, transparent 0 calc(5% - 2px), #000 calc(5% - 2px) calc(5% - 1px), rgba(154, 122, 64, .55) calc(5% - 1px) 5%);
-}
-.xp span {
-  position: relative;
-  z-index: 1;
-  display: block;
-  text-align: center;
-  font-family: Arial, sans-serif;
-  font-size: 11px;
-  line-height: 13px;
-  color: #fff;
-  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-  opacity: 0;
-  transition: opacity .15s;
-}
-/* like in game, the numbers show when you point at the bar */
-.mainbar:hover .xp span { opacity: 1; }
-
 /* ---------- tables ---------- */
 
 table { width: 100%; border-collapse: collapse; font-size: 16.5px; }
 th { text-align: left; color: var(--wow-yellow); font-weight: normal; font-size: 15px; padding: 6px 10px; border-bottom: 1px solid var(--gold-dark); }
 td { padding: 9px 10px; border-bottom: 1px solid #2f2a24; vertical-align: top; }
-.talents tbody tr:nth-child(even) { background: rgba(255, 255, 255, .025); }
-.talents tbody tr:hover { background: rgba(255, 209, 0, .07); }
-.talents tbody tr:hover b { color: #fff3a0; }
-.talents b { color: var(--wow-yellow); }
-.talents .lv { white-space: nowrap; color: #fff; }
-.talents .how { font-size: 14px; color: var(--muted); }
 .keys-table td { border: 0; padding: 4px 8px; }
 .c-red { color: #ff2020; }
 .glossary div {
@@ -863,20 +760,11 @@ td { padding: 9px 10px; border-bottom: 1px solid #2f2a24; vertical-align: top; }
 /* ---------- phones ---------- */
 
 @media (max-width: 640px) {
-  body { font-size: 16.5px; padding-bottom: 130px; }
+  body { font-size: 16.5px; }
   .questpaper { padding: 16px; }
   .questpaper h2 { font-size: 23px; }
   .todo { font-size: 17px; }
   .wowbtn { min-width: 110px; }
-  /* bottom bar shrinks to fit a phone: no statues or page arrows */
-  .mainbar { padding: 0; }
-  .cap, .pager { display: none; }
-  .mb-body { padding: 0 6px 5px; }
-  .xp { margin: 0 -6px 6px; }
-  .mainbar .bar { gap: 4px; }
-  .mainbar .slot { width: 25px; height: 25px; box-shadow: 0 0 0 1px #000, 0 0 0 2px #6b5230; }
-  .mainbar .slot svg { inset: 4px; width: 17px; height: 17px; }
-  .mainbar .hk { font-size: 9px; top: 1px; right: 2px; }
   .barblock .slot { width: 40px; height: 40px; }
   .barblock .slot svg { inset: 8px; width: 24px; height: 24px; }
   .barblock .bar.main { padding: 9px; }
@@ -906,7 +794,7 @@ td { padding: 9px 10px; border-bottom: 1px solid #2f2a24; vertical-align: top; }
   font-weight: bold;
   letter-spacing: .02em;
   color: #fff;
-  background: var(--k, #6b4e22);
+  background: var(--k, #523717);
   border: 1px solid rgba(0, 0, 0, .55);
   border-radius: 20px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25);
@@ -925,7 +813,7 @@ td { padding: 9px 10px; border-bottom: 1px solid #2f2a24; vertical-align: top; }
 
 /* ---------- objectives you tick off ---------- */
 .questpaper h4 { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.tickcount { font-family: var(--font); font-size: 14px; font-weight: normal; color: #6b4e22; font-style: italic; }
+.tickcount { font-family: var(--font); font-size: 14px; font-weight: normal; color: #523717; font-style: italic; }
 .tickcount.all { color: #1d7a1d; font-style: normal; font-weight: bold; }
 .tickcount.all::before { content: "✓ "; }
 .todo { list-style: none; padding-left: 0; }
@@ -940,7 +828,7 @@ td { padding: 9px 10px; border-bottom: 1px solid #2f2a24; vertical-align: top; }
   margin-top: 1px;
   padding: 0;
   font: bold 15px var(--font);
-  color: #6b4e22;
+  color: #523717;
   background: radial-gradient(circle at 35% 30%, #fff7df, #e7d3a3);
   border: 2px solid #a07a35;
   border-radius: 50%;
@@ -948,7 +836,7 @@ td { padding: 9px 10px; border-bottom: 1px solid #2f2a24; vertical-align: top; }
   cursor: pointer;
   transition: transform .15s, background .2s, border-color .2s;
 }
-.tick:hover { transform: scale(1.1); border-color: #6b4e22; }
+.tick:hover { transform: scale(1.1); border-color: #523717; }
 .tick[aria-pressed="false"]:hover span { display: none; }
 .tick[aria-pressed="false"]:hover::after { content: "✓"; color: #a07a35; }
 .tick[aria-pressed="true"] { color: #fff; background: radial-gradient(circle at 35% 30%, #7fdc5a, #2f8a1f); border-color: #1d5a12; animation: tickPop .3s ease; }
@@ -967,77 +855,6 @@ td { padding: 9px 10px; border-bottom: 1px solid #2f2a24; vertical-align: top; }
   0%, 100% { box-shadow: 0 0 0 1px #000, 0 0 0 0 rgba(120, 255, 90, 0); }
   50% { box-shadow: 0 0 0 1px #000, 0 0 18px 4px rgba(120, 255, 90, .55); }
 }
-
-/* ---------- journey strip: chapters from level 1 to 60 ---------- */
-.journey {
-  margin: 4px 0 14px;
-  padding: 10px 12px 8px;
-  background: linear-gradient(rgba(0, 0, 0, .35), rgba(0, 0, 0, .15));
-  border: 1px solid #3a332a;
-  border-radius: 4px;
-}
-.j-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 10px; flex-wrap: wrap; font-size: 15px; }
-.j-now { color: var(--text); }
-.j-now b { color: var(--wow-yellow); }
-.j-now small, .j-left { color: var(--muted); font-size: 13.5px; }
-.j-road { display: flex; margin-top: 8px; overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
-.jc {
-  position: relative;
-  flex: 1 0 92px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-  padding: 0 4px 6px;
-  font-family: var(--font);
-  color: var(--muted);
-  background: none;
-  border: 0;
-  cursor: pointer;
-  text-align: center;
-}
-/* the road between the dots */
-.jc::before {
-  content: "";
-  position: absolute;
-  top: 13px;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: #3a332a;
-}
-.jc:first-child::before { left: 50%; }
-.jc:last-child::before { right: 50%; }
-.jc.done::before { background: var(--gold); }
-.jc.now::before { background: linear-gradient(90deg, var(--gold) 50%, #3a332a 50%); }
-.jc-dot {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  font: bold 13px var(--font);
-  color: var(--muted);
-  background: #1c1813;
-  border: 2px solid #4a443c;
-  border-radius: 50%;
-  transition: transform .2s;
-}
-.jc-dot i { font-style: normal; }
-.jc b { font-weight: normal; font-size: 13.5px; line-height: 1.2; color: inherit; margin-top: 3px; }
-.jc small { font-size: 12px; opacity: .8; }
-.jc-fill { display: block; width: 70%; height: 3px; margin-top: 4px; background: #2a251f; border-radius: 2px; overflow: hidden; visibility: hidden; }
-.jc-fill i { display: block; height: 100%; background: var(--wow-yellow); transition: width .4s; }
-.jc:hover { color: var(--text); }
-.jc:hover .jc-dot { transform: scale(1.12); }
-.jc.done { color: #b9ad92; }
-.jc.done .jc-dot { color: #fff; background: #2f6b1f; border-color: #5fbf3f; }
-.jc.done .jc-dot i { display: none; }
-.jc.done .jc-dot::after { content: "✓"; }
-.jc.now { color: #fff; }
-.jc.now b { color: var(--wow-yellow); font-weight: bold; }
-.jc.now .jc-dot { color: #1a1206; background: radial-gradient(circle at 35% 30%, #fff3a0, var(--wow-yellow) 60%, #b38a00); border-color: #fff3a0; box-shadow: 0 0 12px rgba(255, 209, 0, .6); }
-.jc.now .jc-fill { visibility: visible; }
 
 /* ---------- Back / Next under the step ---------- */
 .footnav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 14px 0 6px; }
@@ -1084,39 +901,10 @@ td { padding: 9px 10px; border-bottom: 1px solid #2f2a24; vertical-align: top; }
 #steplist .sk { flex: none; display: block; width: 22px; height: 22px; overflow: hidden; border-radius: 4px; box-shadow: 0 0 0 1px #000, 0 0 0 2px var(--k); }
 #steplist .sk .gi { display: block; width: 100%; height: 100%; }
 
-/* ---------- Talents: where you are now ---------- */
-.talentnow {
-  padding: 8px 12px;
-  font-size: 16px;
-  background: rgba(255, 209, 0, .06);
-  border: 1px solid rgba(255, 209, 0, .25);
-  border-left: 3px solid var(--wow-yellow);
-  border-radius: 3px;
-}
-.talentnow .gold { color: var(--wow-yellow); }
-.talents tbody tr.past { opacity: .55; }
-.talents tbody tr.past .lv::before { content: "✓ "; color: #40bf40; }
-.talents tbody tr.now { background: rgba(255, 209, 0, .14); box-shadow: inset 3px 0 0 var(--wow-yellow); }
-.talents tbody tr.now .lv::after {
-  content: "you are here";
-  display: block;
-  width: max-content;
-  margin-top: 3px;
-  padding: 0 6px;
-  font-size: 11.5px;
-  color: #1a1206;
-  background: var(--wow-yellow);
-  border-radius: 8px;
-}
-
-html[data-contrast="high"] .jc::before { background: #555; }
-
 @media (max-width: 640px) {
   .meta .kind { display: flex; width: max-content; }
   .tick { width: 27px; height: 27px; font-size: 14px; }
   .todo li { gap: 9px; }
-  .journey { padding: 8px 8px 6px; }
-  .jc { flex: 0 0 84px; }
   .footnav { flex-wrap: wrap; }
   .footnav .upnext { order: -1; flex-basis: 100%; }
   .footnav .wowbtn { flex: 1; }
@@ -1183,4 +971,141 @@ html[data-contrast="high"] .jc::before { background: #555; }
   .gearcompare { grid-template-columns: 1fr; }
   .gc-vs { justify-self: center; }
 }
-html[data-contrast="high"] .itip, html[data-contrast="high"] .qualities span { background: #000; border-color: #888; }
+
+/* ---------- find my step from the game: paste the quest list the chat command shows ---------- */
+details.sync {
+  margin: 0 0 14px;
+  padding: 6px 12px;
+  border: 1px solid #3a332a;
+  border-radius: 4px;
+  background: linear-gradient(rgba(0, 0, 0, .3), rgba(0, 0, 0, .12));
+}
+.sync-how { margin: 8px 0 0; padding-left: 22px; font-size: 16px; }
+.sync-how li + li { margin-top: 10px; }
+.sync-cmd { display: flex; gap: 8px; align-items: flex-start; margin-top: 6px; }
+.sync-cmd code {
+  flex: 1; min-width: 0;
+  padding: 6px 8px;
+  font: 12.5px/1.4 Consolas, "Courier New", monospace;
+  color: #d8f0c0;
+  background: #0b0a08;
+  border: 1px solid var(--stone-light);
+  border-radius: 3px;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+.sync-how textarea {
+  display: block; box-sizing: border-box; width: 100%; margin-top: 6px;
+  padding: 6px 8px;
+  font: 13px/1.4 Consolas, "Courier New", monospace;
+  color: var(--text);
+  background: #0b0a08;
+  border: 1px solid var(--stone-light);
+  border-radius: 3px;
+  resize: vertical;
+}
+.sync-how textarea:focus { outline: 1px solid var(--gold); }
+.sync-go { margin: 12px 0 4px; }
+.sync-out { margin: 8px 0 4px; font-size: 16px; }
+.sync-out:empty { display: none; }
+.sync-out.good { color: #b8e890; }
+.sync-out.bad { color: #ff9c7a; }
+.sync-out b { color: var(--wow-yellow); }
+
+/* ---------- the step's quest log, on the parchment under the objectives ---------- */
+.questlog[hidden] { display: none; }
+.ql-count { font-family: var(--font); font-size: 14px; font-weight: normal; color: #523717; font-style: italic; }
+.questlog ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+.ql-row { position: relative; }
+.ql-q {
+  display: flex; align-items: flex-start; gap: 10px; width: 100%;
+  padding: 8px 10px 8px 44px; text-align: left; cursor: pointer;
+  font: inherit; color: var(--ink);
+  background: rgba(70, 45, 10, .07);
+  border: 1px solid rgba(90, 60, 20, .35); border-radius: 4px;
+  transition: background .15s, border-color .15s;
+}
+.ql-q:hover { background: rgba(255, 235, 190, .16); border-color: rgba(90, 60, 20, .6); }
+.ql-q:focus-visible { outline: 2px solid #8a2a00; outline-offset: 1px; }
+.ql-q.on { background: rgba(200, 140, 30, .18); border-color: #a07010; box-shadow: inset 3px 0 0 #b07a00; }
+/* WoW's yellow ! (pick up) and ? (hand in) until the quest is done, then a green tick. It sits over the
+   card's left edge and is its own button: click it to tick the quest yourself. */
+.ql-mark {
+  position: absolute; left: 9px; top: 8px; z-index: 1;
+  width: 26px; height: 26px; padding: 0;
+  display: grid; place-items: center;
+  font: 900 20px/1 Georgia, serif; color: #ffd100;
+  text-shadow: 0 0 2px #000, 1px 1px 0 #000, -1px -1px 0 #3a2400;
+  background: none; border: 1px solid transparent; border-radius: 50%;
+  cursor: pointer; transition: transform .12s, border-color .12s;
+}
+.ql-mark:hover { transform: scale(1.15); border-color: rgba(110, 75, 25, .45); }
+.ql-mark:focus-visible { outline: 2px solid #8a2a00; outline-offset: 1px; }
+.ql-mark[aria-pressed="true"] {
+  color: #fff; font: bold 15px/1 Arial, sans-serif; text-shadow: none;
+  background: radial-gradient(circle at 35% 30%, #7fdc5a, #2f8a1f); border-color: #1d5a12;
+}
+.ql-mark[aria-disabled="true"] { cursor: default; }
+.ql-mark[aria-disabled="true"]:hover { transform: none; }
+.ql-main { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; font-size: 17px; }
+.ql-main b { color: #000; }
+.ql-done .ql-main b { color: #3d5a24; text-decoration: line-through; text-decoration-color: rgba(40, 70, 20, .5); }
+.ql-main em { font-style: normal; font-size: 13.5px; color: #523717; }
+.ql-role { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: #5e421a; border: 1px solid rgba(110, 75, 25, .35); border-radius: 3px; padding: 0 5px; }
+.ql-text { flex-basis: 100%; font-size: 15.5px; color: #3b2a12; }
+.ql-guide { flex-basis: 100%; margin-top: 3px; padding-left: 8px; border-left: 2px solid rgba(160, 112, 16, .55); font-size: 15.5px; color: #2a1a08; }
+.ql-guide b { color: #000; }
+.ql-done .ql-guide { opacity: .7; }
+.ql-done .ql-guide b { color: #000; text-decoration: none; }
+#objhead[hidden], #steptodo[hidden] { display: none; }
+.ql-who { flex-basis: 100%; font-size: 14px; color: #523717; font-style: italic; }
+.ql-map { flex: none; align-self: center; font-size: 13px; color: #8a2a00; white-space: nowrap; }
+.ql-q.on .ql-map { font-weight: bold; }
+
+/* the map while it shows one quest: ! giver, ? turn-in, numbered objectives */
+.map-unfocus {
+  margin-left: 10px; padding: 2px 8px; vertical-align: 2px;
+  font: 13px var(--font); color: var(--wow-yellow);
+  background: rgba(0, 0, 0, .35); border: 1px solid var(--stone-light); border-radius: 3px; cursor: pointer;
+}
+.map-unfocus:hover { border-color: var(--gold); }
+.pin.q-from i, .pin.q-to i, .map-list .q-from i, .map-list .q-to i { font: 900 14px/18px Georgia, serif; }
+.pin.q-goal i { background: radial-gradient(circle at 35% 35%, #ffd0c0, #e0502a 45%, #8a1a00); color: #fff; box-shadow: 0 0 0 1px #ffb090, 0 0 8px 2px rgba(255, 90, 40, .6); }
+.pin.q-goal::before { border-color: rgba(255, 110, 60, .85); }
+
+@media (max-width: 640px) {
+  .sync-cmd { flex-direction: column; align-items: stretch; }
+  .ql-map { display: none; }
+  .ql-main { font-size: 16px; }
+}
+
+/* ---------- the map in its own frame, right of the guide, on wide screens (guide.js buildMapSide) ---------- */
+.mapside { display: none; }
+@media (min-width: 1600px) {
+  /* the page (header, tabs, guide) moves left so the map frame beside it can be big: up to 900px wide */
+  /* a bigger text size zooms main by --tz (fx.css), so the page is 860px * --tz wide on screen */
+  body[data-tab="steps"] {
+    --pagew: calc(860px * var(--tz, 1));
+    --mapw: min(900px, calc(100vw - var(--pagew) - 24px - 64px));
+    --padl: max(16px, calc((100vw - var(--pagew) - 24px - var(--mapw)) / 2));
+  }
+  body[data-tab="steps"] :is(.top-inner, .tabs) { margin-left: var(--padl); margin-right: 0; }
+  /* main's own zoom scales its margin too, so divide it back out */
+  body[data-tab="steps"] main { margin-left: calc(var(--padl) / var(--tz, 1)); margin-right: 0; }
+  body[data-tab="steps"] .mapside {
+    display: block;
+    position: fixed;
+    z-index: 20;
+    top: calc(var(--toph, 92px) + 22px);
+    left: calc(var(--padl) + var(--pagew) + 24px);
+    width: var(--mapw);
+    margin: 0;
+  }
+  .mapside .frame-body { padding: 0 10px 10px; }
+  .mapside .mapbox { margin: 0; }
+  /* short windows: keep the whole frame on screen */
+  .mapside .mapbox:not(.big) .mapview { max-height: calc(100vh - var(--toph, 92px) - 230px); }
+  body[data-tab="steps"] .mapside.big { z-index: 61; }
+}
+/* no map for this step: no empty frame */
+.mapside:not(:has(.mapbox:not([hidden]))) { display: none !important; }

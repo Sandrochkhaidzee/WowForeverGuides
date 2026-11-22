@@ -18,21 +18,12 @@
 
 html[data-text="2"] main { zoom: 1.12; }
 html[data-text="3"] main { zoom: 1.25; }
-/* the map does its own maths in screen pixels: keep it at 1x */
-html[data-text="2"] .mapbox { zoom: calc(1 / 1.12); }
-html[data-text="3"] .mapbox { zoom: calc(1 / 1.25); }
-
-html[data-contrast="high"] {
-  --text: #fffaf0;
-  --muted: #e0d5bb;
-  --stone-light: #7a705f;
-}
-html[data-contrast="high"] body { background: #000; }
-html[data-contrast="high"] .word { border-bottom-width: 2px; border-bottom-style: solid; }
-html[data-contrast="high"] .hint,
-html[data-contrast="high"] .keys,
-html[data-contrast="high"] .tier-note { color: var(--muted); }
-html[data-contrast="high"] #wf-embers { display: none; }
+/* the map does its own maths in screen pixels: keep it at 1x inside the zoomed page. The wide-screen
+   map frame sits outside main, so it is not zoomed. --tz tells guide.css how much wider the page got. */
+html[data-text="2"] { --tz: 1.12; }
+html[data-text="3"] { --tz: 1.25; }
+html[data-text="2"] main .mapbox { zoom: calc(1 / 1.12); }
+html[data-text="3"] main .mapbox { zoom: calc(1 / 1.25); }
 
 html[data-font="readable"] {
   --font: "Atkinson Hyperlegible", Verdana, "Segoe UI", system-ui, sans-serif;
@@ -53,16 +44,6 @@ html[data-motion="off"] .wf-reveal { opacity: 1 !important; transform: none !imp
 body { animation: wfPageIn .55s ease both; }
 @keyframes wfPageIn { from { opacity: 0; } }
 html.wf-leaving body { opacity: 0; transition: opacity .2s ease; }
-
-/* drifting embers behind everything (canvas drawn by site.js) */
-#wf-embers {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
 
 /* ---------- 3. frames, plaques, buttons, tabs ---------- */
 
@@ -172,27 +153,9 @@ html.wf-leaving body { opacity: 0; transition: opacity .2s ease; }
 .todo li:nth-child(n+7) { animation-delay: .54s; }
 @keyframes wfLi { from { opacity: 0; transform: translateX(-10px); } }
 
-/* XP bar: a light runs along the filled part */
-.xp i { overflow: hidden; }
-.xp i::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .45), transparent);
-  transform: translateX(-100%);
-  animation: wfXp 3.2s ease-in-out infinite;
-}
-@keyframes wfXp { 60%, 100% { transform: translateX(100%); } }
-.xp.wf-gain i { animation: wfXpGain .8s ease; }
-@keyframes wfXpGain { 30% { filter: brightness(1.8) saturate(1.3); box-shadow: 0 0 12px #7fa8ff; } }
-
 /* done ticks in the step list pop in */
 #steplist li.done .n::before { display: inline-block; animation: wfTick .35s cubic-bezier(.3, 1.6, .5, 1) both; }
 @keyframes wfTick { from { transform: scale(0); } }
-
-/* new ability glow is already there; make the HUD lift a little when it changes */
-.mainbar.wf-bump { animation: wfBump .5s ease; }
-@keyframes wfBump { 40% { transform: translateY(-4px); } }
 
 /* "Show places from other steps" etc. — checkbox gets the gold accent everywhere */
 input[type="checkbox"] { accent-color: var(--gold); }
@@ -535,15 +498,15 @@ body[data-page="guide"] { --dock-b: 18px; }
 
 /* Calm (the default, Settings → Animations → Calm): easy on the eyes.
    Nothing pulses, glows, shimmers, spins, floats or slides; things just fade in.
-   (site.js also skips embers, sparks, tilt, scroll reveals and the big level-up banner.) */
+   (site.js also skips sparks, tilt, scroll reveals and the big level-up banner.) */
 html[data-motion="calm"] :is(
   .frame, .frame-title, .wf-cta, .top .portrait, .wf-orb.wf-nudge, .wf-welcome-ico span, .wf-spot,
-  .slot.fresh, .mainbar .slot.fresh, .bar.main .slot.fresh, .pin, .map-route .over,
+  .slot.fresh, .bar.main .slot.fresh, .pin, .map-route .over,
   .wowbtn.ready, .rune, .rune .inner, .hero-crest, .hero h1, .rule, .card.pick, .howcard.wf-flash,
-  .mainbar.wf-bump, .tick, .questpaper h2, .todo li, .xp i, .xp.wf-gain i
+  .tick, .questpaper h2, .todo li
 ),
-html[data-motion="calm"] :is(.frame, .xp i, .wf-orb.wf-nudge, .pin, .rule)::before,
-html[data-motion="calm"] :is(.frame, .xp i, .rule)::after { animation: none !important; }
+html[data-motion="calm"] :is(.frame, .wf-orb.wf-nudge, .pin, .rule)::before,
+html[data-motion="calm"] :is(.frame, .rule)::after { animation: none !important; }
 html[data-motion="calm"] :is(.panel.on, .questpaper.slide-next, .questpaper.slide-back, .answer.show, .wf-dialog[open]) {
   animation: wfFade .2s ease !important;
 }
@@ -551,17 +514,16 @@ html[data-motion="calm"] :is(.panel.on, .questpaper.slide-next, .questpaper.slid
 html[data-motion="calm"] :is(.questpaper, .questpaper.slide-next, .questpaper.slide-back) { animation: none !important; }
 html[data-motion="calm"] .wowbtn::after { display: none; }
 html[data-motion="calm"] .wowbtn:hover:not(:disabled) { box-shadow: 0 0 0 1px #000, inset 0 1px 0 rgba(255, 255, 255, .25); }
-html[data-motion="calm"] :is(.xp i, .jc-fill i, .todo li > div, .jc) { transition: none !important; }
+html[data-motion="calm"] .todo li > div { transition: none !important; }
 html[data-motion="calm"] .wf-reveal { opacity: 1 !important; transform: none !important; }
-html[data-motion="calm"] #wf-embers, html[data-motion="calm"] .wf-sparks { display: none; }
+html[data-motion="calm"] .wf-sparks { display: none; }
 /* softer glow on the big gold title */
 html[data-motion="calm"] .hero h1 { filter: drop-shadow(0 3px 2px #000); }
 
 /* Full animations, but the device asks for less motion: keep fades, glows and
    pulses; drop sliding, spinning, floating and flying things.
-   (site.js also skips embers, sparks and tilt.) */
+   (site.js also skips sparks and tilt.) */
 @media (prefers-reduced-motion: reduce) {
-  html[data-motion="on"] #wf-embers { display: none; }
   html[data-motion="on"] .wf-reveal { transform: none; }
   html[data-motion="on"] .panel.on,
   html[data-motion="on"] .questpaper.slide-next,
@@ -573,7 +535,6 @@ html[data-motion="calm"] .hero h1 { filter: drop-shadow(0 3px 2px #000); }
   html[data-motion="on"] .rune .inner,
   html[data-motion="on"] .hero-crest,
   html[data-motion="on"] .wf-welcome-ico span,
-  html[data-motion="on"] .mainbar.wf-bump,
   html[data-motion="on"] .wf-menu { animation: none; }
   html[data-motion="on"] .wf-spot { transition: none; }
 }
@@ -735,7 +696,6 @@ ol.wf-flow > li:last-child { padding-bottom: 2px; }
 .cb-green { background: linear-gradient(#70e070, #40bf40); }
 .cb-grey { background: #9d9d9d; }
 
-html[data-contrast="high"] .howcard { background: #000; border-color: #555; }
 
 @media (max-width: 640px) {
   .howcard { padding: 2px 12px 8px; }
@@ -746,23 +706,3 @@ html[data-contrast="high"] .howcard { background: #000; border-color: #555; }
   .cf-arrow { margin-top: 6px; font-size: 20px; }
 }
 
-/* ---------- Simple view (Settings → Simple view, or the switch on the Quest Guide) ----------
-   The Quest Guide shows only the step: objectives, "Done when", tip, Back / Next. */
-.wf-simple-toggle {
-  display: inline-flex; align-items: center; gap: 6px;
-  margin-left: 4px; padding: 3px 10px;
-  font: inherit; font-size: 15px; color: var(--text);
-  background: linear-gradient(#3a332b, #221e19);
-  border: 1px solid var(--gold-dark); border-radius: 14px;
-  cursor: pointer; vertical-align: middle;
-}
-.wf-simple-toggle svg { width: 16px; height: 16px; color: var(--gold); }
-.wf-simple-toggle b { color: var(--wow-yellow); }
-.wf-simple-toggle:hover { border-color: var(--gold); }
-.wf-simple-toggle[aria-pressed="true"] { background: linear-gradient(#4b3d1a, #2a2210); border-color: var(--wow-yellow); }
-
-html[data-simple="on"] body[data-page="guide"] { padding-bottom: 40px; }
-html[data-simple="on"] body[data-page="guide"] :is(
-  .hud, #panel-steps .journey, #mapbox, #mapveil, #stepbars, #panel-steps .keys, #allsteps, #wf-embers
-) { display: none !important; }
-html[data-simple="on"] body[data-page="guide"] .questpaper { font-size: 1.05em; }

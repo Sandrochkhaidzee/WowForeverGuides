@@ -8,6 +8,8 @@
 <title>Night Elf Rogue — beginner guide (WoW: Forever)</title>
 <link rel="stylesheet" href="../assets/css/core.css">
 <link rel="stylesheet" href="../assets/css/guide.css">
+<link rel="stylesheet" href="../assets/css/gear.css">
+<link rel="stylesheet" href="../assets/css/talents.css">
 <link rel="stylesheet" href="../assets/css/fx.css">
 </head>
 <body data-page="guide" data-character="nightelf-rogue">
@@ -24,8 +26,9 @@
   <nav class="tabs">
     <button type="button" class="on" data-tab="steps">Quest Guide</button>
     <button type="button" data-tab="bars">Action Bars</button>
-    <button type="button" data-tab="basics">How to Play</button>
     <button type="button" data-tab="talents">Talents</button>
+    <button type="button" data-tab="gear">Gear</button>
+    <button type="button" data-tab="basics">How to Play</button>
     <button type="button" data-tab="words">Words</button>
     <a class="tablink" href="../professions.html?c=nightelf-rogue">Professions ›</a>
     <a class="tablink" href="../addons.html?c=nightelf-rogue">Addons ›</a>
@@ -86,7 +89,7 @@
           <div class="tip" id="steptip"></div>
         </article>
 
-        <p class="keys">Arrow keys <kbd>←</kbd> <kbd>→</kbd> also work. Words with a dotted line, like <button type="button" class="word" data-word="talent">talent</button>, explain themselves when clicked. Your action bar for this step is at the bottom of the screen.</p>
+        <p class="keys">Arrow keys <kbd>←</kbd> <kbd>→</kbd> also work. Words with a dotted line, like <button type="button" class="word" data-word="talent">talent</button>, explain themselves when clicked. The <b>Action Bars</b> tab shows which buttons to have at each level.</p>
 
         <details id="allsteps">
           <summary>All steps (click to jump)</summary>
@@ -225,12 +228,20 @@
     <div class="frame">
       <div class="frame-title">Talents</div>
       <div class="frame-body">
-        <p>From level 10 you get one talent point each level. Press <kbd>N</kbd>, pick the <b>Combat</b> tab, and click the talent from this list. If one is greyed out, take the next one and come back.</p>
-        <table class="talents">
-          <thead><tr><th>Level</th><th>Click this</th><th>What it does</th></tr></thead>
-          <tbody id="talentrows"></tbody>
-        </table>
+        <p>From level 10 you get one talent point each level. This is your talent window (<kbd>N</kbd> in game), one point at a time: the glowing talent is the one to click at this level. Most points go into <b>Combat</b>, the last 16 into <b>Assassination</b>. Like the Gear tab, it follows your place in the Quest Guide; use <b>Next</b>, the slider or the arrow keys to look ahead. In the game, click <b>Apply Changes</b> after placing the point.</p>
+        <div id="talents"></div>
         <p class="hint">Made a mistake? Any rogue trainer in a big city can reset your talents for a little gold. From level 40 you can also learn a second talent setup (Dual Specialization).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GEAR ===== -->
+  <section class="panel" id="panel-gear">
+    <div class="frame">
+      <div class="frame-title">Gear</div>
+      <div class="frame-body">
+        <p>Your character window (<kbd>C</kbd> in game), filled with the items this guide's quests give you. Like the Action Bars tab, it follows your place in the Quest Guide; move the level slider to look ahead or back. Your own window won't match exactly: dungeon drops, the auction house and lucky finds can beat these.</p>
+        <div id="gear"></div>
       </div>
     </div>
   </section>
@@ -248,63 +259,19 @@
   <p class="foot">Fan-made guide for World of Warcraft: Forever. Ability icons and maps © Blizzard Entertainment. Icons from the game files; zone maps from Wowhead, Mount Hyjal from the game files.</p>
 </main>
 
-<!-- ===== BOTTOM HUD: XP bar + main action bar ===== -->
-<div class="hud">
-  <div class="mainbar">
-    <svg class="cap cap-l" viewBox="0 0 80 94" aria-hidden="true"><use href="#gryphon"/></svg>
-    <div class="mb-body mb-frame">
-      <div class="xp"><i id="bar"></i><span id="xptext"></span></div>
-      <div class="mb-row">
-        <div class="pager" aria-hidden="true"><i class="up"></i><b>1</b><i class="down"></i></div>
-        <div class="bar" id="hudbar"></div>
-      </div>
-    </div>
-    <svg class="cap cap-r" viewBox="0 0 80 94" aria-hidden="true"><use href="#gryphon"/></svg>
-  </div>
-</div>
-
-<!-- winged statue drawn once, used at both ends of the main bar -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <linearGradient id="brz" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#f6dc95"/>
-      <stop offset=".35" stop-color="#c99a45"/>
-      <stop offset=".72" stop-color="#7d5420"/>
-      <stop offset="1" stop-color="#3a230b"/>
-    </linearGradient>
-    <symbol id="gryphon" viewBox="0 0 80 94">
-      <g fill="url(#brz)" stroke="#1a0f05" stroke-width="1.3" stroke-linejoin="round">
-        <!-- raised wing -->
-        <path d="M46 60C36 52 24 40 14 26 10 20 7 13 6 6c6 4 10 6 14 7-2-4-2-8-1-11 5 5 9 8 13 10-1-4 0-7 2-10 4 6 7 11 10 16 1-3 3-6 5-8 2 8 3 18 3 28 0 8-2 16-6 22z"/>
-        <!-- seated body -->
-        <path d="M14 82c-4-10 0-22 12-26 12-4 26-2 34 4 6 5 8 14 6 22z"/>
-        <!-- neck and head with hooked beak -->
-        <path d="M54 66c-3-8-2-18 4-24l2-2c-1-7 3-12 9-12 5 0 8 3 10 7 1 3 1 6-1 8l-3 1c1 3 0 5-2 6-2-3-5-3-8-1 1 6 0 12-3 18z"/>
-        <path d="M62 31l-5-8 8 6z"/>
-        <!-- front leg -->
-        <path d="M60 82l1-15c1-4 6-4 7 0v15z"/>
-        <!-- pedestal -->
-        <path d="M4 94v-8c0-3 2-4 5-4h62c3 0 5 1 5 4v8z"/>
-      </g>
-      <circle cx="70" cy="35" r="1.6" fill="#1a0e04"/>
-      <g fill="none" stroke="#fbe7a6" stroke-opacity=".45" stroke-width=".9" stroke-linecap="round">
-        <path d="M44 55C34 45 22 31 10 13M46 49C38 39 30 27 22 10M48 43C44 33 38 23 34 7M50 37c-1-8-3-16-4-24"/>
-        <path d="M8 86h64M20 70c4-6 12-9 20-8"/>
-      </g>
-      <path d="M14 78c-8-2-10-10-6-14" fill="none" stroke="#1a0f05" stroke-width="2.4" stroke-linecap="round"/>
-      <path d="M14 78c-8-2-10-10-6-14" fill="none" stroke="#c99a45" stroke-width="1.2" stroke-linecap="round"/>
-    </symbol>
-  </defs>
-</svg>
-
 <div class="wordpop" id="wordpop" hidden></div>
 <div class="spelltip" id="spelltip" hidden></div>
 
 <script src="../assets/js/characters.js"></script>
 <script src="../data/words.js"></script>
 <script src="data/guide.js"></script>
+<script src="data/quests.js"></script>
 <script src="../assets/js/guide.js"></script>
+<script src="data/gear.js"></script>
 <script src="../assets/js/action-bars.js"></script>
+<script src="../assets/js/gear.js"></script>
+<script src="../data/talents/rogue.js"></script>
+<script src="../assets/js/talents.js"></script>
 <script src="../assets/js/site.js"></script>
 </body>
 </html>

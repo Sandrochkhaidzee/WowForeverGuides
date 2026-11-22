@@ -92,7 +92,6 @@ STEPS.forEach((s, i) => {
   c.to = i;
   lvNums(s.lv).forEach((n) => { c.lo = Math.min(c.lo, n); c.hi = Math.max(c.hi, n); });
 });
-const chapterOf = (i) => CHAPTERS.findIndex((c) => i >= c.from && i <= c.to);
 const chapterLevels = (c) => (c.lo === c.hi ? `Level ${c.lo}` : `Levels ${c.lo}–${c.hi}`);
 
 /* ---------- step card ---------- */
@@ -122,19 +121,23 @@ function showStep(i, direction) {
   $("#stepmeta").innerHTML = `<span class="kind k-${kind}" title="${KINDS[kind].hint}">${kindIcon(kind)}${KINDS[kind].label}</span>`
     + `Step ${i + 1} of ${STEPS.length} <span>·</span> Level ${s.lv} <span>·</span> ${s.place}`;
   $("#steptitle").textContent = s.title;
-  $("#steptodo").innerHTML = s.todo.map((t, n) =>
-    `<li><button type="button" class="tick" data-tick="${n}" aria-pressed="false" aria-label="Mark objective ${n + 1} done"><span>${n + 1}</span></button><div>${explainWords(t)}</div></li>`).join("");
+  /* lines about a quest in the Quests list move into that quest's card; the rest stay objectives */
+  const qLines = questLinesOf(i);
+  let shown = 0;
+  $("#steptodo").innerHTML = s.todo.map((t, n) => qLines.has(n) ? `<li hidden data-quest-line="${n}"></li>` :
+    `<li><button type="button" class="tick" data-tick="${n}" aria-pressed="false" aria-label="Mark objective ${++shown} done"><span>${shown}</span></button><div>${explainWords(t)}</div></li>`).join("");
+  $("#steptodo").hidden = !shown;
+  $("#objhead").hidden = !shown;
   /* "Done when": how to tell the step is finished, plus what to do if you're short of the level */
   $("#stepdone").innerHTML = (s.done ? `<p><b>Done when:</b> ${explainWords(s.done)}</p>` : "")
     + (s.stuck ? `<p class="stuck"><b>Still short of the level?</b> ${explainWords(s.stuck)}</p>` : "");
   $("#stepdone").hidden = !(s.done || s.stuck);
+  drawStepQuests(i);
   drawMap(i);
   $("#steptip").innerHTML = s.tip ? `<b>Tip:</b> ${explainWords(s.tip)}` : "";
   $("#steptip").hidden = !s.tip;
 
   $("#back").disabled = i === 0;
-  $("#bar").style.width = `${((i + 1) / STEPS.length) * 100}%`;
-  $("#xptext").textContent = `Level ${s.lv} · Guide step ${i + 1} / ${STEPS.length}`;
   if (window.syncBarsToStep) window.syncBarsToStep(stepLevel(i), i);
 
   $$("#steplist li[data-i]").forEach((li) => {
@@ -143,9 +146,7 @@ function showStep(i, direction) {
     li.classList.toggle("done", n < i);
   });
   syncTicks();
-  drawJourney(i);
   drawFootNav(i);
-  syncTalents(stepLevel(i));
   closeWord();
 
   /* tell the shared site layer (assets/js/site.js): progress summary, effects, landing-page "continue" */
@@ -158,7 +159,7 @@ function showStep(i, direction) {
 
 /* bring the step into view, just under the sticky header */
 function scrollToStep() {
-  const top = $("#panel-steps .journey, #panel-steps .nav").getBoundingClientRect().top + window.scrollY - $(".top").offsetHeight - 12;
+  const top = $("#panel-steps .sync, #panel-steps .nav").getBoundingClientRect().top + window.scrollY - $(".top").offsetHeight - 12;
   if (window.scrollY > top) window.scrollTo({ top, behavior: calmMotion() ? "auto" : "smooth" });
 }
 
@@ -189,9 +190,16 @@ function syncTicks() {
     b.setAttribute("aria-pressed", String(on));
     b.closest("li").classList.toggle("ticked", on);
   });
-  const all = got.length >= s.todo.length;
+  /* count only the objectives shown; a step that is all quests is done when the game says they're handed in */
+  const qLines = questLinesOf(i);
+  const lines = s.todo.map((t, n) => n).filter((n) => !qLines.has(n));
+  const ticked = lines.filter((n) => got.includes(n)).length;
+  const qs = stepQuestList(i), have = gameQuests();
+  const qDone = qs.filter((q) => questTicked(i, q, have)).length;
+  /* Next lights up when every objective shown and every quest is ticked */
+  const all = lines.length || qs.length ? ticked >= lines.length && qDone >= qs.length : got.length >= s.todo.length;
   const count = $("#tickcount");
-  count.textContent = got.length ? `${got.length} of ${s.todo.length} done` : "Tick each one off as you go";
+  count.textContent = ticked ? `${ticked} of ${lines.length} done` : "Tick each one off as you go";
   count.classList.toggle("all", all);
   const last = i === STEPS.length - 1;
   $$("#next, #next2").forEach((b) => {
@@ -212,47 +220,6 @@ $("#steptodo").addEventListener("click", (e) => {
   syncTicks();
   if (b.getAttribute("aria-pressed") === "true" && window.WF && WF.sparksFrom) WF.sparksFrom(b, 8, { min: 14, max: 40, small: 3, big: 6 });
 });
-
-/* ---------- journey strip: every chapter, where you are, what's left ---------- */
-
-function buildJourney() {
-  const box = document.createElement("div");
-  box.className = "journey";
-  box.innerHTML = `<div class="j-head"><span class="j-now" id="jnow"></span><span class="j-left" id="jleft"></span></div>
-    <div class="j-road" id="jroad" role="list">${CHAPTERS.map((c, n) =>
-      `<button type="button" class="jc" role="listitem" data-ch="${n}" title="${attr(`${c.name}: ${chapterLevels(c)}. Click to jump to its first step.`)}">
-         <span class="jc-dot" aria-hidden="true"><i>${n + 1}</i></span><b>${c.name}</b><small>${c.lo === c.hi ? `Lv ${c.lo}` : `Lv ${c.lo}–${c.hi}`}</small>
-         <span class="jc-fill" aria-hidden="true"><i></i></span>
-       </button>`).join("")}</div>`;
-  $("#panel-steps .nav").before(box);
-  box.addEventListener("click", (e) => {
-    const b = e.target.closest(".jc");
-    if (!b) return;
-    const c = CHAPTERS[+b.dataset.ch];
-    showStep(c.from, c.from >= saved.step ? "next" : "back");
-  });
-}
-
-function drawJourney(i) {
-  const at = chapterOf(i), c = CHAPTERS[at];
-  $$("#jroad .jc").forEach((b, n) => {
-    b.classList.toggle("done", n < at);
-    b.classList.toggle("now", n === at);
-    b.setAttribute("aria-current", n === at ? "step" : "false");
-    const ch = CHAPTERS[n];
-    const part = n < at ? 1 : n > at ? 0 : (i - ch.from + 1) / (ch.to - ch.from + 1);
-    b.querySelector(".jc-fill i").style.width = `${part * 100}%`;
-  });
-  $("#jnow").innerHTML = `Chapter ${at + 1} of ${CHAPTERS.length}: <b>${c.name}</b> <small>· step ${i - c.from + 1} of ${c.to - c.from + 1} here</small>`;
-  const left = STEPS.length - 1 - i;
-  $("#jleft").textContent = left ? `${Math.round((i / (STEPS.length - 1)) * 100)}% of the way to 60` : "Journey complete!";
-  // keep the current chapter in view inside the strip (without moving the page)
-  const road = $("#jroad"), cur = road.querySelector(".jc.now");
-  if (cur && road.scrollWidth > road.clientWidth) {
-    const want = cur.offsetLeft - road.clientWidth / 2 + cur.offsetWidth / 2;
-    road.scrollTo({ left: want, behavior: calmMotion() ? "auto" : "smooth" });
-  }
-}
 
 /* ---------- Back / Next again under the step, with a peek at what's next ---------- */
 
@@ -313,9 +280,14 @@ function mapForStep(i) {
 }
 
 function drawMap(i) {
-  const map = mapForStep(i);
+  /* a quest picked in the step's quest list shows its giver, objectives and turn-in instead of the step's places */
+  if (MV.focus && MV.focus.step !== i) MV.focus = null;
+  const focus = MV.focus;
+  const map = focus ? focus.map : mapForStep(i);
   if (!map) { $map.box.hidden = true; toggleBigMap(false); return; }
-  if (MV.step !== i) {
+  const key = `${i}:${focus ? focus.id : ""}`;
+  if (MV.mapKey !== key) {
+    MV.mapKey = key;
     MV.step = i;
     const want = MV.preferZone ? map.findIndex((m) => m[0] === MV.preferZone) : -1;
     MV.zone = Math.max(0, want);
@@ -330,7 +302,10 @@ function drawMap(i) {
   MV.zoneKey = zoneKey;
   MV.pins = pins;
 
-  $("#maptitle").innerHTML = `Where to go <small>${zone.name}</small>`;
+  $("#maptitle").innerHTML = focus
+    ? `${focus.name} <small>${zone.name}</small><button type="button" class="map-unfocus" id="mapunfocus">‹ This step's places</button>`
+    : `Where to go <small>${zone.name}</small>`;
+  $map.box.classList.toggle("questmode", !!focus);
   $("#mapzones").innerHTML = map.length > 1
     ? map.map((m, n) => `<button type="button" data-zone="${n}" class="${n === MV.zone ? "on" : ""}">${ZONES[m[0]].name}</button>`).join("")
     : "";
@@ -348,8 +323,8 @@ function drawMap(i) {
     $map.img.alt = `Map of ${zone.name}`;
   }
 
-  $map.list.innerHTML = pins.map(([x, y, label], n) =>
-    `<li><button type="button" data-n="${n}"><i>${n + 1}</i>${label}<span>${Math.round(x)}, ${Math.round(y)}</span></button></li>`
+  $map.list.innerHTML = pins.map(([x, y, label, mark, kind], n) =>
+    `<li><button type="button" data-n="${n}" class="${kind ? `q-${kind}` : ""}"><i>${mark ?? n + 1}</i>${label}<span>${Math.round(x)}, ${Math.round(y)}</span></button></li>`
   ).join("");
 
   hideTip();
@@ -380,8 +355,8 @@ function buildPins() {
   MV.ghosts = ghostPins();
   const ghosts = MV.ghosts.map((p, k) =>
     `<button type="button" class="pin ghost" data-ghost="${k}" aria-label="${attr(`${p.label}, step ${p.step + 1}`)}"><i></i><span>${p.label}</span></button>`);
-  const own = MV.pins.map(([, , label], n) =>
-    `<button type="button" class="pin" data-n="${n}" aria-label="${attr(`${n + 1}: ${label}`)}"><i>${n + 1}</i><span>${label}</span></button>`);
+  const own = MV.pins.map(([, , label, mark, kind], n) =>
+    `<button type="button" class="pin${kind ? ` q-${kind}` : ""}" data-n="${n}" aria-label="${attr(`${mark ?? n + 1}: ${label}`)}"><i>${mark ?? n + 1}</i><span>${label}</span></button>`);
   $map.pins.innerHTML = ghosts.join("") + own.join("");   // this step's pins on top
 }
 
@@ -417,7 +392,7 @@ function renderMap() {
     el.style.top = `${py}px`;
     el.classList.toggle("flip", px > MV.W - 170);          // keep labels inside the window
   });
-  const pts = MV.pins.length > 1 ? MV.pins.map(([x, y]) => toScreen(x, y).join(",")).join(" ") : "";
+  const pts = MV.pins.length > 1 && !MV.focus ? MV.pins.map(([x, y]) => toScreen(x, y).join(",")).join(" ") : "";
   $map.route.querySelectorAll("polyline").forEach((p) => p.setAttribute("points", pts));
   placeTip();
 }
@@ -480,7 +455,7 @@ function showTip(sel) {
   let x, y, label, head, extra = "";
   if (sel.kind === "pin") {
     [x, y, label] = MV.pins[sel.n];
-    head = `${sel.n + 1}. ${label}`;
+    head = MV.pins[sel.n][4] ? label : `${sel.n + 1}. ${label}`;
   } else {
     ({ x, y, label } = MV.ghosts[sel.n]);
     const k = MV.ghosts[sel.n].step;
@@ -618,14 +593,19 @@ function endPointer(e) {
 }
 $map.view.addEventListener("pointerup", endPointer);
 $map.view.addEventListener("pointercancel", endPointer);
-$map.view.addEventListener("pointerleave", () => { $("#mapcursor").textContent = ""; });
+/* with a mouse, pointing at the map is enough: the wheel zooms and + / - work until the pointer leaves.
+   (On a touch screen the first tap still unlocks it, so a swipe over the map can scroll the page.) */
+$map.view.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse" && hasMap()) setActive(true); });
+$map.view.addEventListener("pointerleave", (e) => {
+  $("#mapcursor").textContent = "";
+  if (e.pointerType === "mouse" && !isBig() && !MV.ptrs.size) setActive(false);
+});
 /* focusing a pin (Tab key) makes the browser scroll the window's insides; undo that, we pan ourselves */
 $map.view.addEventListener("scroll", () => { $map.view.scrollLeft = 0; $map.view.scrollTop = 0; });
 
 $map.view.addEventListener("wheel", (e) => {
   if (!hasMap()) return;
-  if (!MV.active && !isBig() && !e.ctrlKey) { hint("Click the map first, then scroll to zoom"); return; }
-  e.preventDefault();
+  e.preventDefault();                                 // over the map, the wheel zooms the map, never the page
   const r = $map.view.getBoundingClientRect();
   zoomAt(Math.exp(-e.deltaY * (e.deltaMode === 1 ? 0.05 : 0.0018)), e.clientX - r.left, e.clientY - r.top, false);
 }, { passive: false });
@@ -683,6 +663,10 @@ $("#mapzones").addEventListener("click", (e) => {
   drawMap(saved.step);
 });
 
+$("#maptitle").addEventListener("click", (e) => {
+  if (e.target.closest("#mapunfocus")) focusQuest(null);
+});
+
 $("#mapall").addEventListener("change", (e) => {
   MV.showAll = e.target.checked;
   hideTip();
@@ -696,6 +680,7 @@ function toggleBigMap(force) {
   const on = force === undefined ? !isBig() : force;
   if (on === isBig()) return;
   $map.box.classList.toggle("big", on);
+  $("#mapside")?.classList.toggle("big", on);     // the side frame has to sit above the header while big
   $("#mapveil").hidden = !on;
   document.body.style.overflow = on ? "hidden" : "";
   setActive(on);
@@ -770,35 +755,8 @@ function showTab(name) {
   document.dispatchEvent(new CustomEvent("wf:tab", { detail: { name } }));
 }
 
-/* ---------- talents and glossary ---------- */
-
-function buildTalents() {
-  $("#talentrows").innerHTML = TALENTS.map((t) => {
-    const [lo, hi] = lvNums(t[0]);
-    return `<tr data-lo="${lo}" data-hi="${hi || lo}"><td class="lv">${t[0]}</td><td><b>${t[1]}</b><div class="how">${t[2]}</div></td><td>${t[3]}</td></tr>`;
-  }).join("");
-  const note = document.createElement("p");
-  note.className = "talentnow";
-  note.id = "talentnow";
-  $("table.talents").before(note);
-}
-
-/* light up the talent for the level of the step you're on */
-function syncTalents(level) {
-  let now = null;
-  $$("#talentrows tr").forEach((tr) => {
-    const lo = +tr.dataset.lo, hi = +tr.dataset.hi;
-    tr.classList.toggle("past", hi < level);
-    const isNow = lo <= level && level <= hi;
-    tr.classList.toggle("now", isNow);
-    if (isNow) now = tr;
-  });
-  const first = TALENTS.length ? lvNums(TALENTS[0][0])[0] : 10;
-  $("#talentnow").innerHTML = level < first
-    ? `<b>You're level ${level}</b> on the Quest Guide. Your first talent point comes at level ${first}: come back then.`
-    : now ? `<b>You're level ${level}</b> on the Quest Guide. Your talent right now: <b class="gold">${now.querySelector("b").textContent}</b> (highlighted below). Ticked rows are already done.`
-    : `<b>You're level ${level}</b> on the Quest Guide. Ticked rows are already done.`;
-}
+/* ---------- glossary ---------- */
+/* (the Talents tab is drawn by assets/js/talents.js and follows the step through "wf:step") */
 
 function buildGlossary() {
   const skip = new Set(["elites"]);
@@ -808,15 +766,331 @@ function buildGlossary() {
   ).join("");
 }
 
+/* ---------- find my step from the game ----------
+   The game can't talk to a website, so the player runs one chat command that shows
+   "<level>-<quest id>,<quest id>,..." for every quest the character has handed in, copies it, and pastes
+   it here. Steps list the quests handed in on them (quests:{id:"name"}), so the furthest step with a
+   finished quest is where the player has got to. Training and talent steps have no quests, and the game
+   doesn't share spells, so those can't be checked. */
+
+/* Chat lines stop at 255 characters, so every one counts. The box opens with the text already selected
+   and hides itself as soon as it loses focus: Esc, Enter or a click anywhere closes it. WoW doesn't let
+   scripts write to the clipboard, so Ctrl + C is the one thing the player has to do. */
+const SYNC_COMMAND = '/run f=CreateFrame("EditBox",nil,UIParent,"InputBoxTemplate")f:SetSize(400,32)f:SetPoint"CENTER"f:SetText(UnitLevel"player".."-"..table.concat(C_QuestLog.GetAllCompletedQuestIDs(),","))f:SetFocus()f:HighlightText()f:SetScript("OnEditFocusLost",f.Hide)';
+const stepQuestIds = (i) => Object.keys(STEPS[i].quests || {}).map(Number);
+const gameQuests = () => new Set(Array.isArray(saved.quests) ? saved.quests : []);
+
+/* "18-9,12,22" -> { level: 18, ids: [9, 12, 22] }. A bare list of ids works too. */
+function parseGameExport(text) {
+  const t = String(text).replace(/\s+/g, "");
+  const m = /^(?:(\d{1,2})-)?(\d+(?:,\d+)*),?$/.exec(t);
+  if (!m) return null;
+  return { level: m[1] ? +m[1] : null, ids: m[2].split(",").map(Number) };
+}
+
+function findStepFromQuests(level, have) {
+  let reached = -1;
+  STEPS.forEach((s, i) => {
+    const ids = stepQuestIds(i);
+    if (!ids.length) return;
+    if (level && lvNums(s.lv)[0] > level + 1) return;   // a stray quest from far ahead doesn't move you there
+    if (ids.some((id) => have.has(id))) reached = i;
+  });
+  if (reached < 0) return { at: 0, reached, left: [], skipped: [] };
+  const left = stepQuestIds(reached).filter((id) => !have.has(id));
+  let at = left.length ? reached : Math.min(reached + 1, STEPS.length - 1);
+  /* trainer and talent visits for a level you're already past: you've most likely done them */
+  const skipped = [];
+  while (!left.length && level && at < STEPS.length - 1 && !stepQuestIds(at).length
+    && ["train", "talent"].includes(stepKind(at)) && lvNums(STEPS[at].lv)[0] < level) skipped.push(at++);
+  return { at, reached, left, skipped };
+}
+
+/* The import decides the ticks: every objective behind you is ticked, and from your step on, a line that
+   names quests is ticked only if they're all handed in. If the import lands on the step you were already
+   on, your own ticks on its other lines stay; every other step starts clean. */
+function tickFromQuests(at, have) {
+  STEPS.forEach((s, i) => {
+    if (i < at) { saved.done[i] = s.todo.map((t, n) => n); return; }
+    const named = Object.entries(s.quests || {});
+    const got = new Set(i === at && at === saved.step ? ticksFor(i) : []);
+    s.todo.forEach((t, n) => {
+      const bold = [...t.matchAll(/<b>(.*?)<\/b>/g)].map((m) => m[1].replace(/<[^>]+>/g, ""));
+      const ids = named.filter(([, name]) => bold.includes(name)).map(([id]) => +id);
+      if (!ids.length) return;
+      if (ids.every((id) => have.has(id))) got.add(n); else got.delete(n);
+    });
+    if (got.size) saved.done[i] = [...got].sort((a, b) => a - b);
+    else delete saved.done[i];
+  });
+}
+
+/* a step's quests by name: parts of a chain share a name, and count as done when every part is */
+function stepQuestNames(i, have) {
+  const byName = new Map();
+  Object.entries(STEPS[i].quests || {}).forEach(([id, name]) => byName.set(name, (byName.get(name) ?? true) && have.has(+id)));
+  return [...byName];
+}
+
+/* ---------- the step's quest log: every quest it picks up or hands in, checked against the game ---------- */
+
+/* in the order the step talks about them; pickup = take it here, quests = hand it in here */
+function stepQuestList(i) {
+  const s = STEPS[i], text = [...s.todo, s.done || ""].join(" ");
+  const list = [
+    ...Object.entries(s.pickup || {}).map(([id, name]) => ({ id: +id, name, role: "pickup" })),
+    ...Object.entries(s.quests || {}).map(([id, name]) => ({ id: +id, name, role: "turnin" })),
+  ];
+  const at = (q) => { const k = text.indexOf(`<b>${q.name}</b>`); return k < 0 ? 1e9 : k; };
+  return list.sort((a, b) => at(a) - at(b) || (a.role === "pickup" ? -1 : 1));
+}
+
+/* objective lines that talk about a listed quest: line number -> the first listed quest it names */
+function questLinesOf(i) {
+  const list = stepQuestList(i), out = new Map();
+  STEPS[i].todo.forEach((t, n) => {
+    const q = list.find((x) => t.includes(`<b>${x.name}</b>`));
+    if (q) out.set(n, q.id);
+  });
+  return out;
+}
+
+/* a guide line shown inside a quest card (which is a button): no links or word popups in there, and no
+   "<b>Quest name</b>:" at the start, since the card already says it */
+function plainLine(t, name) {
+  t = t.replace(/<\/?a\b[^>]*>/g, "");
+  const lead = `<b>${name}</b>:`;
+  if (t.startsWith(lead)) { t = t.slice(lead.length).trim(); t = t.charAt(0).toUpperCase() + t.slice(1); }
+  return t;
+}
+
+/* a quest on a step is done when the game says it's handed in, or when you ticked it yourself
+   (saved.qdone["step:id"]: picked up for a pickup quest, handed in for a hand-in quest) */
+function questTicked(i, q, have = gameQuests()) {
+  return have.has(q.id) || !!(saved.qdone && saved.qdone[`${i}:${q.id}`]);
+}
+
+function drawStepQuests(i) {
+  const box = $("#questlog");
+  if (!box) return;
+  const list = stepQuestList(i);
+  const tips = new Map();
+  questLinesOf(i).forEach((id, n) => tips.set(id, [...(tips.get(id) || []), STEPS[i].todo[n]]));
+  box.hidden = !list.length;
+  if (!list.length) return;
+  const synced = !!saved.sync, have = gameQuests();
+  const done = list.filter((q) => questTicked(i, q, have)).length;
+  box.innerHTML = `<h4>Quests <span class="ql-count${done === list.length ? " all" : ""}">${done
+      ? `${done} of ${list.length} done${synced ? ` · read from your game ${syncAge()}` : ""}`
+      : "Click ! or ? when you've done one · click a quest for the map"}</span></h4>
+    <ul>${list.map((q) => {
+      const d = (typeof QUEST_DATA !== "undefined" && QUEST_DATA[q.id]) || {};
+      const fromGame = have.has(q.id), ticked = questTicked(i, q, have);
+      const how = q.role === "pickup" ? "picked up" : "handed in";
+      const who = q.role === "pickup" ? (d.from ? `From ${d.from[3]}` : "") : (d.to ? `Hand in to ${d.to[3]}` : "");
+      const on = MV.focus && MV.focus.step === i && MV.focus.id === q.id;
+      /* the mark is WoW's yellow ! (pick up) or ? (hand in) until it's done, then a green tick */
+      return `<li class="ql-row">
+        <button type="button" class="ql-mark" data-check="${q.id}" aria-pressed="${ticked}"${fromGame ? ' aria-disabled="true"' : ""}
+          aria-label="${attr(`${q.name}: ${ticked ? `${how}, click to untick` : `mark as ${how}`}`)}"
+          title="${fromGame ? "Handed in, says your game" : ticked ? `Ticked as ${how}. Click to untick.` : `Click when you've ${how} it`}">${ticked ? "✓" : q.role === "pickup" ? "!" : "?"}</button>
+        <button type="button" class="ql-q ql-${ticked ? "done" : "open"}${on ? " on" : ""}" data-q="${q.id}" aria-pressed="${on}">
+        <span class="ql-main"><b>${q.name}</b>${d.lv ? `<em>Lv ${d.lv}</em>` : ""}<span class="ql-role">${q.role === "pickup" ? "Pick up" : "Hand in"}</span>
+          ${d.text ? `<span class="ql-text">${d.text}</span>` : ""}
+          ${(tips.get(q.id) || []).map((t) => `<span class="ql-guide">${plainLine(t, q.name)}</span>`).join("")}
+          ${who ? `<span class="ql-who">${who}</span>` : ""}</span>
+        <span class="ql-map" aria-hidden="true">${on ? "On the map" : "Map ›"}</span>
+      </button></li>`;
+    }).join("")}</ul>`;
+}
+
+/* QUEST_DATA places are game zone ids; find (or add) the site zone that shows that map */
+function zoneKeyFor(area) {
+  const name = (typeof QUEST_ZONES !== "undefined" && QUEST_ZONES[area]) || "Map";
+  for (const [k, z] of Object.entries(ZONES)) if (z.id === area) return k;
+  for (const [k, z] of Object.entries(ZONES)) if (z.name === name) return k;
+  const k = `z${area}`;
+  ZONES[k] = { name, id: area };
+  return k;
+}
+
+/* the map for one quest: giver (!), objectives (1, 2…) and turn-in (?), grouped by zone */
+function questMap(id) {
+  const d = typeof QUEST_DATA !== "undefined" && QUEST_DATA[id];
+  if (!d) return null;
+  const places = [];
+  if (d.from) places.push([...d.from, "!", "from", `Quest giver: ${d.from[3]}`]);
+  (d.goals || []).forEach((g, n) => places.push([...g, String(n + 1), "goal", g[3]]));
+  if (d.to) {
+    const same = d.from && d.from[0] === d.to[0] && Math.hypot(d.from[1] - d.to[1], d.from[2] - d.to[2]) < 1;
+    if (same) { places[0][4] = "!?"; places[0][6] = `Quest giver and hand in: ${d.to[3]}`; }
+    else places.push([...d.to, "?", "to", `Hand in: ${d.to[3]}`]);
+  }
+  if (!places.length) return null;
+  const byZone = new Map();
+  places.forEach(([z, x, y, , mark, kind, label]) => {
+    const k = zoneKeyFor(z);
+    if (!byZone.has(k)) byZone.set(k, [k]);
+    byZone.get(k).push([x, y, label, mark, kind]);
+  });
+  return [...byZone.values()];
+}
+
+function focusQuest(id) {
+  const i = saved.step;
+  const q = id && stepQuestList(i).find((x) => x.id === id);
+  const map = q && questMap(id);
+  MV.focus = map && !(MV.focus && MV.focus.id === id) ? { step: i, id, name: q.name, map } : null;
+  drawMap(i);
+  drawStepQuests(i);
+  if (MV.focus) {
+    const r = $map.box.getBoundingClientRect();
+    if (r.top < 60 || r.bottom > window.innerHeight) $map.box.scrollIntoView({ block: "center", behavior: calmMotion() ? "auto" : "smooth" });
+  }
+}
+
+function syncAge() {
+  const ms = Date.now() - ((saved.sync && saved.sync.at) || 0);
+  const min = Math.round(ms / 60000);
+  if (min < 2) return "just now";
+  if (min < 90) return `${min} minutes ago`;
+  const h = Math.round(min / 60);
+  return h < 36 ? `${h} hours ago` : `${Math.round(h / 24)} days ago`;
+}
+
+function buildSync() {
+  const box = document.createElement("details");
+  box.className = "sync";
+  box.id = "sync";
+  box.innerHTML = `<summary>Find my step from the game</summary>
+    <ol class="sync-how">
+      <li>Copy this command, paste it into the chat box in game and press <kbd>Enter</kbd>:
+        <div class="sync-cmd"><code id="synccmd"></code><button type="button" class="wowbtn small" id="synccopy">Copy</button></div></li>
+      <li>A box opens with a line of numbers, already selected. Press <kbd>Ctrl</kbd> + <kbd>C</kbd>, then <kbd>Esc</kbd> to close it. Clicking anywhere else closes it too.</li>
+      <li>Paste it here:
+        <textarea id="syncpaste" rows="3" spellcheck="false" placeholder="18-179,3114,170,…"></textarea></li>
+    </ol>
+    <div class="sync-go"><button type="button" class="wowbtn" id="syncgo">Find my step</button></div>
+    <p class="sync-out" id="syncout" aria-live="polite"></p>`;
+  $("#panel-steps .nav").before(box);
+  $("#synccmd").textContent = SYNC_COMMAND;
+
+  $("#synccopy").addEventListener("click", async () => {
+    const b = $("#synccopy");
+    try { await navigator.clipboard.writeText(SYNC_COMMAND); b.textContent = "Copied!"; }
+    catch (e) {
+      const r = document.createRange(); r.selectNodeContents($("#synccmd"));
+      getSelection().removeAllRanges(); getSelection().addRange(r);
+      b.textContent = "Press Ctrl + C";
+    }
+    setTimeout(() => { b.textContent = "Copy"; }, 2000);
+  });
+
+  $("#syncgo").addEventListener("click", () => {
+    const out = $("#syncout");
+    const got = parseGameExport($("#syncpaste").value);
+    if (!got) {
+      out.className = "sync-out bad";
+      out.innerHTML = "That doesn't look like the line from the game. It should be your level, a dash, then numbers with commas, like <b>18-179,3114,170</b>.";
+      return;
+    }
+    const have = new Set(got.ids);
+    const r = findStepFromQuests(got.level, have);
+    saved.quests = got.ids;
+    saved.sync = { at: Date.now(), level: got.level };
+    tickFromQuests(r.at, have);
+    persist();
+    showStep(r.at, r.at >= saved.step ? "next" : "back");
+
+    const s = STEPS[r.at];
+    const lvl = got.level ? `level ${got.level}, ` : "";
+    let html = `Read ${lvl}${have.size} handed-in quests. You're on <b>step ${r.at + 1}: ${s.title}</b>.`;
+    if (r.reached < 0) html = `Read ${lvl}${have.size} handed-in quests, but none of them are in this guide yet, so you're at the start.`;
+    else if (r.left.length) html += ` Still to hand in here: ${stepQuestNames(r.at, have).filter(([, done]) => !done).map(([name]) => `<b>${name}</b>`).join(", ")}.`;
+    if (r.skipped.length) html += ` Skipped ${r.skipped.map((k) => `<b>${STEPS[k].title}</b>`).join(", ")}, since you're past that level. Go back if you haven't done ${r.skipped.length > 1 ? "them" : "it"}.`;
+    if (r.reached >= 0 && !stepQuestIds(r.at).length) html += " The game doesn't share trainer visits or talents, so if you've already done this step, press Next.";
+    out.className = "sync-out good";
+    out.innerHTML = html;
+    $("#syncpaste").value = "";
+  });
+}
+
+/* ---------- wide screens: the map in its own frame, right of the guide ----------
+   On a screen with room beside the 860px page, the map leaves the parchment and stays in view on the
+   right while you scroll the step. Narrower screens keep it under the step. */
+
+function buildMapSide() {
+  const home = document.createComment("the map sits here on narrow screens");
+  $map.box.before(home);
+  const side = document.createElement("aside");
+  side.className = "frame mapside";
+  side.id = "mapside";
+  side.setAttribute("aria-label", "Map");
+  side.innerHTML = `<div class="frame-title">Map</div><div class="frame-body"></div>`;
+  document.body.append(side);
+  if (!document.body.dataset.tab) document.body.dataset.tab = "steps";
+
+  const wide = matchMedia("(min-width: 1600px)");
+  const place = () => {
+    document.documentElement.style.setProperty("--toph", `${$(".top").offsetHeight}px`);
+    const inSide = $map.box.parentElement === side.lastElementChild;
+    if (wide.matches && !inSide) side.lastElementChild.append($map.box);
+    else if (!wide.matches && inSide) { toggleBigMap(false); home.after($map.box); }
+  };
+  /* the side frame stays put while the page scrolls, so the wheel anywhere on it (title, place list)
+     shouldn't scroll the page underneath either */
+  side.addEventListener("wheel", (e) => { if (!e.target.closest(".mapview")) e.preventDefault(); }, { passive: false });
+  /* the frame's top lines up with the Quest Guide frame; once that scrolls away, it stops under the header */
+  const guideFrame = $("#panel-steps > .frame");
+  let alignQueued = false;
+  const align = () => {
+    alignQueued = false;
+    if (!wide.matches || !guideFrame) return;
+    const toph = $(".top").offsetHeight;
+    side.style.top = `${Math.max(toph + 22, guideFrame.getBoundingClientRect().top)}px`;
+  };
+  const queueAlign = () => { if (!alignQueued) { alignQueued = true; requestAnimationFrame(align); } };
+  wide.addEventListener("change", () => { place(); queueAlign(); });
+  window.addEventListener("scroll", queueAlign, { passive: true });
+  window.addEventListener("resize", () => {
+    document.documentElement.style.setProperty("--toph", `${$(".top").offsetHeight}px`);
+    queueAlign();
+  }, { passive: true });
+  document.addEventListener("wf:tab", queueAlign);
+  place();
+  align();
+  setTimeout(align, 700);   // again once the page's fade-in has settled
+}
+
 /* ---------- start ---------- */
 
 if (!saved.done || typeof saved.done !== "object" || Array.isArray(saved.done)) saved.done = {};
-$("#card h4").insertAdjacentHTML("beforeend", ' <span class="tickcount" id="tickcount" aria-live="polite"></span>');
+$("#steptodo").insertAdjacentHTML("afterend", '<section class="questlog" id="questlog" hidden></section>');
+$("#questlog").addEventListener("click", (e) => {
+  const m = e.target.closest(".ql-mark");
+  if (m) {
+    if (m.getAttribute("aria-disabled") === "true") return;      // the game already says it's handed in
+    const i = saved.step, key = `${i}:${m.dataset.check}`;
+    if (!saved.qdone || typeof saved.qdone !== "object") saved.qdone = {};
+    const on = !saved.qdone[key];
+    if (on) saved.qdone[key] = 1; else delete saved.qdone[key];
+    persist();
+    drawStepQuests(i);
+    syncTicks();
+    const nm = $(`#questlog .ql-mark[data-check="${m.dataset.check}"]`);
+    if (on && nm && window.WF && WF.sparksFrom) WF.sparksFrom(nm, 8, { min: 14, max: 40, small: 3, big: 6 });
+    return;
+  }
+  const b = e.target.closest(".ql-q");
+  if (b) focusQuest(+b.dataset.q);
+});
+$("#card h4").id = "objhead";
+$("#objhead").insertAdjacentHTML("beforeend", ' <span class="tickcount" id="tickcount" aria-live="polite"></span>');
 buildStepList();
-buildTalents();
 buildGlossary();
-buildJourney();
+buildSync();
 buildFootNav();
+buildMapSide();
 showStep(saved.step, "next");
 
 $("#next").addEventListener("click", () => showStep(saved.step + 1, "next"));

@@ -4,12 +4,12 @@
    Loaded last on every page. It never changes what a guide
    says; it adds comfort and polish around it:
 
-     · comfort settings (bigger text, high contrast, easy font, less motion)
+     · comfort settings (bigger text, easy font, less motion)
      · Help window per page: how it works, keys, "I'm stuck" answers
      · first-visit welcome + a short guided tour
      · "switch character" menu built from assets/js/characters.js
      · celebrations: step complete, level up, profession done
-     · scroll reveal, drifting embers, ripples, page fades, card tilt
+     · scroll reveal, ripples, page fades, card tilt
      · progress summary the landing page uses for "Continue"
 
    Engines talk to it with DOM events:
@@ -88,29 +88,24 @@
   const SETTINGS_KEY = "wf.settings.v1";
   /* motion "calm" by default: short fades only, nothing that pulses, glows, spins, sparks or floats.
      Visitors can pick Full (every effect) or Off (no animation at all) in Settings. */
-  const DEFAULTS = { text: "1", contrast: "normal", font: "classic", motion: "calm", fx: "off", simple: "off", v: 2 };
+  const DEFAULTS = { text: "1", font: "classic", motion: "calm", v: 2 };
   const saved = store.get(SETTINGS_KEY, {});
-  // settings saved before v2 stored the old flashy defaults (motion "on", embers on): start those calm
-  if (saved.v !== 2) { delete saved.motion; delete saved.fx; }
+  // settings saved before v2 stored the old flashy defaults (motion "on"): start those calm
+  if (saved.v !== 2) delete saved.motion;
+  // settings that no longer exist (Simple view, High contrast, Floating embers): forget them
+  delete saved.simple; delete saved.contrast; delete saved.fx;
   const settings = Object.assign({}, DEFAULTS, saved, { v: 2 });
   if (!["calm", "on", "off"].includes(settings.motion)) settings.motion = "calm";
   const osReduced = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
   /* calm: fades only. on: full effects (calmer if the device asks for less motion). off: nothing moves.
-     reduced(): no big movement (embers, sparks, tilt). motionOff(): no animation at all. */
+     reduced(): no big movement (sparks, tilt). motionOff(): no animation at all. */
   const reduced = () => settings.motion !== "on" || osReduced();
   const motionOff = () => settings.motion === "off";
 
   function applySettings() {
     html.dataset.text = settings.text;
-    html.dataset.contrast = settings.contrast;
     html.dataset.font = settings.font;
     html.dataset.motion = settings.motion;
-    html.dataset.simple = settings.simple;   // Quest Guide shows just the step (see fx.css)
-    $$(".wf-simple-toggle").forEach((b) => {
-      b.setAttribute("aria-pressed", String(settings.simple === "on"));
-      b.querySelector("b").textContent = settings.simple === "on" ? "On" : "Off";
-    });
-    embers.toggle(settings.fx === "on" && !reduced() && settings.contrast !== "high");
     // the guide map measures itself; let it re-measure after a text-size change
     window.dispatchEvent(new Event("resize"));
   }
@@ -119,71 +114,7 @@
   if (ME) body.style.setProperty("--class-glow", ME.glow);
 
   /* =========================================================
-     2. Drifting embers (canvas behind the page)
-     ========================================================= */
-
-  const embers = (() => {
-    let canvas = null, ctx = null, parts = [], raf = 0, W = 0, H = 0, dpr = 1;
-    function size() {
-      dpr = Math.min(2, window.devicePixelRatio || 1);
-      W = innerWidth; H = innerHeight;
-      canvas.width = W * dpr; canvas.height = H * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const want = Math.round(Math.min(70, Math.max(18, (W * H) / 26000)));
-      while (parts.length < want) parts.push(spawn(true));
-      parts.length = want;
-    }
-    function spawn(anywhere) {
-      const warm = Math.random();
-      return {
-        x: rand(0, W), y: anywhere ? rand(0, H) : H + 10,
-        r: rand(.6, 2.1), vy: rand(.12, .5), vx: rand(-.15, .15),
-        sway: rand(.002, .012), ph: rand(0, Math.PI * 2),
-        a: rand(.25, .8), tw: rand(.01, .04),
-        c: warm < .6 ? [255, 196, 70] : warm < .85 ? [255, 140, 40] : [255, 240, 200],
-      };
-    }
-    function tick() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.globalCompositeOperation = "lighter";
-      for (const p of parts) {
-        p.ph += p.sway * 6;
-        p.x += p.vx + Math.sin(p.ph) * .25;
-        p.y -= p.vy;
-        const flick = p.a * (.65 + .35 * Math.sin(p.ph * p.tw * 80));
-        if (p.y < -20 || p.x < -20 || p.x > W + 20) Object.assign(p, spawn(false));
-        const [r, g, b] = p.c;
-        ctx.fillStyle = `rgba(${r},${g},${b},${flick * .14})`;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 4.5, 0, 6.283); ctx.fill();
-        ctx.fillStyle = `rgba(${r},${g},${b},${flick})`;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
-      }
-      raf = requestAnimationFrame(tick);
-    }
-    function start() {
-      if (!canvas) {
-        canvas = make("canvas");
-        canvas.id = "wf-embers";
-        canvas.setAttribute("aria-hidden", "true");
-        body.prepend(canvas);
-        ctx = canvas.getContext("2d");
-        addEventListener("resize", () => canvas && canvas.isConnected && size());
-      }
-      canvas.hidden = false;
-      size();
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(tick);
-    }
-    function stop() { cancelAnimationFrame(raf); raf = 0; if (canvas) canvas.hidden = true; }
-    doc.addEventListener("visibilitychange", () => {
-      if (!canvas || canvas.hidden) return;
-      if (doc.hidden) cancelAnimationFrame(raf); else raf = requestAnimationFrame(tick);
-    });
-    return { toggle: (on) => (on ? start() : stop()) };
-  })();
-
-  /* =========================================================
-     3. Sparks
+     2. Sparks
      ========================================================= */
 
   let sparkBox = null;
@@ -237,11 +168,8 @@
 
   const SET_ROWS = [
     ["text", "Text size", "Makes the guide text bigger.", [["1", "A"], ["2", "A+"], ["3", "A++"]]],
-    ["contrast", "High contrast", "Brighter text on a plain black background.", [["normal", "Off"], ["high", "On"]]],
     ["font", "Easy-read font", "A plain font instead of the fancy game-style one.", [["classic", "Off"], ["readable", "On"]]],
     ["motion", "Animations", "Calm: gentle fades only. Full: glows, sparks and sliding pages. Off: nothing moves.", [["calm", "Calm"], ["on", "Full"], ["off", "Off"]]],
-    ["fx", "Floating embers", "The little sparks drifting behind the page.", [["on", "On"], ["off", "Off"]]],
-    ["simple", "Simple view", "Quest Guide shows only the step: what to do, when it's done, and Back / Next. Hides the chapter strip, map and action bar.", [["off", "Off"], ["on", "On"]]],
   ];
   let setDlg = null;
   function openSettings() {
@@ -290,12 +218,45 @@
     },
     guide: {
       how: [
-        "The <b>parchment</b> is your current step: where to go and what to do.",
-        "Do it in game, then press <b>Next Step</b>. Your place is saved automatically.",
+        "The tabs at the top are the guide's chapters. <b>Quest Guide</b> is the main one: one small step at a time, from level 1 to 60.",
+        "<b>Action Bars</b>, <b>Talents</b> and <b>Gear</b> follow your place in the Quest Guide, so they always match your level.",
         "Words with a <b>dotted line</b> explain themselves when you click them.",
-        "The <b>map</b> shows where to go. Gold pins are numbered in the order you visit them.",
-        "The <b>bar at the bottom</b> shows which buttons to have on your action bar at this level.",
+        "Your place is saved in this browser automatically.",
       ],
+      tabs: {
+        steps: ["Quest Guide", [
+          "The <b>parchment</b> is your current step: where to go and what to do. Tick each objective as you go.",
+          "When the <b>Done when</b> box is true, press <b>Next Step</b>.",
+          "The <b>map</b> shows where to go. Gold pins are numbered in the order you visit them.",
+          "<b>Find my step from the game</b>: paste one command into the game's chat, copy back what it shows, and the guide jumps to your step and ticks off the quests you've done.",
+        ]],
+        bars: ["Action Bars", [
+          "Shows which ability goes on which key, at any level from 1 to 60.",
+          "It follows your Quest Guide step. Move the <b>level slider</b> to look ahead or back.",
+          "Point at or tap a button to see what it does. <b>What to change at this level</b> lists only what's new.",
+          "The steps at the bottom show how to turn on the extra bars in game, once.",
+        ]],
+        talents: ["Talents", [
+          "From level 10 you get one talent point each level. The box at the top says which talent to click <b>now</b>.",
+          "The talent window below looks like the game's (<kbd>N</kbd>). The glowing talent is this level's point.",
+          "Use <b>Next</b>, the slider or the arrow keys to look ahead. The list at the bottom shows every point, level by level.",
+          "In game, click <b>Apply Changes</b> after you place the point.",
+        ]],
+        gear: ["Gear", [
+          "Your character window (<kbd>C</kbd> in game), filled with the items this guide's quests give you at your level.",
+          "<b>Click a slot</b> to see every way to fill it: quests, dungeons, crafted items and the <b>Auction House</b>.",
+          "Slots marked <b>AH</b> don't come from a quest: buy, craft or get them from a vendor.",
+          "Move the level slider to look ahead. Your own gear won't match exactly, and that's fine.",
+        ]],
+        basics: ["How to Play", [
+          "A short read for brand-new players: quests, fighting, eating, gear and getting around.",
+          "Read it once before your first step, and come back whenever something is unclear.",
+        ]],
+        words: ["Words", [
+          "Every game word the guide uses, explained in plain words.",
+          "Type in the search box to find one. In the guide, words with a dotted line show their meaning right where you are.",
+        ]],
+      },
       keys: [["← →", "Previous / next step"], ["M", "Big map"], ["+ −", "Zoom the map (after clicking it)"]],
       faq: [
         ["I can't find the person or place.", "Look at the map on the step: the gold pins show each place in order. Press <kbd>M</kbd> for a big map. With the TomTom addon, click a pin and press <b>Copy /way</b> to get an arrow in game."],
@@ -303,6 +264,7 @@
         ["I died. Now what?", "You appear as a ghost at a graveyard. Run back to your body and click <b>Resurrect</b>. Nothing is lost except a little time and some repair cost."],
         ["I'm a level behind the guide.", "That's normal. Do every quest you see. If you're 2 or more levels behind, kill enemies near the next quest area for a few minutes."],
         ["I pressed Next by accident.", "Press <b>Back</b>, or open <b>All steps</b> under the parchment and click any step."],
+        ["What gear should I have?", "Open the <b>Gear</b> tab. It shows your character window with the quest rewards you should be wearing at your step, and what to buy or craft for the other slots. Point at a slot to see the item and where it comes from; click it for other options, including the Auction House."],
         ["Where are my new abilities?", "Open your spellbook with <kbd>P</kbd>. The <b>Action Bars</b> tab shows which key each one goes on."],
         ["Is my progress saved?", "Yes, in this browser on this device. Another browser or device starts from step 1."],
       ],
@@ -313,6 +275,19 @@
         "Each profession tab is a list of small steps. Do one in game, then press <b>Done, next</b>.",
         "Your progress is saved for each profession separately.",
       ],
+      tabs: {
+        overview: ["Basics", [
+          "What a profession is, how to start one, and how skill points and ranks work.",
+          "<b>Pairs that work well</b> shows which two to pick. Its buttons open that profession's tab.",
+        ]],
+        "*": ["This profession", [
+          "Follow one <b>card</b> at a time. Do what it says in game, then press <b>Done, next</b>.",
+          "The bar shows your skill and how many steps are left.",
+          "Crafting jobs list <b>Everything you'll need</b> for the whole route, so you can gather or buy it early.",
+          "Open <b>All steps</b> to jump to any step or start over.",
+        ]],
+        notes: ["Notes", ["Where the routes come from and what wasn't checked. You don't need this tab to follow the guide."]],
+      },
       keys: [],
       faq: [
         ["When should I start professions?", "Any time from level 1, though most players start around level 5 to 10 once they reach a big city."],
@@ -327,6 +302,19 @@
         "<b>How to Install</b> walks you through it, with or without the CurseForge app.",
         "Press <b>Scan</b> and the list ticks off what you already have. Nothing is uploaded: it only reads folder names on your computer.",
       ],
+      tabs: {
+        list: ["Addon List", [
+          "Each card says what the addon does and why it helps. <b>Also install</b> names addons it can't work without.",
+          "<b>CurseForge ›</b> opens the addon's download page.",
+          "Use the buttons above the list to show one group only.",
+        ]],
+        install: ["How to Install", [
+          "Two ways: the CurseForge app (easiest), or by hand into your <b>Interface\\AddOns</b> folder.",
+          "Restart the game after adding addons, then tick them on the character screen's <b>AddOns</b> button.",
+          "<b>Something broke?</b> at the bottom fixes most problems.",
+        ]],
+        notes: ["Notes", ["How the list was checked, and what wasn't confirmed. You don't need this tab to install anything."]],
+      },
       keys: [],
       faq: [
         ["Can addons get me banned?", "No. Addons from CurseForge only change the interface, and Blizzard allows them."],
@@ -335,17 +323,28 @@
       ],
     },
   };
-  let helpDlg = null;
+  /* the open tab on pages with tabs ("" on pages without). Help and the tour both follow it. */
+  const curTab = () => { const b = $(".tabs [data-tab].on"); return b ? b.dataset.tab : ""; };
+  // a page's entry for the open tab: exact tab, then "*" (any other tab), else none
+  const forTab = (map, tab) => (map && tab ? map[tab] || map["*"] || null : null);
+
+  let helpDlg = null, helpKey = "";
   function openHelp() {
     const h = HELP[PAGE] || HELP.home;
+    const tab = curTab(), key = PAGE + ":" + tab;
+    if (helpDlg && helpKey !== key) { helpDlg.remove(); helpDlg = null; }
     if (!helpDlg) {
+      helpKey = key;
       const keys = h.keys.concat(KEYS_COMMON);
+      const t = forTab(h.tabs, tab);
+      const label = t && t[0] === "This profession" ? ($(".tabs [data-tab].on").textContent.trim() || t[0]) : t && t[0];
       helpDlg = dialog("Help",
-        `<h3>How this page works</h3><ul>${h.how.map((x) => `<li>${x}</li>`).join("")}</ul>
+        `${t ? `<h3>This tab: ${esc(label)}</h3><ul>${t[1].map((x) => `<li>${x}</li>`).join("")}</ul>` : ""}
+         <h3>How this page works</h3><ul>${h.how.map((x) => `<li>${x}</li>`).join("")}</ul>
          ${h.faq.length ? `<h3>I'm stuck…</h3><div class="wf-faq">${h.faq.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join("")}</div>` : ""}
          <h3>Keyboard</h3><dl class="wf-keys">${keys.map(([k, t]) => `<dt>${k.split(" ").map((x) => `<kbd>${x}</kbd>`).join(" ")}</dt><dd>${t}</dd>`).join("")}</dl>
          <div class="wf-dlg-foot">
-           ${TOURS[PAGE] ? '<button type="button" class="wowbtn small" data-tour>Show me around</button>' : ""}
+           ${tourSteps().length ? `<button type="button" class="wowbtn small" data-tour>Show me around${t ? " this tab" : ""}</button>` : ""}
            <button type="button" class="wowbtn small" data-settings>Bigger text &amp; settings</button>
          </div>`);
       helpDlg.addEventListener("click", (e) => {
@@ -364,35 +363,113 @@
      5. Guided tour (spotlight on one thing at a time)
      ========================================================= */
 
+  /* One tour per tab, keyed by the tab's data-tab ("" for pages without tabs, "*" for any
+     other tab). Each step is [selector, title, text]; steps whose element isn't on screen
+     are skipped, and every tour ends on the Help dock. */
+  const SWITCH = [".wf-nav", "Home and other characters", "Go back to all guides, or switch to another character. You land on the same page for them."];
   const TOURS = {
-    guide: [
-      [".tabs", "The chapters", "These tabs are the guide's chapters. You're on <b>Quest Guide</b>. Brand new? <b>How to Play</b> explains the basics in two minutes."],
-      ["#card", "Your current step", "This parchment says where to go and what to do. Do it in game, one line at a time."],
-      ["#mapbox:not([hidden]) .mapview", "Where to go", "Gold pins show this step's places, in order. Drag to move the map; press <kbd>M</kbd> for a big one."],
-      ["#next", "Done? Press Next Step", "Your place is saved automatically, so you can close the page and come back later."],
-      [".hud .mainbar", "Your action bar", "The buttons to have on your bar at this level. Point at one to read what it does. Glowing ones are new."],
-      [".wf-dock", "Help is always here", "Questions, bigger text, and this tour again."],
-    ],
-    addons: [
-      [".tabs", "Three tabs", "The addon list, how to install them, and notes."],
-      [".quality", "What the colours mean", "Like loot in game: orange first, then blue, then green. Grey ones you can skip."],
-      ["#filters", "Show only some", "Filter the list, and see how many you have."],
-      [".scanbar", "Already have some?", "Scan your AddOns folder and the list ticks off what's installed. Nothing is uploaded."],
-      [".wf-dock", "Help is always here", "Questions, bigger text, and this tour again."],
-    ],
-    professions: [
-      [".tabs", "One tab per profession", "Start with <b>Basics</b>, then open the profession you picked."],
-      ["#panel-overview .frame", "Start here", "Which two professions fit your character, and why."],
-      [".wf-dock", "Help is always here", "Questions, bigger text, and this tour again."],
-    ],
+    home: {
+      "": [
+        [".hero-cta", "Never played?", "<b>Start here</b> explains the first three steps. <b>Help me choose</b> suggests a class with one question."],
+        ["#continue", "Continue your journey", "Guides you've used before. One click takes you back to the step where you stopped."],
+        ["#cards", "Pick your character", "Each character has its own guides. Create the same race and class in game."],
+        ["#cards .card .links", "Three guides each", "<b>Leveling Guide</b> takes you from 1 to 60. <b>Professions</b> and <b>Addons</b> are optional extras for later."],
+        ["#start .path", "Brand new? Three steps", "The whole plan in three cards. You don't need to know anything about the game yet."],
+        ["#choose .frame", "Help me choose", "Answer one question and we'll suggest a class."],
+      ],
+    },
+    guide: {
+      steps: [
+        [".tabs", "The chapters", "These tabs are the guide's chapters. You're on <b>Quest Guide</b>. Brand new? <b>How to Play</b> explains the basics in two minutes."],
+        SWITCH,
+        ["#card", "Your current step", "This parchment says where to go and what to do. Do it in game, one line at a time, and tick each line off."],
+        ["#questlog", "The quests in this step", "Each quest you pick up or hand in here. Ticks fill in as you go, or from the game with <b>Find my step</b>."],
+        ["#mapbox:not([hidden]) .mapview", "Where to go", "Gold pins show this step's places, in order. Click a pin for its name. Drag to move the map; press <kbd>M</kbd> for a big one."],
+        ["#stepdone:not([hidden])", "When is it done?", "When this is true, the step is finished. Short of the level? It says where to fight for a bit."],
+        ["#next", "Done? Press Next Step", "Your place is saved automatically, so you can close the page and come back later."],
+        ["#sync", "Lost your place?", "Paste one command into the game's chat, copy back what it shows, and the guide finds your step and ticks off your quests."],
+      ],
+      bars: [
+        ["#panel-bars .levelpick", "Pick a level", "The bars follow your place in the Quest Guide. Move the slider to see any level from 1 to 60."],
+        ["#bars .barblock", "Your main bar", "Keys <kbd>1</kbd> to <kbd>=</kbd>. Everything you press in a normal fight. Point at or tap a button to see what it does."],
+        ["#bars", "The other bars", "<kbd>Shift</kbd> + number for openers, stuns and emergencies. The right bar is for clicking between fights. <kbd>Alt</kbd> + 1 and 2 for bandages and food."],
+        ["#panel-bars .changes", "What's new at this level", "Only the buttons to add or move. Check it each time you visit a trainer."],
+        ["#panel-bars .frame-body > ol", "Set it up in game", "Do this once: turn on the extra bars, set their keys, then drag your abilities in."],
+      ],
+      talents: [
+        ["#tstep", "This level's point", "The talent to click now, and what it does. <b>Next</b> and <b>Back</b> step through every point."],
+        ["#panel-talents .levelpick", "Pick a level", "Follows your Quest Guide level. Move the slider to look ahead."],
+        ["#panel-talents .tw", "Your talent window", "Looks like the game's (<kbd>N</kbd>). The glowing talent is this level's point. Point at or tap any talent to read it."],
+        ["#panel-talents .tlegend", "What the colours mean", "Full, partly filled, this level's point, and points that come later."],
+        ["#tplan", "The whole plan", "Every point from level 10 to 60, in order."],
+      ],
+      gear: [
+        ["#panel-gear .levelpick", "Pick a level", "Shows the gear you'd have at your Quest Guide step. Move the slider to look ahead or back."],
+        [".paperdoll", "Your character window", "Like <kbd>C</kbd> in game, filled with the items the guide's quests give you."],
+        [".paperdoll .gslot:not(.empty)", "Click a slot", "See every way to fill it: quests, dungeons, crafted items and the Auction House, with their stats."],
+        [".pd-center", "What it adds up to", "Your stats from gear, and the items that are new in this chapter."],
+        [".pd-legend", "The little marks", "A green mark is new in this chapter. <b>AH</b> means it isn't from a quest: buy, craft or get it from a vendor."],
+      ],
+      basics: [
+        ["#panel-basics .howjump", "Read this first", "The basics in a few minutes: quests, fighting, eating, gear and getting around. Click a picture to jump to that part."],
+        ["#panel-basics .gearcompare", "Is this item better?", "How to compare an item you found with what you're wearing."],
+        ["#panel-basics .keys-table", "Keys worth knowing", "The windows you'll open most. Try each one once in game."],
+        ["#panel-basics .howcard:last-of-type", "The one combo to learn", "The order to press your abilities in a fight. Learn this and you can handle most enemies."],
+      ],
+      words: [
+        ["#panel-words .wf-search", "Find a word", "Type part of a word to filter the list."],
+        ["#glossary", "Plain-words meanings", "Every game word the guide uses. In the guide, words with a dotted line show their meaning right where you are."],
+      ],
+    },
+    professions: {
+      overview: [
+        [".tabs", "One tab per profession", "Start with <b>Basics</b>, then open the profession you picked."],
+        SWITCH,
+        ["#panel-overview .howjump", "Jump to a part", "Basics is split into short parts. Click one to go straight to it."],
+        ["#basics-5", "Which two to pick", "The pairs that work well for each character. The buttons open that profession's tab."],
+      ],
+      "*": [
+        [".panel.on .progress", "Your skill", "How far you are, from 1 to 300, and how many steps are left."],
+        [".panel.on .questpaper", "One card at a time", "What to make or gather, and how many. Do it in game."],
+        [".panel.on .nav", "Done? Press Done, next", "Your progress is saved for each profession separately."],
+        [".panel.on .mats", "Everything you'll need", "All the materials for the whole route, so you can gather or buy them early."],
+        [".panel.on details", "Every step", "Jump to any step, or start over."],
+      ],
+      notes: [[".panel.on .frame", "Notes and sources", "Where the routes come from and what wasn't checked. You don't need this to follow the guide."]],
+    },
+    addons: {
+      list: [
+        [".tabs", "Three tabs", "The addon list, how to install them, and notes."],
+        SWITCH,
+        [".quality", "What the colours mean", "Like loot in game: orange first, then blue, then green. Dungeon addons have their own list."],
+        [".scanbar", "Already have some?", "Scan your AddOns folder and the list ticks off what's installed. Nothing is uploaded."],
+        ["#filters", "Show only some", "Show one group only, and see how many of each you have."],
+        ["#tiers .addon", "One addon", "What it does and why it helps. <b>Also install</b> names addons it needs. <b>CurseForge ›</b> opens its download page."],
+      ],
+      install: [
+        ["#panel-install .steps-big", "The easy way", "The free CurseForge app installs and updates addons for you."],
+        ["#panel-install .folders", "By hand", "Each addon folder goes straight inside <b>Interface\\AddOns</b>, not one folder deeper."],
+        ["#panel-install .frame-body > ul:last-of-type", "Something broke?", "Most problems are fixed by one of these."],
+      ],
+      notes: [[".panel.on .frame", "Notes and sources", "How the list was checked, and what wasn't confirmed."]],
+    },
   };
+  const DOCK = [".wf-dock", "Help is always here", "Questions about this tab, bigger text, and this tour again."];
+
+  const visible = (sel) => {
+    const n = $(sel);
+    return !!n && !!n.getClientRects().length && getComputedStyle(n).visibility !== "hidden";
+  };
+  function tourSteps() {
+    const t = TOURS[PAGE];
+    const tab = curTab();
+    const steps = (t && (t[tab] || (tab && t["*"]))) || [];
+    return steps.length ? steps.concat([DOCK]).filter(([sel]) => visible(sel)) : [];
+  }
 
   let tour = null;
   function startTour() {
-    const steps = (TOURS[PAGE] || []).filter(([sel]) => {
-      const n = $(sel);
-      return n && n.getClientRects().length && getComputedStyle(n).visibility !== "hidden";
-    });
+    const steps = tourSteps();
     if (!steps.length) return;
     endTour();
     scrollTo(0, 0);
@@ -451,7 +528,7 @@
     removeEventListener("resize", placeTour);
     removeEventListener("scroll", placeTour);
     tour = null;
-    store.set("wf.toured." + PAGE, 1);
+    store.set("wf.toured." + PAGE + (curTab() ? "." + curTab() : ""), 1);
   }
   doc.addEventListener("keydown", (e) => {
     if (!tour) return;
@@ -596,7 +673,7 @@
      ========================================================= */
 
   const REVEAL = [
-    ".glossary > div", ".addon", ".steps-big > li", ".talents tbody tr", ".barblock", ".changes",
+    ".glossary > div", ".addon", ".steps-big > li", ".tplan li", ".barblock", ".changes",
     "main .frame-body > h3", ".howcard", ".tier", ".wf-reveal-me", ".mats > div",
   ].join(",");
   let io = null;
@@ -839,13 +916,7 @@
     if (!(d.direction === "next" && d.index === d.prev + 1)) return;
     const next = $("#next");
     sparksFrom(next, 16, { angle: -Math.PI / 2, spread: 1.3, min: 30, max: 90 });
-    const xp = $(".xp");
-    if (xp) { xp.classList.remove("wf-gain"); void xp.offsetWidth; xp.classList.add("wf-gain"); }
     // no pop-up messages (level-up, step complete): the step itself says what's next
-    if (d.level > d.prevLevel) {
-      const mb = $(".mainbar");
-      if (mb) { mb.classList.remove("wf-bump"); void mb.offsetWidth; mb.classList.add("wf-bump"); }
-    }
   });
 
   doc.addEventListener("wf:progress", (e) => {
@@ -856,21 +927,6 @@
   /* =========================================================
      start
      ========================================================= */
-
-  /* a one-click Simple view switch at the top of the Quest Guide (same as Settings → Simple view) */
-  if (PAGE === "guide" && $("#panel-steps .lead")) {
-    const b = make("button", "wf-simple-toggle",
-      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6"/></svg>Simple view: <b>Off</b>`);
-    b.type = "button";
-    b.title = "Show only the current step: what to do, when it's done, and Back / Next";
-    b.addEventListener("click", () => {
-      settings.simple = settings.simple === "on" ? "off" : "on";
-      store.set(SETTINGS_KEY, settings);
-      applySettings();
-      if (setDlg) syncSettings();
-    });
-    $("#panel-steps .lead").append(" ", b);
-  }
 
   applySettings();
   buildDock();

@@ -1,7 +1,6 @@
 /* =========================================================
    Action bars: which spell goes on which key, by level.
    Loaded after wow-guide.js. Draws:
-     - the HUD bar pinned to the bottom of the screen
      - the full "Action bars" tab with a level slider
    ========================================================= */
 
@@ -90,11 +89,8 @@ document.addEventListener("click", (e) => {
 });
 window.addEventListener("scroll", hideSpellTip, { passive: true });
 
-/* ---------- HUD bar at the bottom of the screen ---------- */
-function drawHud(level) {
-  const main = BARS[0];
-  document.getElementById("hudbar").innerHTML =
-    main.slots.map((slot) => iconHTML(spellIn(slot, level), slot[0], isNewIn(slot, level))).join("");
+/* ---------- level on the portrait in the header ---------- */
+function drawPortrait(level) {
   const portrait = document.querySelector(".portrait span");
   if (portrait) portrait.textContent = level;
 }
@@ -215,14 +211,30 @@ document.addEventListener("click", (e) => {
   if (typeof showTab === "function") showTab(a.dataset.goto);
 });
 
-/* the step guide tells us the level of the current step */
+/* The step guide tells us the level of the current step. Like the Gear tab, the Action Bars
+   tab always follows it: moving the slider looks at another level, and the next step you open
+   in the Quest Guide brings it back. A line under the slider says which one you're seeing. */
+const barsNote = document.createElement("p");
+barsNote.className = "levelnote";
+barsNote.id = "barsnote";
+document.querySelector("#panel-bars .levelpick").after(barsNote);
+
 window.syncBarsToStep = function (level, stepIndex) {
-  drawHud(level);
-  drawStepBars(stepIndex !== undefined ? stepIndex : (window.currentStepIndex ? window.currentStepIndex() : 0));
+  const i = stepIndex !== undefined ? stepIndex : (window.currentStepIndex ? window.currentStepIndex() : 0);
+  drawPortrait(level);
+  drawStepBars(i);
   const slider = document.getElementById("barslider");
-  if (slider && !slider.dataset.touched) { slider.value = level; drawBars(level); }
+  if (!slider) return;
+  slider.value = level;
+  drawBars(level);
+  barsNote.textContent = `Matches your Quest Guide: step ${i + 1}, ${STEPS[i].title}.`;
 };
-document.getElementById("barslider").addEventListener("input", (e) => { e.target.dataset.touched = "1"; });
+const barsBrowse = () => {
+  barsNote.textContent = `Showing level ${document.getElementById("barslider").value}. Open another step in the Quest Guide and this follows it again.`;
+};
+document.getElementById("barslider").addEventListener("input", barsBrowse);
+document.getElementById("barsminus").addEventListener("click", barsBrowse);
+document.getElementById("barsplus").addEventListener("click", barsBrowse);
 
 setupBarsTab();
 window.syncBarsToStep(window.currentStepLevel ? window.currentStepLevel() : 1, window.currentStepIndex ? window.currentStepIndex() : 0);

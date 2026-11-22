@@ -10,3 +10,6 @@ desktop.ini
 
 # Python
 __pycache__/
+
+# downloads cached by tools/build-gear.py
+tools/.gear-cache/
