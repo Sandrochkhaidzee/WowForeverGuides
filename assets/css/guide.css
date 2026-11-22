@@ -1184,14 +1184,3 @@ html[data-contrast="high"] .jc::before { background: #555; }
   .gc-vs { justify-self: center; }
 }
 html[data-contrast="high"] .itip, html[data-contrast="high"] .qualities span { background: #000; border-color: #888; }
-
-/* How to Play → Addons: the download button for this guide's own addon */
-.getaddon {
-  padding: 10px 12px;
-  border: 1px solid var(--gold-dark);
-  border-left: 3px solid #ff8000;
-  border-radius: 3px;
-  background: rgba(255, 200, 80, .06);
-}
-.getaddon .ga-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 10px; }
-.getaddon .wowbtn { text-decoration: none; display: inline-block; }

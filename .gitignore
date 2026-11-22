@@ -10,6 +10,3 @@ desktop.ini
 
 # Python
 __pycache__/
-
-# addon zip built by tools/export-addon-guide.js --zip
-dist/
