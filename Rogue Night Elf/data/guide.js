@@ -250,7 +250,7 @@ const STEPS = [
     "<b>Expose Armor</b> (<kbd>Shift</kbd> + <kbd>9</kbd>) makes an enemy take more damage. Only worth it on enemies that live a long time, like bosses."
   ] },
 
-{ lv:"14–16", place:"Northern Darkshore", title:"The north: Buzzboxes, Blackwood camps and the tower", quests:{1001:"Buzzbox 411", 985:"How Big a Threat?", 2138:"Cleansing of the Infected", 4763:"The Blackwood Corrupted", 965:"The Tower of Althalaxx", 966:"The Tower of Althalaxx"}, pickup:{1002:"Buzzbox 323", 947:"Cave Mushrooms"}, map:[["darkshore",[51,35,"Blackwood camps"],[54.4,31.8,"Cliffspring Falls (cave)"],[55,25,"Tower of Althalaxx"],[38,29,"Northern beach (threshers, Buzzbox 411)"]]],
+{ lv:"14–17", place:"Northern Darkshore", title:"The north: Buzzboxes, Blackwood camps and the tower", quests:{1001:"Buzzbox 411", 985:"How Big a Threat?", 2138:"Cleansing of the Infected", 4763:"The Blackwood Corrupted", 965:"The Tower of Althalaxx", 966:"The Tower of Althalaxx"}, pickup:{1002:"Buzzbox 323", 947:"Cave Mushrooms"}, map:[["darkshore",[51,35,"Blackwood camps"],[54.4,31.8,"Cliffspring Falls (cave)"],[55,25,"Tower of Althalaxx"],[38,29,"Northern beach (threshers, Buzzbox 411)"]]],
   done:"you've handed in <b>Buzzbox 411</b>, <b>How Big a Threat?</b> part 2, <b>Cleansing of the Infected</b>, <b>The Blackwood Corrupted</b> and the first <b>Tower of Althalaxx</b> quests, and you're level 16.", stuck:"Fight the Blackwood furbolgs at their camps until you are.",
   todo:[
     "Follow the coast north. Kill <b>threshers</b> in the water for <b>3 Thresher Eyes</b> and hand them in at the <b>Buzzbox 411</b> machine on the northern beach. It gives <b>Buzzbox 323</b>: kill moonstalkers for it as you go.",
@@ -321,7 +321,7 @@ const STEPS = [
   todo:[
     "In <b>Old Town</b>, take <b>Mathias and the Defias</b> from <b>Master Mathias Shaw</b> at SI:7. Go to <b>Sentinel Hill</b> in Westfall, unlock the flight path, and make the inn your home for now.",
     "Find <b>Agent Kearnen</b>. She's in Stealth next to a big tree in the south-east corner of Westfall, just south of the road to Duskwood. She gives <b>Klaven's Tower</b>.",
-    "Use <b>Pick Pocket</b> on a <b>Malformed Defias Drone</b> to steal the <b>Defias Tower Key</b>. In Stealth, climb to the top of the nearby tower. <b>Klaven Mortwake</b> (level 23) waits there: <b>Sap</b> him, then open the small box beside him (Pick Lock 75) for <b>Klaven Mortwake's Journal</b>.",
+    "Use <b>Pick Pocket</b> on a <b>Malformed Defias Drone</b> to steal the <b>Defias Tower Key</b>. In Stealth, climb to the top of the nearby tower. <b>Klaven Mortwake</b> (level 26, far too strong to fight) waits there: <b>Sap</b> him, then open the small box beside him (Pick Lock 75) for <b>Klaven Mortwake's Journal</b>. The quest shows as level 24 in your log, but you never fight anyone: stay in Stealth the whole way.",
     "Use your Hearthstone while Klaven is still asleep. Fly to Stormwind and hand in to Mathias: you learn <b>Poisons</b> and how to make <b>Thistle Tea</b>.",
     "Buy the ingredients from a poison vendor, make <b>Instant Poison</b> in the Poisons window, and put poison on both weapons."
   ],

@@ -125,7 +125,7 @@ const STEPS = [
     "Hand the Depot quests back at the Depot. Press <kbd>L</kbd> to open your quest log: each quest says how many you need."
   ] },
 
-{ lv:"7–8", place:"West of Kharanos", title:"Gnome quest: fix the machines", quests:{412:"Operation Recombobulation"}, map:[["dunmorogh",[45.9,49.4,"Razzle Sprysprocket"],[25.5,41.5,"Leper Gnomes"]]],
+{ lv:"7–9", place:"West of Kharanos", title:"Gnome quest: fix the machines", quests:{412:"Operation Recombobulation"}, map:[["dunmorogh",[45.9,49.4,"Razzle Sprysprocket"],[25.5,41.5,"Leper Gnomes"]]],
   done:"Razzle has his gears and cogs.", stuck:"Fight the Leper Gnomes west of Kharanos until you're level 8.",
   todo:[
     "For <b>Operation Recombobulation</b>, go west toward Gnomeregan and kill the Leper Gnomes outside it for <b>Gyromechanic Gears</b> and <b>Restabilization Cogs</b>. Don't go into Gnomeregan itself.",
@@ -164,7 +164,7 @@ const STEPS = [
   todo:[
     "Follow the road east to Gol'Bolar Quarry.",
     "Take <b>Those Blasted Troggs!</b> from Foreman Stonebrow (Rockjaw Skullthumpers in the quarry) and <b>The Public Servant</b> from Senator Mehr Stonehallow (Rockjaw Bonesnappers in the mine). Your quest log says how many.",
-    "Talk to <b>Earthseer Farsen</b> and take <b>Nip 'Em in the Bud</b>: kill 10 Dark Iron Spies east of the quarry.",
+    "Talk to <b>Earthseer Farsen</b> and take <b>Nip 'Em in the Bud</b>: kill 10 Dark Iron Spies east of the quarry. Your quest log calls it a level 13 quest, but the spies are only level 9–11.",
     "One spy drops a <b>Dark Iron Map</b>. Right-click it, bring it to Farsen and take <b>Old Ironforge Incursion</b>. That's a dungeon quest for later."
   ] },
 
@@ -187,12 +187,12 @@ const STEPS = [
   tip:"Lost in Ironforge? Ask any guard. Click them and they'll mark the place on your map." },
 
 { lv:"10–11", place:"Ironforge, Mystic Ward", title:"Mage quest: Bink", quests:{1879:"Speak with Bink", 1880:"Mage-tastic Gizmonitor"}, map:[["ironforge",[26.5,8.5,"Bink (Hall of Mysteries)"]],["dunmorogh",[27,36,"Hut north of Gnomeregan (chest)"]]],
-  done:"you've handed in <b>Mage-tastic Gizmonitor</b> to Bink and picked the Ley Orb or Ley Staff.",
+  done:"you've handed in <b>Mage-tastic Gizmonitor</b> to Bink and picked the Arcane Staff or Arcane Orb.",
   todo:[
     "Go to the Mystic Ward and find <b>Bink</b> in the Hall of Mysteries. Turn in <b>Speak with Bink</b>.",
     "She gives <b>Mage-tastic Gizmonitor</b>. Go west in Dun Morogh to the huts just north of Gnomeregan: the gizmonitor is in a small chest inside the hut on the right.",
     "Lots of Leper Gnomes walk around there. Polymorph one if two come at you. <b>Don't go inside Gnomeregan</b>: everything there is much too strong for you.",
-    "Bring it back to Bink and choose your reward: the <b>Ley Orb</b> or the <b>Ley Staff</b>."
+    "Bring it back to Bink and choose your reward: the <b>Arcane Staff</b> (a two-handed staff, the better pick) or the <b>Arcane Orb</b> (an off-hand item)."
   ] },
 
 { lv:"10–13", place:"Ironforge", title:"Get a wand and a dungeon quest", pickup:{96403:"Important Heirlooms"}, map:[["ironforge",[25,74,"Auction house"],[39,55,"Thom Filch (below the High Seat)"]]], learn:["shoot"],
@@ -281,7 +281,7 @@ const STEPS = [
     "Flamestrike burns an area on the ground. Cast it right after Frost Nova when several enemies are frozen together."
   ] },
 
-{ lv:"18", place:"Loch Modan", title:"Last of Loch Modan: ogres and Ol' Sooty", quests:{255:"Mercenaries", 271:"Vyrin's Revenge", 531:"Vyrin's Revenge", 86614:"Silver of the Waves"}, pickup:{161:"A Dark Threat Looms"}, map:[["lochmodan",[34.6,44.5,"Magistrate Bluntnose (Thelsamar)"],[71,24,"Mo'grosh Stronghold (ogres)"],[37.9,63.4,"Ol' Sooty"],[82.5,64.5,"Farstrider Lodge (Vyrin and Daryl)"],[45.7,43.3,"Discarded Fishing Toolbox"],[40.3,39.3,"Khara Deepwater"],[46,13.6,"Chief Engineer Hinderweir (the dam)"]]],
+{ lv:"18–19", place:"Loch Modan", title:"Last of Loch Modan: ogres and Ol' Sooty", quests:{255:"Mercenaries", 271:"Vyrin's Revenge", 531:"Vyrin's Revenge", 86614:"Silver of the Waves"}, pickup:{161:"A Dark Threat Looms"}, map:[["lochmodan",[34.6,44.5,"Magistrate Bluntnose (Thelsamar)"],[71,24,"Mo'grosh Stronghold (ogres)"],[37.9,63.4,"Ol' Sooty"],[82.5,64.5,"Farstrider Lodge (Vyrin and Daryl)"],[45.7,43.3,"Discarded Fishing Toolbox"],[40.3,39.3,"Khara Deepwater"],[46,13.6,"Chief Engineer Hinderweir (the dam)"]]],
   done:"you've handed in <b>Mercenaries</b> and both parts of <b>Vyrin's Revenge</b>.", stuck:"Fight the ogres at Mo'grosh Stronghold until you're level 19.",
   todo:[
     "In Thelsamar, <b>Magistrate Bluntnose</b> gives <b>Mercenaries</b>: kill 4 Mo'grosh Ogres, 4 Mo'grosh Brutes and 4 Mo'grosh Enforcers at <b>Mo'grosh Stronghold</b> in the north-east. Ogres hit hard, so pull one at a time with Frostbolt and use Frost Nova when it reaches you.",
@@ -484,21 +484,20 @@ const STEPS = [
   ],
   tip:"Grom'gol, on the west coast, is a Horde camp. Stay away from it." },
 
-{ lv:"33–35", place:"Several places", title:"Finish the wand quest", quests:{1947:"Journey to the Marsh", 1952:"Mage's Wand"}, pickup:{1949:"Hidden Secrets", 1948:"Items of Power", 1950:"Get the Scoop", 1951:"Rituals of Power"}, map:[["dustwallow",[46,57,"Tabetha's hut"]],["needles",[78.3,75.7,"Magus Tirth (Mirage Raceway)"]],["tirisfal",[83,33,"Scarlet Monastery"]]],
-  done:"the <b>Icefury Wand</b> is equipped, or you've decided to skip it.",
+{ lv:"33–35", place:"Several places", title:"Start the wand quest", quests:{1947:"Journey to the Marsh", 1949:"Hidden Secrets", 1950:"Get the Scoop"}, pickup:{1948:"Items of Power", 1951:"Rituals of Power"}, map:[["dustwallow",[46,57,"Tabetha's hut"]],["needles",[78.3,75.7,"Magus Tirth (Mirage Raceway)"]]],
+  done:"<b>Items of Power</b> and <b>Rituals of Power</b> are in your quest log, or you've decided to skip the wand quest.",
   todo:[
     "Take <b>Journey to the Marsh</b> to <b>Tabetha</b>, whose hut is in the middle of Dustwallow Marsh (fly to Theramore, follow the road south and cut east into the marsh: the east side has stronger enemies). She gives <b>Hidden Secrets</b> and <b>Items of Power</b>.",
-    "<b>Hidden Secrets</b>: talk to <b>Magus Tirth</b> at the Mirage Raceway in Thousand Needles. <b>Get the Scoop</b>: cross the racetrack to the tower, type <kbd>/target \"Plucky\" Johnson</kbd> to target the little grey chicken, type <kbd>/beckon</kbd>, then talk to him and go back to Tirth.",
-    "<b>Rituals of Power</b> (from Tirth): the book is in the <b>Scarlet Monastery Library</b> (a dungeon, so you need a group). At the start of the long hall before Arcanist Doan, it sticks out of a bookshelf on your left.",
-    "<b>Items of Power</b>: a <b>Jade</b> (auction house) and the <b>Bolt Charged Bramble</b> from Arathi (see the Arathi step). Hand everything to Tabetha, take <b>Mage's Wand</b>, wait for her ritual, and pick the <b>Icefury Wand</b>."
+    "<b>Hidden Secrets</b>: talk to <b>Magus Tirth</b> at the Mirage Raceway in Thousand Needles. <b>Get the Scoop</b>: cross the racetrack to the tower, type <kbd>/target \"Plucky\" Johnson</kbd> to target the little grey chicken, type <kbd>/beckon</kbd>, then talk to him and go back to Tirth. He gives <b>Rituals of Power</b>.",
+    "<b>Rituals of Power</b>: the book is in the <b>Scarlet Monastery Library</b>, a dungeon you can do a little later (see the Scarlet Monastery step).",
+    "<b>Items of Power</b>: buy a <b>Jade</b> at the auction house and get the <b>Bolt Charged Bramble</b> in Arathi (see the Arathi step). Keep both: you finish the quest around level 39."
   ],
-  tip:"This quest sends you around the world. It's optional. If it feels like too much, skip it." },
+  tip:"This quest sends you around the world. Journey to the Marsh and Hidden Secrets show as level 38 in your log, but they're only conversations; the last part, Mage's Wand, is a level 40 quest you finish later. It's optional. If it feels like too much, skip it." },
 
-{ lv:"34", place:"Ironforge (teleport)", title:"Level 34: Mage Armor", pickup:{1953:"Return to the Marsh"}, map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]], learn:["magearmor"],
+{ lv:"34", place:"Ironforge (teleport)", title:"Level 34: Mage Armor", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"]]], learn:["magearmor"],
   done:"Mage Armor is on your right bar.",
   todo:[
-    "Learn <b>Mage Armor</b> and new ranks at the trainer. Keep Ice Armor on while questing; swap to Mage Armor for long dungeon fights.",
-    "Optional, from level 35: the trainer offers <b>Return to the Marsh</b>, a hard chain from Tabetha (an elite demon and an Uldaman boss) that ends with the <b>Celestial Orb</b>. Do it with friends or later."
+    "Learn <b>Mage Armor</b> and new ranks at the trainer. Keep Ice Armor on while questing; swap to Mage Armor for long dungeon fights."
   ] },
 
 { lv:"35–37", place:"Booty Bay, Stranglethorn", title:"Stranglethorn: Booty Bay", quests:{605:"Singing Blue Shards"}, pickup:{595:"The Bloodsail Buccaneers"}, map:[["stranglethorn",[27,77,"Booty Bay"],[38,3.5,"Rebel Camp"],[35.6,10.6,"Nesingwary's Expedition"]]],
@@ -556,6 +555,16 @@ const STEPS = [
     "Cast it and put the <b>Mana Jade</b> on <kbd>Shift</kbd> + <kbd>5</kbd> in place of the Mana Agate.",
     "Use your Hearthstone to get straight back to Farholde Keep. Start saving gold: your mount costs a lot at level 40."
   ] },
+
+{ lv:"39–40", place:"Dustwallow Marsh", title:"Finish the wand quest", quests:{1948:"Items of Power", 1951:"Rituals of Power", 1952:"Mage's Wand"}, pickup:{1953:"Return to the Marsh"}, map:[["dustwallow",[46,57,"Tabetha's hut"],[66.5,49,"Theramore (flight path)"]]],
+  done:"the <b>Icefury Wand</b> is equipped, or you've decided to skip the wand quest.",
+  todo:[
+    "You need the <b>Rituals of Power</b> book from the Scarlet Monastery Library, a <b>Jade</b> and the <b>Bolt Charged Bramble</b>.",
+    "Fly to Theramore and go to <b>Tabetha</b>'s hut in the middle of Dustwallow Marsh. Hand in <b>Items of Power</b> and <b>Rituals of Power</b>.",
+    "Take <b>Mage's Wand</b>, wait for her ritual to finish, talk to her again and pick the <b>Icefury Wand</b>. Put its <b>Shoot</b> on the same key as your old wand.",
+    "Optional: Tabetha also offers <b>Return to the Marsh</b>, a hard chain (an elite demon and an Uldaman boss) that ends with the <b>Celestial Orb</b>. Do it with friends or later."
+  ],
+  tip:"Mage's Wand is a level 40 quest: Tabetha's hut is safe, but the east side of the marsh has stronger enemies. If you skipped the earlier parts, skip this step too." },
 
 { lv:"40", place:"Trainer + Dun Morogh", title:"Level 40: your mount!", map:[["dunmorogh",[49.4,48.4,"Steelgrill's Depot (mount vendor)"]]], learn:["mount","frostfire","icebarrier","water5"],
   done:"you're riding your mechanostrider, Ice Barrier is on <kbd>Shift</kbd> + <kbd>4</kbd> and your new water is on <kbd>Alt</kbd> + <kbd>1</kbd>.",
