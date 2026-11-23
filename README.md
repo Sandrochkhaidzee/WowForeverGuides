@@ -6,6 +6,8 @@ Step-by-step beginner guides for WoW: Forever, styled like the in-game UI.
 |---|---|---|---|
 | Gnome Mage | [Guide](Mage%20Gnome/Gnome-Mage-WoW-Guide.html) | [Professions](professions.html?c=gnome-mage) | [Addons](addons.html?c=gnome-mage) |
 | Night Elf Rogue | [Guide](Rogue%20Night%20Elf/NightElf-Rogue-WoW-Guide.html) | [Professions](professions.html?c=nightelf-rogue) | [Addons](addons.html?c=nightelf-rogue) |
+| Night Elf Druid | [Guide](Druid%20Night%20Elf/NightElf-Druid-WoW-Guide.html) | [Professions](professions.html?c=nightelf-druid) | [Addons](addons.html?c=nightelf-druid) |
+| Human Paladin | [Guide](Paladin%20Human/Human-Paladin-WoW-Guide.html) | [Professions](professions.html?c=human-paladin) | [Addons](addons.html?c=human-paladin) |
 
 `index.html` at the root is the landing page.
 
@@ -34,7 +36,7 @@ Step-by-step beginner guides for WoW: Forever, styled like the in-game UI.
   "is this better?" example, and how to compare items in game.
 - **How to Play** and **Profession Basics** are picture cards with a "jump to" row, an enemy level-colour scale,
   the class combo as real ability icons, and a skill-up chance bar for recipe colours.
-- One shared **Professions** page (Tailoring, Enchanting, Leatherworking, Skinning, with a Skinning route per race) and one shared **Addons** page (tips for each class, and a Dungeons list).
+- One shared **Professions** page (Tailoring, Enchanting, Leatherworking, Skinning, Herbalism and Alchemy, with Skinning and Herbalism routes per race, and a "Best for your character" box when a guide links to it) and one shared **Addons** page (tips for each class, and a Dungeons list).
 - **Help button (?)** on every page: how the page works, keyboard keys, and answers for when you're stuck.
 - **First-visit welcome and a short guided tour** that points at each part of the page.
 - **Settings (gear button)**: bigger text, an easy-read font, and calm or full animations.
@@ -125,7 +127,7 @@ After a game patch, or after adding a class, run:
 python tools/extract-talents.py "E:/World of Warcraft/_forever_"
 ```
 
-It writes the tree files, the talent icons and the tree backgrounds. The build itself (which talent
+Add `--class=Druid` (or another class) to write only that class's file. It writes the tree files, the talent icons and the tree backgrounds. The build itself (which talent
 at which level) stays in each character's `TALENTS` list in `data/guide.js`; talent names there
 must match the game's.
 
@@ -145,7 +147,14 @@ python tools/get-maps.py "E:/World of Warcraft/_forever_"
 
 Numeric ids (e.g. `10` = Duskwood) are copied from Wowhead's classic map server. A word id (e.g.
 `"hyjal"`) is a map only the game has; it's read from your install. A map that isn't saved yet loads
-from Wowhead instead. Riverglades has no map yet (`id: null`).
+from Wowhead instead.
+
+WoW: Forever redrew a few maps, and these are read from the game (with every explored area drawn in)
+instead of from Wowhead: **Stormwind** (it now shows the harbor), **Redridge Mountains** (moved to make
+room for the Riverglades), **Eastern Plaguelands**, and the new **Riverglades** (`16591`). They're listed
+in `FOREVER_MAPS` in `tools/get-maps.py`. Their coordinates differ from Classic's (Stormwind's SI:7 is at
+78.3, 70.7 in Forever, 75.8, 59.8 in Classic), so take pin coordinates for these zones from the game or
+from QuestieDB (`node tools/build-quest-data.js --show <quest id>`), never from a Classic site.
 
 ## Gear tab
 

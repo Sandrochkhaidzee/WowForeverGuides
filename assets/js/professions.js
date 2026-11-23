@@ -45,7 +45,16 @@ const TAGS = {
 
 /* ---------- turning the route data into plain instructions ---------- */
 
-const NAME = { tailoring: "Tailoring", enchanting: "Enchanting", leatherworking: "Leatherworking", skinning: "Skinning" };
+const NAME = { tailoring: "Tailoring", enchanting: "Enchanting", leatherworking: "Leatherworking", skinning: "Skinning",
+  herbalism: "Herbalism", alchemy: "Alchemy" };
+// gathering routes: one card per zone instead of a recipe
+const GATHER = {
+  skinning: { title: "Skin beasts in ", kill: true,
+    how: "After you loot a dead beast, <b>right-click it again</b> to skin it. You need a Skinning Knife in your bags." },
+  herbalism: { title: "Pick herbs in ", kill: false,
+    how: "Turn on <b>Find Herbs</b> (spellbook, <kbd>P</kbd>) so herbs show as yellow dots on your mini-map, walk to one and click it. Druids can stay in Travel Form." }
+};
+const HERBS = /^(Peacebloom|Silverleaf|Earthroot|Mageroyal|Briarthorn|Stranglekelp|Bruiseweed|Wild Steelbloom|Kingsblood|Liferoot|Fadeleaf|Goldthorn|Khadgar's Whisker|Wintersbite|Firebloom|Purple Lotus|Arthas' Tears|Sungrass|Blindweed|Gromsblood|Golden Sansam|Dreamfoil|Mountain Silversage|Plaguebloom|Icecap)$/;
 const RANK = { 75: ["Journeyman", 10], 150: ["Expert", 20], 225: ["Artisan", 35] };
 
 // where a beginner gets each material
@@ -54,6 +63,10 @@ function source(m) {
   if (/^Cured /.test(m)) return "you make these yourself: it's a recipe from your trainer";
   if (/^Fine Leather Belt/.test(m)) return "you made these in an earlier step";
   if (/Refined Deeprock Salt/.test(m)) return "auction house";
+  if (/^(Empty|Leaded|Crystal) Vial$/.test(m)) return "buy from an Alchemy Supplies or Trade Supplies vendor";
+  if (HERBS.test(m)) return "from Herbalism, or the auction house";
+  if (/^Murloc Eye$/.test(m)) return "drops from murlocs on the Westfall coast, or the auction house";
+  if (/^Iron Bar$|^Black Vitriol$/.test(m)) return "from Mining, or the auction house";
   if (/Cloth$|^Runecloth$/.test(m)) return "drops from humanoid enemies, or the auction house";
   if (/Thread|Dye|Salt|Bleach|Simple Wood|Crystal Vial|Mote of Magic/.test(m)) return "buy from a Trade Supplies vendor in any city";
   if (/Leather|Hide|Scale|Scraps/.test(m)) return "from Skinning, or the auction house";
@@ -105,6 +118,8 @@ function card(prof, i) {
         "Talk to the trainer and learn <b>" + name + "</b>.",
         prof === "skinning"
           ? "Buy a <b>Skinning Knife</b> from a General Goods or Leatherworking Supplies vendor. Keep it in your bags."
+          : prof === "herbalism"
+          ? "No tool needed. Open your spellbook (<kbd>P</kbd>) and click <b>Find Herbs</b>: herbs now show as yellow dots on your mini-map."
           : "Open your spellbook (<kbd>P</kbd>) and drag the " + name + " icon to your action bar, so it's easy to open.",
         "Press <b>Done, next</b> to see your first job."
       ],
@@ -116,20 +131,24 @@ function card(prof, i) {
     : r.t === "horde" ? '<span class="badge horde">Horde only</span>'
     : r.t === "alliance" ? '<span class="badge alliance">Alliance only</span>'
     : r.t === "alt" ? '<span class="badge alt">other option</span>'
-    : r.t === "vendor" ? '<span class="badge vendor">recipe from a vendor</span>' : "";
+    : r.t === "vendor" ? '<span class="badge vendor">recipe from a vendor</span>'
+    : r.t === "quest" ? '<span class="badge vendor">recipe from a quest</span>' : "";
   const meta = "Skill " + esc(r.s) + tag;
 
-  if (prof === "skinning") {
+  if (GATHER[prof]) {
+    const G = GATHER[prof];
     const todo = [];
     if (r.t === "horde") todo.push("<b>Horde players only.</b> If you're Alliance, skip this: press <b>Done, next</b>.");
     if (r.t === "alliance") todo.push("<b>Alliance players only.</b> If you're Horde, skip this: press <b>Done, next</b>.");
     if (r.race) todo.push("This step is for the <b>" + esc(r.race) + "</b> route. Playing another race? Skip it: press <b>Done, next</b>.");
     if (r.t === "alt") todo.push("This is <b>another place</b> for about the same skill range as the step before. You only need one. If you already did that one, press <b>Done, next</b>.");
     todo.push("Go to <b>" + esc(r.c) + "</b>" + (r.w ? ": " + esc(r.w) : "") + ".");
-    todo.push("Kill <b>" + esc(r.e) + "</b>. They're level " + esc(r.n) + ".");
-    todo.push("After you loot a dead beast, <b>right-click it again</b> to skin it. You need a Skinning Knife in your bags.");
+    todo.push(G.kill
+      ? "Kill <b>" + esc(r.e) + "</b>. They're level " + esc(r.n) + "."
+      : "Pick <b>" + esc(r.e) + "</b>. This fits characters of about level " + esc(r.n) + ", so you can do it while questing there.");
+    todo.push(G.how);
     todo.push("Keep going until your skill shows <b>" + skillEnd(r) + "</b>, then press <b>Done, next</b>.");
-    return { meta, title: "Skin beasts in " + esc(r.c), todo, tip: r.note ? esc(r.note) : "" };
+    return { meta, title: G.title + esc(r.c), todo, tip: r.note ? esc(r.note) : "" };
   }
 
   if (/^Disenchant/.test(r.c)) {
@@ -148,7 +167,9 @@ function card(prof, i) {
   // a normal crafting step
   const firstTime = P.steps.findIndex(x => x.c === r.c) === i;
   const todo = [];
-  if (r.t === "vendor" && firstTime) {
+  if (r.how && firstTime) {
+    todo.push(r.how);
+  } else if (r.t === "vendor" && firstTime) {
     todo.push("First buy the recipe from <b>" + esc(r.w) + "</b>. Right-click it in your bags to learn it.");
   } else if (r.t !== "known" && firstTime) {
     todo.push("Learn the recipe <b>" + esc(r.c) + "</b> from your " + name + " trainer.");
@@ -278,6 +299,22 @@ document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", 
 
 WF.backLink();
 Object.keys(PROFS).forEach(build);
+
+/* the best pair for the character whose guide linked here (?c=), at the top of Basics, and a ★ on its tabs */
+(function forChar() {
+  const id = document.body.dataset.character, rec = (PROF_PAGE.forChar || {})[id], who = WF.byId && WF.byId(id);
+  if (!rec || !who) return;
+  const body = document.querySelector("#panel-overview .frame-body");
+  if (!body) return;
+  const box = document.createElement("div");
+  box.className = "tip forchar";
+  box.innerHTML = "<b>Best for your " + esc(who.name) + ": " + esc(rec.pair) + ".</b> " + esc(rec.why) +
+    '<span class="btns">' + rec.go.filter((p) => PROFS[p]).map((p) =>
+      '<button class="wowbtn small" data-go="' + p + '">' + esc(NAME[p]) + " guide ›</button>").join("") + "</span>";
+  body.prepend(box);
+  box.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => { showTab(b.dataset.go); window.scrollTo(0, 0); }));
+  rec.go.forEach((p) => { const t = document.querySelector('.tabs button[data-tab="' + p + '"]'); if (t) t.textContent = "★ " + t.textContent; });
+})();
 let startTab = "overview";
 try { startTab = localStorage.getItem(KEY + ".tab") || "overview"; } catch (e) {}
 showTab(document.getElementById("panel-" + startTab) ? startTab : "overview");

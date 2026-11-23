@@ -306,7 +306,7 @@ const STEPS = [
   ],
   tip:"Riposte only lights up right after you parry an attack. When it lights up, press it." },
 
-{ lv:"20", place:"Stormwind and Redridge", title:"Thieves' Tools for Pick Lock", quests:{2281:"Redridge Rendezvous"}, pickup:{2282:"Alther's Mill"}, map:[["darkshore",[32.4,43.8,"Auberdine docks"]],["stormwind",[75.8,59.8,"Old Town: Renzik the Shiv and SI:7"],[66.3,62.1,"Flight master"]],["redridge",[30.6,59.4,"Lakeshire (Lucius on the pier)"]]],
+{ lv:"20", place:"Stormwind and Redridge", title:"Thieves' Tools for Pick Lock", quests:{2281:"Redridge Rendezvous"}, pickup:{2282:"Alther's Mill"}, map:[["darkshore",[32.4,43.8,"Auberdine docks"]],["stormwind",[78.3,70.7,"Old Town: Renzik the Shiv and SI:7"],[71.3,72.2,"Flight master"]],["redridge",[23,52,"Lakeshire (Lucius on the pier)"]]],
   done:"<b>Thieves' Tools</b> are in your bags and your Pick Lock skill is at least 80.",
   todo:[
     "Go to <b>Stormwind</b>. From Auberdine, take the ship to Stormwind (new in WoW Forever). If you can't find it, take the boat to Menethil Harbor and travel through Ironforge and the Deeprun Tram. Unlock the Stormwind flight path.",
@@ -316,7 +316,7 @@ const STEPS = [
   ],
   tip:"The poisons quest needs Pick Lock 75, so do this first. Your Pick Lock skill can go up to 5 times your level. Now open the lockboxes you've been saving." },
 
-{ lv:"20", place:"Stormwind and Westfall", title:"Rogue quest: poisons", quests:{2360:"Mathias and the Defias", 2359:"Klaven's Tower"}, map:[["stormwind",[75.8,59.8,"Master Mathias Shaw (SI:7, Old Town)"]],["westfall",[56.4,47.5,"Sentinel Hill (inn and flight path)"]]], learn:["poisons","ipois1","opois1"],
+{ lv:"20", place:"Stormwind and Westfall", title:"Rogue quest: poisons", quests:{2360:"Mathias and the Defias", 2359:"Klaven's Tower"}, map:[["stormwind",[78.3,70.7,"Master Mathias Shaw (SI:7, Old Town)"]],["westfall",[56.4,47.5,"Sentinel Hill (inn and flight path)"]]], learn:["poisons","ipois1","opois1"],
   done:"you've learned Poisons, made Instant Poison, and both weapons have poison on them.",
   todo:[
     "In <b>Old Town</b>, take <b>Mathias and the Defias</b> from <b>Master Mathias Shaw</b> at SI:7. Go to <b>Sentinel Hill</b> in Westfall, unlock the flight path, and make the inn your home for now.",
@@ -389,7 +389,7 @@ const STEPS = [
   ],
   tip:"Pick Lock practice: once your skill is 110, the murloc camps north-east of Menethil Harbor have <b>Battered Footlockers</b> you can open." },
 
-{ lv:"28", place:"Ironforge, Stormwind or Darnassus", title:"Level 28: stronger poison", map:[["stormwind",[75.8,59.8,"SI:7 (rogue trainers)"]]], learn:["ipois2"],
+{ lv:"28", place:"Ironforge, Stormwind or Darnassus", title:"Level 28: stronger poison", map:[["stormwind",[78.3,70.7,"SI:7 (rogue trainers)"]]], learn:["ipois2"],
   done:"Instant Poison II is on your main hand.",
   todo:[
     "Learn <b>Instant Poison II</b> and new ranks. From Menethil Harbor, the closest trainers are in <b>Ironforge</b> (the Forlorn Cavern): fly there. Stormwind's are at SI:7 in Old Town.",
@@ -408,7 +408,7 @@ const STEPS = [
   ],
   tip:"Worgen walk in pairs. They're humanoids, so Sap works on them: Sap one, kill the other, then fight the one that wakes up." },
 
-{ lv:"30", place:"Stormwind trainer", title:"Level 30: Kidney Shot and Deadly Poison", map:[["stormwind",[75.8,59.8,"SI:7 (rogue trainers, Old Town)"]]], learn:["kidney","opois2","disarmtrap"],
+{ lv:"30", place:"Stormwind trainer", title:"Level 30: Kidney Shot and Deadly Poison", map:[["stormwind",[78.3,70.7,"SI:7 (rogue trainers, Old Town)"]]], learn:["kidney","opois2","disarmtrap"],
   done:"Kidney Shot is on <kbd>Shift</kbd> + <kbd>4</kbd> and Deadly Poison is on your off hand.",
   todo:[
     "Fly to Stormwind and visit the rogue trainers at <b>SI:7</b> in Old Town. Learn <b>Kidney Shot</b>, <b>Deadly Poison</b> and <b>Disarm Trap</b>.",
@@ -434,7 +434,7 @@ const STEPS = [
   ],
   tip:"The Syndicate are humanoids: Pick Pocket each one from Stealth before you attack. First Aid stuck at 150? <b>Deneb Walker</b> in Stromgarde sells the <b>Expert First Aid</b> book that lets you go higher." },
 
-{ lv:"32", place:"Ironforge (fly from Refuge Pointe)", title:"Level 32: new ranks", map:[["stormwind",[75.8,59.8,"SI:7 (rogue trainers)"]]],
+{ lv:"32", place:"Ironforge (fly from Refuge Pointe)", title:"Level 32: new ranks", map:[["stormwind",[78.3,70.7,"SI:7 (rogue trainers)"]]],
   done:"you've learned every new rank your trainer offers.",
   todo:[
     "Fly to the nearest rogue trainer (from Refuge Pointe, Ironforge is closest) and learn every new rank. New ranks replace the old ones on your bars by themselves.",
@@ -489,7 +489,7 @@ const STEPS = [
   ],
   tip:"Inside, stay behind the tank and hit the same enemy. Feint when an enemy turns to you." },
 
-{ lv:"36", place:"Nearest rogue trainer", title:"Level 36: Instant Poison III", map:[["stormwind",[75.8,59.8,"SI:7 (rogue trainers)"]]], learn:["ipois3"],
+{ lv:"36", place:"Nearest rogue trainer", title:"Level 36: Instant Poison III", map:[["stormwind",[78.3,70.7,"SI:7 (rogue trainers)"]]], learn:["ipois3"],
   done:"Instant Poison III is on your main hand.",
   todo:[
     "Fly to a rogue trainer and learn new ranks and <b>Instant Poison III</b>.",
@@ -498,7 +498,7 @@ const STEPS = [
   ] },
 
 /* ---------- 37–44: Riverglades ---------- */
-{ chapter:"Riverglades", lv:"37", place:"Redridge → Riverglades", title:"Travel to the Riverglades", map:[["redridge",[30.6,59.4,"Lakeshire flight path"]],["riverglades"]],
+{ chapter:"Riverglades", lv:"37", place:"Redridge → Riverglades", title:"Travel to the Riverglades", map:[["redridge",[25.5,59.4,"Lakeshire flight path"]],["riverglades",[66.7,81,"Farholde Keep"],[60.6,81.5,"Gretchen Mayberry (flight master)"]]],
   done:"Farholde Keep is your home (hover over your Hearthstone to check) and you've unlocked its flight path.",
   todo:[
     "Fly to <b>Lakeshire</b> in Redridge Mountains. No flight path there yet? Fly to Darkshire and ride north-east into Redridge.",
@@ -507,7 +507,7 @@ const STEPS = [
     "Unlock the flight path (Gretchen Mayberry) and make the inn your home. From now on you can fly straight between Farholde Keep and Lakeshire."
   ] },
 
-{ lv:"37–40", place:"Farholde Keep, Riverglades", title:"Riverglades: around Farholde Keep", map:[["riverglades"]],
+{ lv:"37–40", place:"Farholde Keep, Riverglades", title:"Riverglades: around Farholde Keep", map:[["riverglades",[66.7,81,"Demar Brant (Farholde Keep)"],[60.6,81.5,"Flight master"]]],
   done:"you're level 40.", stuck:"Fight the enemies near your current quests in the south of the zone until you are.",
   todo:[
     "Take every quest in Farholde Keep. Many come from <b>Demar Brant</b>, the knight in charge, and the people around him. There are over 70 Alliance quests in this zone.",
@@ -515,9 +515,9 @@ const STEPS = [
     "Start with the farms and lookouts close to the keep. The enemies get tougher the further north you go.",
     "The Horde quests here too (their town is Rog'mar). On PvP servers, keep your escape buttons ready. Move on at level 40."
   ],
-  tip:"There's no Riverglades map on this site yet. Use your in-game map (<kbd>M</kbd>): Farholde Keep is in the south of the zone." },
+  tip:"Farholde Keep is in the south-east corner of the zone. The Horde town, Rog'mar, is in the middle of the map: give it a wide berth." },
 
-{ lv:"38", place:"Nearest rogue trainer", title:"Level 38: Deadly Poison II", map:[["stormwind",[75.8,59.8,"SI:7 (rogue trainers)"]]], learn:["opois3"],
+{ lv:"38", place:"Nearest rogue trainer", title:"Level 38: Deadly Poison II", map:[["stormwind",[78.3,70.7,"SI:7 (rogue trainers)"]]], learn:["opois3"],
   done:"Deadly Poison II is on your off hand.",
   todo:[
     "Fly to a rogue trainer (Lakeshire flies to Stormwind) and learn new ranks and <b>Deadly Poison II</b>.",
@@ -534,7 +534,7 @@ const STEPS = [
   ],
   tip:"At level 40 you can also unlock a second talent setup (Dual Specialization) at a trainer in a big city." },
 
-{ lv:"40–43", place:"Riverglades (north)", title:"Riverglades: Sunnyglade and the north", quests:{94877:"Saving Sunnyglade"}, map:[["riverglades"]],
+{ lv:"40–43", place:"Riverglades (north)", title:"Riverglades: Sunnyglade and the north", quests:{94877:"Saving Sunnyglade"}, map:[["riverglades",[66.7,81,"Demar Brant (Farholde Keep)"],[45,53,"Sunnyglade"],[27,44,"Twilight's Shroud"],[77,49,"Powderfuse Port"]]],
   done:"you're level 43 and have handed in <b>Saving Sunnyglade</b>.", stuck:"Fight the enemies around Sunnyglade until you are.",
   todo:[
     "Fly back to Farholde Keep. Demar Brant's <b>Saving Sunnyglade</b> sends you north to the village of <b>Sunnyglade</b>.",
@@ -543,14 +543,14 @@ const STEPS = [
     "<b>Powderfuse Port</b>, a neutral goblin port on the east coast, has a bank, an auction house and the boat to Tanaris. Move on at about level 43."
   ] },
 
-{ lv:"42", place:"Stormwind (fly from Farholde Keep)", title:"Level 42: new ranks", map:[["stormwind",[75.8,59.8,"SI:7 (rogue trainers)"]]],
+{ lv:"42", place:"Stormwind (fly from Farholde Keep)", title:"Level 42: new ranks", map:[["stormwind",[78.3,70.7,"SI:7 (rogue trainers)"]]],
   done:"you've learned every new rank your trainer offers.",
   todo:[
     "Fly from Farholde Keep to Lakeshire, then on to Stormwind. Learn every new rank at SI:7.",
     "Hearth back to Farholde Keep and carry on."
   ] },
 
-{ lv:"41–45", place:"Riverglades", title:"Dungeon: Krol'dok Stronghold (optional)", map:[["riverglades"]],
+{ lv:"41–45", place:"Riverglades", title:"Dungeon: Krol'dok Stronghold (optional)", map:[["riverglades",[37.5,37.5,"Krol'dok Stronghold entrance"],[66.7,81,"Farholde Keep (the dungeon quests)"]]],
   done:"your group has beaten the last boss, or you've decided to skip it.",
   todo:[
     "A new 5-player dungeon for levels 40–45, with six bosses. The entrance is in the hills north of Sunnyglade (with TomTom: <kbd>/way 37.5 37.5</kbd>).",
@@ -578,7 +578,7 @@ const STEPS = [
   ],
   tip:"Bandits and pirates are humanoids: Pick Pocket them for extra gold. Bandits run away at low health, so finish them with Kidney Shot or Throw." },
 
-{ lv:"44", place:"Nearest rogue trainer", title:"Level 44: Instant Poison IV", map:[["darnassus",[37,22,"Rogue trainers (Cenarion Enclave)"]],["stormwind",[75.8,59.8,"SI:7 (rogue trainers)"]]], learn:["ipois4"],
+{ lv:"44", place:"Nearest rogue trainer", title:"Level 44: Instant Poison IV", map:[["darnassus",[37,22,"Rogue trainers (Cenarion Enclave)"]],["stormwind",[78.3,70.7,"SI:7 (rogue trainers)"]]], learn:["ipois4"],
   done:"Instant Poison IV is on your main hand.",
   todo:[
     "Learn new ranks and <b>Instant Poison IV</b>. While you're in Kalimdor, Darnassus is the closest trainer (fly to Rut'theran Village, then take the portal up).",
@@ -702,7 +702,7 @@ const STEPS = [
   ],
   tip:"Undead can't be Sapped or Pick Pocketed. Use Gouge or Blind on a second enemy instead." },
 
-{ lv:"56", place:"Ironforge (fly from Chillwind Camp)", title:"Level 56: new ranks", map:[["stormwind",[75.8,59.8,"SI:7 (rogue trainers)"]]], learn:["food7"],
+{ lv:"56", place:"Ironforge (fly from Chillwind Camp)", title:"Level 56: new ranks", map:[["stormwind",[78.3,70.7,"SI:7 (rogue trainers)"]]], learn:["food7"],
   done:"you've learned every new rank your trainer offers.",
   todo:[
     "Fly to Ironforge (the Forlorn Cavern) or Stormwind (SI:7) and learn every new rank.",
@@ -710,7 +710,7 @@ const STEPS = [
     "Fly back to Chillwind Camp and carry on."
   ] },
 
-{ lv:"56–58", place:"Light's Hope, Eastern Plaguelands", title:"Eastern Plaguelands", map:[["epl",[81.5,59,"Light's Hope Chapel"],[36,90,"Darrowshire"],[7,43,"Tirion Fordring's house"],[27,11,"Stratholme"]]],
+{ lv:"56–58", place:"Light's Hope, Eastern Plaguelands", title:"Eastern Plaguelands", map:[["epl",[71.7,49.6,"Light's Hope Chapel"],[30.7,77.3,"Darrowshire"],[5.2,35.6,"Tirion Fordring's house"],[22.6,6.1,"Stratholme"]]],
   done:"you're level 58.", stuck:"Fight the undead near Light's Hope Chapel until you are.",
   todo:[
     "Ride east into <b>Eastern Plaguelands</b> and follow the road to <b>Light's Hope Chapel</b> on the far east side. Unlock the flight path.",
@@ -719,7 +719,7 @@ const STEPS = [
     "In a small house by the river in the far west, <b>Tirion Fordring</b> starts the famous <b>Redemption</b> chain. Move on at level 58."
   ] },
 
-{ lv:"58", place:"Ironforge or Stormwind", title:"Level 58: new ranks", map:[["stormwind",[75.8,59.8,"SI:7 (rogue trainers)"]]],
+{ lv:"58", place:"Ironforge or Stormwind", title:"Level 58: new ranks", map:[["stormwind",[78.3,70.7,"SI:7 (rogue trainers)"]]],
   done:"you've learned every new rank your trainer offers.",
   todo:[
     "Fly from Light's Hope Chapel to Ironforge or Stormwind and learn every new rank.",
@@ -813,7 +813,7 @@ const ZONES = {
   felwood: { name: "Felwood", id: 361 },          burning: { name: "Burning Steppes", id: 46 },
   wpl: { name: "Western Plaguelands", id: 28 },   epl: { name: "Eastern Plaguelands", id: 139 },
   winterspring: { name: "Winterspring", id: 618 },
-  riverglades: { name: "Riverglades", id: null, none: "Riverglades is new in WoW: Forever, so there's no map of it here yet. Follow the directions above." },
+  riverglades: { name: "Riverglades", id: 16591 },
   hyjal: { name: "Mount Hyjal", id: "hyjal" }
 };
 
@@ -897,12 +897,12 @@ const SPELLBOOK = {
 const ICONS = {
   sinister:"spell_shadow_ritualofsacrifice", eviscerate:"ability_rogue_eviscerate", slicedice:"ability_rogue_slicedice",
   gouge:"ability_gouge", kick:"ability_kick", throw:"ability_throw", sprint:"ability_rogue_sprint",
-  evasion:"spell_shadow_shadowward", vanish:"ability_vanish", eluneslight:"spell_holy_elunesgrace",
+  evasion:"spell_shadow_shadowward", vanish:"ability_vanish", eluneslight:"spell_nature_moonglow",
   riposte:"ability_warrior_challange", stealth:"ability_stealth", cheapshot:"ability_cheapshot",
   backstab:"ability_backstab", garrote:"ability_rogue_garrote", kidney:"ability_rogue_kidneyshot",
   bladeflurry:"ability_warrior_punishingblow", coldblood:"spell_ice_lament", adrenaline:"spell_shadow_shadowworddominate", shadowmeld:"ability_ambush",
   feint:"ability_rogue_feint", exposearmor:"ability_warrior_riposte", blind:"spell_shadow_mindsteal",
-  shank:"ability_rogue_shadowstrikes", sap:"ability_sap",
+  shank:"ability_theblackarrow", sap:"ability_sap",
   ipois1:"ability_poisons", ipois2:"ability_poisons", ipois3:"ability_poisons", ipois4:"ability_poisons", ipois5:"ability_poisons", ipois6:"ability_poisons",
   opois1:"ability_poisonsting", opois2:"ability_rogue_dualweild", opois3:"ability_rogue_dualweild", opois4:"ability_rogue_dualweild", opois5:"ability_rogue_dualweild",
   poisons:"trade_brewpoison",
@@ -914,7 +914,7 @@ const ICONS = {
   bandage5:"inv_misc_bandage_01", bandage6:"inv_misc_bandage_02", bandage7:"inv_misc_bandage_19", bandage8:"inv_misc_bandage_20",
   bandage9:"inv_misc_bandage_11", bandage10:"inv_misc_bandage_12",
   food1:"inv_misc_food_19", food2:"inv_misc_food_24", food3:"inv_misc_food_22", food4:"inv_misc_food_20",
-  food5:"inv_misc_food_29", food6:"inv_misc_food_55", food7:"inv_misc_food_10"
+  food5:"inv_misc_food_25", food6:"inv_misc_food_23", food7:"inv_misc_food_10"
 };
 
 /* ---------- which key holds what, from which level ---------- */

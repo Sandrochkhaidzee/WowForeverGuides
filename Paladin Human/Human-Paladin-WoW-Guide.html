@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14110e">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<title>Human Paladin — beginner guide (WoW: Forever)</title>
+<link rel="stylesheet" href="../assets/css/core.css">
+<link rel="stylesheet" href="../assets/css/guide.css">
+<link rel="stylesheet" href="../assets/css/gear.css">
+<link rel="stylesheet" href="../assets/css/talents.css">
+<link rel="stylesheet" href="../assets/css/fx.css">
+</head>
+<body data-page="guide" data-character="human-paladin">
+
+<!-- ===== TOP FRAME ===== -->
+<header class="top">
+  <div class="top-inner">
+    <div class="portrait"><img src="../assets/icons/classicon_paladin.jpg" alt="" onerror="WF.iconErr(this)"><span>1</span></div>
+    <div class="titleplate">
+      <h1>Human Paladin</h1>
+      <p>Beginner's leveling guide · WoW: Forever</p>
+    </div>
+  </div>
+  <nav class="tabs">
+    <button type="button" class="on" data-tab="steps">Quest Guide</button>
+    <button type="button" data-tab="bars">Action Bars</button>
+    <button type="button" data-tab="talents">Talents</button>
+    <button type="button" data-tab="gear">Gear</button>
+    <button type="button" data-tab="basics">How to Play</button>
+    <button type="button" data-tab="words">Words</button>
+    <a class="tablink" href="../professions.html?c=human-paladin">Professions ›</a>
+    <a class="tablink" href="../addons.html?c=human-paladin">Addons ›</a>
+    <a class="tablink" href="../index.html">All Guides ⌂</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===== QUEST GUIDE ===== -->
+  <section class="panel on" id="panel-steps">
+    <div class="frame">
+      <div class="frame-title">Quest Guide</div>
+      <div class="frame-body">
+        <p class="lead">Do one step, then press <b>Next Step</b>. The guide remembers where you stopped. New to the game? Read <a href="#" data-goto="basics">How to Play</a> first.</p>
+
+        <div class="nav">
+          <button type="button" id="back" class="wowbtn">‹ Back</button>
+          <button type="button" id="next" class="wowbtn">Next Step</button>
+        </div>
+
+        <article class="questpaper" id="card">
+          <p class="meta" id="stepmeta"></p>
+          <h2 id="steptitle"></h2>
+          <h4>Objectives</h4>
+          <ol class="todo" id="steptodo"></ol>
+          <div class="donewhen" id="stepdone" hidden></div>
+          <div class="map-veil" id="mapveil" hidden></div>
+          <div class="mapbox" id="mapbox" hidden>
+            <div class="map-head">
+              <span class="map-title" id="maptitle"></span>
+              <div class="map-zones" id="mapzones"></div>
+              <button type="button" class="map-close" id="mapclose">Close (Esc)</button>
+            </div>
+            <div class="mapview" id="mapview" tabindex="0" aria-label="Zone map. Drag to move it, scroll or pinch to zoom.">
+              <img id="mapimg" alt="" draggable="false">
+              <svg class="map-route" id="maproute" aria-hidden="true"><polyline class="under"/><polyline class="over"/></svg>
+              <div class="map-layer" id="mappins"></div>
+              <div class="map-tip" id="maptip" hidden></div>
+              <div class="map-ctrls">
+                <button type="button" data-act="in" title="Zoom in" aria-label="Zoom in"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg></button>
+                <button type="button" data-act="out" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 8h10"/></svg></button>
+                <button type="button" data-act="fit" title="Show this step's places" aria-label="Show this step's places"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="5"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/><path d="M8 0v3M8 13v3M0 8h3M13 8h3"/></svg></button>
+                <button type="button" data-act="zone" title="Whole zone" aria-label="Whole zone"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M1 3l4.5-1.5 5 2L15 2v11l-4.5 1.5-5-2L1 14z"/><path d="M5.5 1.5v11M10.5 3.5v11"/></svg></button>
+                <button type="button" data-act="big" title="Big map (M)" aria-label="Big map"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg></button>
+              </div>
+              <div class="map-cursor" id="mapcursor"></div>
+              <div class="map-hint" id="maphint" hidden></div>
+              <p class="map-none" id="mapnone" hidden></p>
+            </div>
+            <div class="map-foot">
+              <ol class="map-list" id="maplist"></ol>
+              <label class="map-all"><input type="checkbox" id="mapall"> Show places from other steps</label>
+              <p class="map-help">Drag to move · scroll or pinch to zoom · <kbd>M</kbd> big map. Pins are approximate.</p>
+            </div>
+          </div>
+          <div class="stepbars" id="stepbars" hidden></div>
+          <div class="tip" id="steptip"></div>
+        </article>
+
+        <p class="keys">Arrow keys <kbd>←</kbd> <kbd>→</kbd> also work. Words with a dotted line, like <button type="button" class="word" data-word="talent">talent</button>, explain themselves when clicked. The <b>Action Bars</b> tab shows which buttons to have at each level.</p>
+
+        <details id="allsteps">
+          <summary>All steps (click to jump)</summary>
+          <ol id="steplist"></ol>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ACTION BARS ===== -->
+  <section class="panel" id="panel-bars">
+    <div class="frame">
+      <div class="frame-title">Action Bars</div>
+      <div class="frame-body">
+        <p>Where every spell should go, level by level. The main bar has your Seal, your attacks and your heals, on keys you reach without looking. Extra Seals, help for friends and the tanking buttons go on <kbd>Shift</kbd> + number. Blessings, auras and things you only use between fights go on the right bar, to click with the mouse. Hover over or tap a button to see what it does.</p>
+
+        <div class="levelpick">
+          <button type="button" class="wowbtn small" id="barsminus">−</button>
+          <label for="barslider">Level <b id="barslevel">1</b></label>
+          <input type="range" id="barslider" min="1" max="60" value="1">
+          <button type="button" class="wowbtn small" id="barsplus">+</button>
+        </div>
+
+        <div id="bars"></div>
+
+        <div class="changes">
+          <h4>What to change at this level</h4>
+          <ul id="barchanges"></ul>
+        </div>
+
+        <h3>How to set this up in game</h3>
+        <ol>
+          <li>Press <kbd>Esc</kbd> → <b>Interface</b> → <b>Action Bars</b>. Turn on the <b>Bottom Left Bar</b>, the <b>Bottom Right Bar</b> and the <b>Right Bar</b>.</li>
+          <li>Press <kbd>Esc</kbd> → <b>Key Bindings</b>. Find <b>Bottom Left Action Button 1</b> to <b>12</b> and set them to <kbd>Shift</kbd> + <kbd>1</kbd> … <kbd>Shift</kbd> + <kbd>=</kbd>. Then set <b>Bottom Right Action Button 1</b>, <b>2</b> and <b>3</b> to <kbd>Alt</kbd> + <kbd>1</kbd>, <kbd>Alt</kbd> + <kbd>2</kbd> and <kbd>Alt</kbd> + <kbd>3</kbd>.</li>
+          <li>Open your spellbook (<kbd>P</kbd>) and drag each spell to its place. Drinks, food and healing potions are items: drag them from your bags (<kbd>B</kbd>) instead.</li>
+          <li>Turn on <b>Lock Action Bars</b> in the same Action Bars menu so you can't drag spells off by accident.</li>
+          <li>Healing: while an enemy is your target, Holy Light and Flash of Light heal <b>you</b>. To heal a friend, click their name or portrait first.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW TO PLAY ===== -->
+  <section class="panel" id="panel-basics">
+    <div class="frame">
+      <div class="frame-title">How to Play</div>
+      <div class="frame-body">
+        <h3>Quests</h3>
+        <ul>
+          <li>A yellow <b class="yel">!</b> over someone's head means they have a quest for you. Click them and press Accept.</li>
+          <li>A yellow <b class="yel">?</b> means you can hand in a finished quest there.</li>
+          <li>Press <kbd>L</kbd> to see your quests. Each one says what to do and where.</li>
+          <li>Most of your XP comes from quests, so do every one you find.</li>
+        </ul>
+
+        <h3>Fighting</h3>
+        <ul>
+          <li>Click an enemy to target it and walk right up to it. Paladins fight up close with a big weapon: your character swings by itself while you stand next to the enemy.</li>
+          <li>Paladins are tough: you wear heavy armor and you can heal yourself. You won't kill fast, but you'll rarely die. Fight one or two enemies at a time.</li>
+          <li>Enemy level colours: <b class="c-grey">grey</b> gives no XP, <b class="c-green">green</b> is easy, <b class="c-yellow">yellow</b> is a fair fight, <b class="c-orange">orange</b> is hard and <b class="c-red">red</b> means run.</li>
+          <li>A golden dragon border on the portrait means <b>elite</b>. Don't fight those alone.</li>
+        </ul>
+
+        <h3>The one fight to learn</h3>
+        <ol>
+          <li>Before you set out: a <b>Blessing</b> on yourself (Might, or Wisdom if you drink a lot) and an <b>aura</b> on (Retribution Aura from 16). Both last until you change them or die; Blessings last an hour.</li>
+          <li>Before each fight: your <b>Seal</b> (<kbd>1</kbd>). Seal of Righteousness until 20, then Seal of Command.</li>
+          <li>Walk up and press <b>Judgement</b> (<kbd>2</kbd>) as soon as you're close enough.</li>
+          <li>Press <b>Holy Strike</b> (<kbd>3</kbd>) every time it's ready, and Judgement again every time it's ready. Against undead and demons, add <b>Exorcism</b> (<kbd>5</kbd>).</li>
+          <li>Enemy below 20% health? <b>Hammer of Wrath</b> (<kbd>7</kbd>, from 44). Enemy casting a spell? <b>Hammer of Justice</b> (<kbd>4</kbd>).</li>
+        </ol>
+        <p>In WoW: Forever, Judgement no longer uses up your Seal, so you only cast the Seal again when its 30 seconds run out.</p>
+
+        <h3>After every fight</h3>
+        <ul>
+          <li>Health low? Heal yourself with <b>Holy Light</b> (<kbd>-</kbd>). It's cheaper than eating: you get the mana back by drinking.</li>
+          <li>Mana low? Sit and drink (<kbd>Alt</kbd> + <kbd>1</kbd>). Buy drinks from innkeepers and food vendors. Don't move until the bar is full.</li>
+          <li>In trouble during a fight: <b>Divine Protection</b> or <b>Divine Shield</b> (<kbd>8</kbd>), then Holy Light. Last resort: <b>Lay on Hands</b> (<kbd>9</kbd>) heals you to full.</li>
+          <li>Learn <b>Cooking</b>: in WoW: Forever, cooked food gives you bonus XP for a while, and lets you build your own camp.</li>
+        </ul>
+
+        <h3>Getting stronger</h3>
+        <ul>
+          <li><b>Every 2 levels</b>, visit a paladin trainer and learn everything you can afford. Trainers: Northshire Abbey, Goldshire's inn, the <b>Cathedral of Light</b> in Stormwind and the <b>Mystic Ward</b> in Ironforge.</li>
+          <li><b>Every level from 10</b>, press <kbd>N</kbd> and spend a talent point. See the <a href="#" data-goto="talents">Talents</a> tab.</li>
+          <li>New spells go into your spellbook (<kbd>P</kbd>). The <a href="#" data-goto="bars">Action Bars</a> tab shows where to put them.</li>
+          <li>Short of gold? Skip new ranks of Seal of Fury, Righteous Fury, Concentration Aura, Seal of Justice and Holy Wrath. You don't use them while questing.</li>
+        </ul>
+
+        <h3>Gear: is this item better?</h3>
+        <p>The colour of an item's name tells you how good it is:</p>
+        <div class="qualities" role="list">
+          <span role="listitem" class="q-poor"><b>Grey</b> Poor: sell it</span>
+          <span role="listitem" class="q-common"><b>White</b> Common: basic</span>
+          <span role="listitem" class="q-uncommon"><b>Green</b> Uncommon: a good upgrade</span>
+          <span role="listitem" class="q-rare"><b>Blue</b> Rare: great, often from dungeons</span>
+          <span role="listitem" class="q-epic"><b>Purple</b> Epic: the best, from raids</span>
+        </div>
+        <div class="gearcompare">
+          <div class="itip q-common"><span class="itip-tag">You're wearing</span><img src="../assets/icons/inv_hammer_04.jpg" alt="" width="40" height="40" onerror="WF.iconErr(this)"><div><b class="iname">Battleworn Hammer</b><span>Two-Hand · Mace</span><span>Speed 2.90 · 3.6 damage per second</span></div></div>
+          <span class="gc-vs" aria-hidden="true">vs</span>
+          <div class="itip q-uncommon"><span class="itip-tag">You just found</span><img src="../assets/icons/inv_hammer_09.jpg" alt="" width="40" height="40" onerror="WF.iconErr(this)"><div><b class="iname">Heavy War Maul</b><span>Two-Hand · Mace</span><span>Speed 3.40 · 7.4 damage per second</span><span class="up">+4 Strength</span><span class="up">+3 Stamina</span></div></div>
+          <p class="gc-verdict">Better: much more damage per second, it's slower (great for Seal of Command), and it has <b>Strength</b>. Put it on.</p>
+        </div>
+        <ul>
+          <li><b>What you can wear:</b> <b>mail</b> armor from level 1 (cloth and leather too, but mail is better), and <b>plate</b> from level 40, after you learn it at your trainer. A shield only if you tank.</li>
+          <li><b>Stats to look for:</b> <b>Strength</b> first (more damage), then <b>Stamina</b> (more health). <b>Intellect</b> and <b>spell power</b> are good too: more mana, and Holy damage on all your spells. Skip Agility and Spirit-only items.</li>
+          <li><b>Name endings:</b> green items often end in a word that tells you their stats. <b>of the Bear</b> (Strength + Stamina), <b>of Strength</b> and <b>of the Tiger</b> (Strength + Agility) are great for you. <b>of the Eagle</b> (Stamina + Intellect) is fine too.</li>
+          <li><b>Weapons:</b> one big <b>two-handed</b> weapon (mace, sword, axe or polearm). Look at the <b>damage per second</b>: higher is better. From level 20, also look at <b>speed</b>: slower (3.0 or more) is better for Seal of Command.</li>
+          <li><b>New weapon type?</b> A weapon trainer must teach it first: Woo Ping in Stormwind (swords, polearms from 20), the weapon trainer in Ironforge (axes, maces). Two-handed maces you already know.</li>
+          <li><b>How to compare:</b> point at the new item and hold <kbd>Shift</kbd>. The game shows what you're wearing right next to it. Right-click an item in your bags to put it on.</li>
+          <li><b>Easy mode:</b> the <b>Pawn</b> addon (see <a href="../addons.html?c=human-paladin">Addons</a>) puts a green arrow on items that are an upgrade for you.</li>
+          <li><b>Quest rewards:</b> when you can pick one, take the one with Strength. If none fits, take the one that sells for the most.</li>
+        </ul>
+
+        <h3>Dungeons: heal or tank? (Dual Specialization)</h3>
+        <p>Groups always want healers and tanks, and a paladin can be both. At level 40 your trainer offers <b>Dual Talent Specialization</b>: a second set of talents you can switch to out of combat. Keep your first set as Retribution for questing, and make the second one:</p>
+        <ul>
+          <li><b>Holy (healer), best for beginners.</b> You stand at the back and keep the group alive. <b>Holy Light</b> for big hits, <b>Flash of Light</b> for small ones, <b>Holy Shock</b> (a talent) for instant heals. In WoW: Forever, Holy gets <b>Infusion of Light</b> (crits make your next Holy Light faster) and <b>Reverence</b> (you keep regaining mana while casting), and Humans' extra Spirit helps your mana. Wear Intellect and spell power, put Blessing of Wisdom on yourself, and Cleanse poisons and magic off friends.</li>
+          <li><b>Protection (tank).</b> You hold the enemies' attention with a one-handed weapon and a shield. Turn on <b>Righteous Fury</b>, use <b>Seal of Fury</b> (its Judgement is the paladin taunt, new in WoW: Forever), keep <b>Consecration</b> under the group of enemies, and save <b>Templar's Bulwark</b> (a talent: a big shield) for when you take a lot of damage. Protection gets stronger with spell power.</li>
+        </ul>
+        <p>Before level 40 you can still help a group: as Retribution you're damage, but your Flash of Light and Holy Light can save the healer or tank when things go wrong, and everyone gets one of your Blessings. Since a November 2026 hotfix, dungeon kills give 50% more XP, but no XP if someone in the group is 12+ levels higher than the enemies.</p>
+
+        <h3>Getting around</h3>
+        <ul>
+          <li>Talk to the innkeeper in each new town and choose "Make this inn your home". Your Hearthstone then brings you back there.</li>
+          <li>Talk to every flight master (the person with a gryphon) you pass, so you can fly there later.</li>
+          <li>Paladins have no speed boost. The <b>Pursuit of Justice</b> talent (level 21–22) makes you run 15% faster, and at <b>level 40</b> the paladin quest <b>The Tome of Nobility</b> gives you a free warhorse.</li>
+          <li>If you die, you appear as a ghost at a graveyard. Run back to your body and click "Resurrect".</li>
+          <li>Log out inside an inn to get bonus XP next time.</li>
+        </ul>
+
+        <h3>Addons</h3>
+        <p>Addons are free extras that improve the game's interface. You don't need any, but a few make leveling much easier. The <a href="../addons.html?c=human-paladin">Addons page</a> lists which ones to get (must-have, recommended, optional, and a separate list for dungeons) and how to install them.</p>
+        <p><b>Waypoint arrow:</b> with the <b>TomTom</b> addon, click a pin on any Quest Guide map and press <b>Copy /way</b>. In game, press <kbd>Enter</kbd>, paste with <kbd>Ctrl</kbd> + <kbd>V</kbd> and press <kbd>Enter</kbd> again. An arrow points the way. <b>/way reset all</b> clears it.</p>
+
+        <h3>Useful keys</h3>
+        <table class="keys-table">
+          <tr><td><kbd>L</kbd></td><td>Quest log</td><td><kbd>M</kbd></td><td>Map</td></tr>
+          <tr><td><kbd>P</kbd></td><td>Spellbook</td><td><kbd>N</kbd></td><td>Talents</td></tr>
+          <tr><td><kbd>C</kbd></td><td>Your character</td><td><kbd>B</kbd></td><td>Bags</td></tr>
+          <tr><td><kbd>X</kbd></td><td>Sit down</td><td><kbd>Y</kbd></td><td>Legacy (from about level 25)</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TALENTS ===== -->
+  <section class="panel" id="panel-talents">
+    <div class="frame">
+      <div class="frame-title">Talents</div>
+      <div class="frame-body">
+        <p>From level 10 you get one talent point each level. This is your talent window (<kbd>N</kbd> in game), one point at a time: the glowing talent is the one to click at this level. The first 31 points go into <b>Retribution</b>, then 12 into <b>Holy</b> and the last 8 into <b>Protection</b>. Like the Gear tab, it follows your place in the Quest Guide; use <b>Next</b>, the slider or the arrow keys to look ahead. In the game, click <b>Apply Changes</b> after placing the point.</p>
+        <div id="talents"></div>
+        <p class="hint">Made a mistake? Any paladin trainer in a big city can reset your talents for a little gold. From level 40 you can also learn a second talent setup (Dual Specialization) at the trainer: make it Holy to heal dungeons or Protection to tank them (see How to Play). With the <b>Talented</b> Legacy perk your points start at level 5 instead of 10: follow the same order, five levels earlier.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GEAR ===== -->
+  <section class="panel" id="panel-gear">
+    <div class="frame">
+      <div class="frame-title">Gear</div>
+      <div class="frame-body">
+        <p>Your character window (<kbd>C</kbd> in game), filled with the items this guide's quests give you. Like the Action Bars tab, it follows your place in the Quest Guide; move the level slider to look ahead or back. Your own window won't match exactly: dungeon drops, Blacksmithing, the auction house and lucky finds can beat these.</p>
+        <div id="gear"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WORDS ===== -->
+  <section class="panel" id="panel-words">
+    <div class="frame">
+      <div class="frame-title">Words Explained</div>
+      <div class="frame-body">
+        <dl class="glossary" id="glossary"></dl>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">Fan-made guide for World of Warcraft: Forever. Spell icons and maps © Blizzard Entertainment. Icons from the game files; zone maps from Wowhead and the game files.</p>
+</main>
+
+<div class="wordpop" id="wordpop" hidden></div>
+<div class="spelltip" id="spelltip" hidden></div>
+
+<script src="../assets/js/characters.js"></script>
+<script src="../data/words.js"></script>
+<script src="data/guide.js"></script>
+<script src="data/quests.js"></script>
+<script src="../assets/js/guide.js"></script>
+<script src="data/gear.js"></script>
+<script src="../assets/js/action-bars.js"></script>
+<script src="../assets/js/gear.js"></script>
+<script src="../data/talents/paladin.js"></script>
+<script src="../assets/js/talents.js"></script>
+<script src="../assets/js/site.js"></script>
+</body>
+</html>

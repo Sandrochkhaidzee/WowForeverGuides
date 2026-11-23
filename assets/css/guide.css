@@ -1011,6 +1011,10 @@ details.sync {
 .sync-out.good { color: #b8e890; }
 .sync-out.bad { color: #ff9c7a; }
 .sync-out b { color: var(--wow-yellow); }
+.sync-out ul { margin: 6px 0 0; padding-left: 20px; font-size: 15px; color: var(--text); }
+.sync-out li + li { margin-top: 4px; }
+.sync-out li .wowbtn { margin-left: 6px; vertical-align: middle; }
+.sync-what { margin: 10px 0 0; font-size: 14.5px; color: #b9a98a; }
 
 /* ---------- the step's quest log, on the parchment under the objectives ---------- */
 .questlog[hidden] { display: none; }
@@ -1052,6 +1056,11 @@ details.sync {
 .ql-done .ql-main b { color: #3d5a24; text-decoration: line-through; text-decoration-color: rgba(40, 70, 20, .5); }
 .ql-main em { font-style: normal; font-size: 13.5px; color: #523717; }
 .ql-role { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: #5e421a; border: 1px solid rgba(110, 75, 25, .35); border-radius: 3px; padding: 0 5px; }
+/* what the game said about this quest at the last import */
+.ql-game { font-size: 12px; font-weight: bold; border-radius: 3px; padding: 0 5px; color: #fff; }
+.ql-g-in { background: #3d6e22; }
+.ql-g-ready { background: #a06a00; }
+.ql-g-log { background: #5e4a2a; }
 .ql-text { flex-basis: 100%; font-size: 15.5px; color: #3b2a12; }
 .ql-guide { flex-basis: 100%; margin-top: 3px; padding-left: 8px; border-left: 2px solid rgba(160, 112, 16, .55); font-size: 15.5px; color: #2a1a08; }
 .ql-guide b { color: #000; }

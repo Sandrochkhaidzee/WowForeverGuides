@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14110e">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<title>Night Elf Druid — beginner guide (WoW: Forever)</title>
+<link rel="stylesheet" href="../assets/css/core.css">
+<link rel="stylesheet" href="../assets/css/guide.css">
+<link rel="stylesheet" href="../assets/css/gear.css">
+<link rel="stylesheet" href="../assets/css/talents.css">
+<link rel="stylesheet" href="../assets/css/fx.css">
+</head>
+<body data-page="guide" data-character="nightelf-druid">
+
+<!-- ===== TOP FRAME ===== -->
+<header class="top">
+  <div class="top-inner">
+    <div class="portrait"><img src="../assets/icons/classicon_druid.jpg" alt="" onerror="WF.iconErr(this)"><span>1</span></div>
+    <div class="titleplate">
+      <h1>Night Elf Druid</h1>
+      <p>Beginner's leveling guide · WoW: Forever</p>
+    </div>
+  </div>
+  <nav class="tabs">
+    <button type="button" class="on" data-tab="steps">Quest Guide</button>
+    <button type="button" data-tab="bars">Action Bars</button>
+    <button type="button" data-tab="talents">Talents</button>
+    <button type="button" data-tab="gear">Gear</button>
+    <button type="button" data-tab="basics">How to Play</button>
+    <button type="button" data-tab="words">Words</button>
+    <a class="tablink" href="../professions.html?c=nightelf-druid">Professions ›</a>
+    <a class="tablink" href="../addons.html?c=nightelf-druid">Addons ›</a>
+    <a class="tablink" href="../index.html">All Guides ⌂</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===== QUEST GUIDE ===== -->
+  <section class="panel on" id="panel-steps">
+    <div class="frame">
+      <div class="frame-title">Quest Guide</div>
+      <div class="frame-body">
+        <p class="lead">Do one step, then press <b>Next Step</b>. The guide remembers where you stopped. New to the game? Read <a href="#" data-goto="basics">How to Play</a> first.</p>
+
+        <div class="nav">
+          <button type="button" id="back" class="wowbtn">‹ Back</button>
+          <button type="button" id="next" class="wowbtn">Next Step</button>
+        </div>
+
+        <article class="questpaper" id="card">
+          <p class="meta" id="stepmeta"></p>
+          <h2 id="steptitle"></h2>
+          <h4>Objectives</h4>
+          <ol class="todo" id="steptodo"></ol>
+          <div class="donewhen" id="stepdone" hidden></div>
+          <div class="map-veil" id="mapveil" hidden></div>
+          <div class="mapbox" id="mapbox" hidden>
+            <div class="map-head">
+              <span class="map-title" id="maptitle"></span>
+              <div class="map-zones" id="mapzones"></div>
+              <button type="button" class="map-close" id="mapclose">Close (Esc)</button>
+            </div>
+            <div class="mapview" id="mapview" tabindex="0" aria-label="Zone map. Drag to move it, scroll or pinch to zoom.">
+              <img id="mapimg" alt="" draggable="false">
+              <svg class="map-route" id="maproute" aria-hidden="true"><polyline class="under"/><polyline class="over"/></svg>
+              <div class="map-layer" id="mappins"></div>
+              <div class="map-tip" id="maptip" hidden></div>
+              <div class="map-ctrls">
+                <button type="button" data-act="in" title="Zoom in" aria-label="Zoom in"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg></button>
+                <button type="button" data-act="out" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 8h10"/></svg></button>
+                <button type="button" data-act="fit" title="Show this step's places" aria-label="Show this step's places"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="5"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/><path d="M8 0v3M8 13v3M0 8h3M13 8h3"/></svg></button>
+                <button type="button" data-act="zone" title="Whole zone" aria-label="Whole zone"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M1 3l4.5-1.5 5 2L15 2v11l-4.5 1.5-5-2L1 14z"/><path d="M5.5 1.5v11M10.5 3.5v11"/></svg></button>
+                <button type="button" data-act="big" title="Big map (M)" aria-label="Big map"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg></button>
+              </div>
+              <div class="map-cursor" id="mapcursor"></div>
+              <div class="map-hint" id="maphint" hidden></div>
+              <p class="map-none" id="mapnone" hidden></p>
+            </div>
+            <div class="map-foot">
+              <ol class="map-list" id="maplist"></ol>
+              <label class="map-all"><input type="checkbox" id="mapall"> Show places from other steps</label>
+              <p class="map-help">Drag to move · scroll or pinch to zoom · <kbd>M</kbd> big map. Pins are approximate.</p>
+            </div>
+          </div>
+          <div class="stepbars" id="stepbars" hidden></div>
+          <div class="tip" id="steptip"></div>
+        </article>
+
+        <p class="keys">Arrow keys <kbd>←</kbd> <kbd>→</kbd> also work. Words with a dotted line, like <button type="button" class="word" data-word="talent">talent</button>, explain themselves when clicked. The <b>Action Bars</b> tab shows which buttons to have at each level.</p>
+
+        <details id="allsteps">
+          <summary>All steps (click to jump)</summary>
+          <ol id="steplist"></ol>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ACTION BARS ===== -->
+  <section class="panel" id="panel-bars">
+    <div class="frame">
+      <div class="frame-title">Action Bars</div>
+      <div class="frame-body">
+        <p>Where every spell should go, level by level. A druid has <b>three main bars on the same keys</b>: when you turn into a cat or a bear, the game swaps keys <kbd>1</kbd> to <kbd>=</kbd> to that form's set by itself, and swaps them back when you leave the form. So key <kbd>1</kbd> is Wrath as a night elf, Claw as a cat and Maul as a bear. Your forms, and the buttons you need in every form, go on <kbd>Shift</kbd> + number: that bar never changes. Things you only use between fights go on the right bar, to click with the mouse. Hover over or tap a button to see what it does.</p>
+
+        <div class="levelpick">
+          <button type="button" class="wowbtn small" id="barsminus">−</button>
+          <label for="barslider">Level <b id="barslevel">1</b></label>
+          <input type="range" id="barslider" min="1" max="60" value="1">
+          <button type="button" class="wowbtn small" id="barsplus">+</button>
+        </div>
+
+        <div id="bars"></div>
+
+        <div class="changes">
+          <h4>What to change at this level</h4>
+          <ul id="barchanges"></ul>
+        </div>
+
+        <h3>How to set this up in game</h3>
+        <ol>
+          <li>Press <kbd>Esc</kbd> → <b>Interface</b> → <b>Action Bars</b>. Turn on the <b>Bottom Left Bar</b>, the <b>Bottom Right Bar</b> and the <b>Right Bar</b>.</li>
+          <li>Press <kbd>Esc</kbd> → <b>Key Bindings</b>. Find <b>Bottom Left Action Button 1</b> to <b>12</b> and set them to <kbd>Shift</kbd> + <kbd>1</kbd> … <kbd>Shift</kbd> + <kbd>=</kbd>. Then set <b>Bottom Right Action Button 1</b> and <b>2</b> to <kbd>Alt</kbd> + <kbd>1</kbd> and <kbd>Alt</kbd> + <kbd>2</kbd>.</li>
+          <li>Open your spellbook (<kbd>P</kbd>) and drag each spell to its place. Water and food are items: drag them from your bags (<kbd>B</kbd>) instead.</li>
+          <li><b>The form bars:</b> turn into a bear (<kbd>Shift</kbd> + <kbd>1</kbd>). Your main bar is now empty: it's the bear bar. Drag the bear spells onto it, as the <b>Main bar in Bear Form</b> above shows. Do the same in Cat Form from level 20. The game remembers each bar, so you only do this once (and again when you learn a new spell).</li>
+          <li>To leave a form, press its button again (or click its icon at the top left of your bars). You also leave it by casting a heal or another night elf spell from your normal bar after switching back.</li>
+          <li>Your mana is hidden in Cat and Bear Form. To always see it: <kbd>Esc</kbd> → <b>Options</b> → <b>Combat</b> → turn on <b>Personal Resource Display</b>.</li>
+          <li>Turn on <b>Lock Action Bars</b> in the Action Bars menu so you can't drag spells off by accident.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW TO PLAY ===== -->
+  <section class="panel" id="panel-basics">
+    <div class="frame">
+      <div class="frame-title">How to Play</div>
+      <div class="frame-body">
+        <h3>Quests</h3>
+        <ul>
+          <li>A yellow <b class="yel">!</b> over someone's head means they have a quest for you. Click them and press Accept.</li>
+          <li>A yellow <b class="yel">?</b> means you can hand in a finished quest there.</li>
+          <li>Press <kbd>L</kbd> to see your quests. Each one says what to do and where.</li>
+          <li>Most of your XP comes from quests, so do every one you find.</li>
+        </ul>
+
+        <h3>Your forms: a different animal for each job</h3>
+        <ul>
+          <li><b>Night elf form</b> (your normal shape): spells from a distance (Wrath, Moonfire) and all your heals. Uses <b>mana</b>.</li>
+          <li><b>Bear Form</b> (level 10, <kbd>Shift</kbd> + <kbd>1</kbd>): lots of armor and health. Uses <b>rage</b>, which fills when you hit or get hit. Your fighting form from 10 to 20, your "this is going badly" form after that, and your tank form in dungeons.</li>
+          <li><b>Cat Form</b> (level 20, <kbd>Shift</kbd> + <kbd>2</kbd>): fast attacks, <b>Prowl</b> (sneaking) and <b>Dash</b>. Uses <b>energy</b> and <b>combo points</b>, like a rogue. Your main form from 20 to 60.</li>
+          <li><b>Travel Form</b> (level 30, <kbd>Shift</kbd> + <kbd>3</kbd>) to run fast outdoors, and <b>Aquatic Form</b> (<kbd>Shift</kbd> + <kbd>4</kbd>) to swim fast and breathe under water.</li>
+          <li>Each change costs a bit of mana. Press the same form key again to turn back into a night elf. Changing form also frees you from slows and roots.</li>
+          <li>New in WoW: Forever: you can eat, drink, use potions and bandages, talk to people and click quest objects <b>without leaving your form</b>.</li>
+        </ul>
+
+        <h3>Fighting</h3>
+        <ul>
+          <li>Click an enemy to target it. Levels 1–10: cast Wrath and Moonfire from a distance, then hit it with your staff. Levels 10–20: pull with Moonfire, turn into a bear, Maul. From 20: Prowl up to it as a cat.</li>
+          <li>Fight one enemy at a time. Pull with <b>Faerie Fire</b> or Moonfire from a distance so its friends don't come along.</li>
+          <li>Enemy level colours: <b class="c-grey">grey</b> gives no XP, <b class="c-green">green</b> is easy, <b class="c-yellow">yellow</b> is a fair fight, <b class="c-orange">orange</b> is hard and <b class="c-red">red</b> means run.</li>
+          <li>A golden dragon border on the portrait means <b>elite</b>. Don't fight those alone.</li>
+          <li>In trouble? Turn into a bear (bears survive much more), root the enemy with Nature's Grasp and walk away, or Dash away as a cat.</li>
+        </ul>
+
+        <h3>After every fight</h3>
+        <ul>
+          <li>You heal yourself: turn back into a night elf and cast <b>Regrowth</b> or <b>Rejuvenation</b>, then shift back. That's much faster than eating.</li>
+          <li>Mana low? Drink water (<kbd>Alt</kbd> + <kbd>1</kbd>). You sit down by yourself while drinking. Don't move until the bar is full. Food (<kbd>Alt</kbd> + <kbd>2</kbd>) refills health the same way.</li>
+          <li>Keep <b>Mark of the Wild</b> and <b>Thorns</b> on yourself all the time (right bar). Their icons show at the top right of your screen.</li>
+        </ul>
+
+        <h3>Getting stronger</h3>
+        <ul>
+          <li><b>Every 2 levels</b>, cast <b>Teleport: Moonglade</b> (from level 10), learn everything you can afford from <b>Loganaar</b>, then use your Hearthstone to go back. No other class has it this easy.</li>
+          <li><b>Your forms come from quests</b> that start with Mathrengyl Bearwalker in Darnassus: Bear Form at 10, Cure Poison at 14, Aquatic Form at 16 and Cat Form at 20. This guide walks you through each one. Travel Form (30) and Dire Bear Form (40) come from the trainer.</li>
+          <li><b>Every level from 10</b>, press <kbd>N</kbd> and spend a talent point. See the <a href="#" data-goto="talents">Talents</a> tab.</li>
+          <li>New spells go into your spellbook (<kbd>P</kbd>). The <a href="#" data-goto="bars">Action Bars</a> tab shows where to put them, form by form.</li>
+        </ul>
+
+        <h3>Your build: Feral, and your dungeon jobs</h3>
+        <ul>
+          <li>This guide levels you as <b>Feral</b>: a cat for damage, a bear when you need to take hits. It's the fastest and safest way to level a druid in WoW: Forever.</li>
+          <li><b>Dungeons before 40:</b> with the same Feral talents you can be the <b>damage</b> (Cat) or the <b>tank</b> (Bear: you keep the enemies on you with Growl, Maul, Swipe and Lacerate). Early dungeons are easy enough that you can also heal in night elf form.</li>
+          <li><b>From level 40: Dual Specialization.</b> A druid trainer teaches you a second talent setup, and you switch between them for free. Make the second one <b>Restoration</b> (healer): groups always need healers. In WoW: Forever druid heals over time stack and can crit, and Restoration gets <b>Wild Growth</b>, which heals the whole group. Or make it a dedicated bear tank. The <b>Equipment Manager</b> swaps your gear with it.</li>
+        </ul>
+
+        <h3>Gear: is this item better?</h3>
+        <p>The colour of an item's name tells you how good it is:</p>
+        <div class="qualities" role="list">
+          <span role="listitem" class="q-poor"><b>Grey</b> Poor: sell it</span>
+          <span role="listitem" class="q-common"><b>White</b> Common: basic</span>
+          <span role="listitem" class="q-uncommon"><b>Green</b> Uncommon: a good upgrade</span>
+          <span role="listitem" class="q-rare"><b>Blue</b> Rare: great, often from dungeons</span>
+          <span role="listitem" class="q-epic"><b>Purple</b> Epic: the best, from raids</span>
+        </div>
+        <div class="gearcompare">
+          <div class="itip q-common"><span class="itip-tag">You're wearing</span><img src="../assets/icons/inv_chest_leather_01.jpg" alt="" width="40" height="40"><div><b class="iname">Leather Vest</b><span>Chest · Leather</span><span>60 Armor</span></div></div>
+          <span class="gc-vs" aria-hidden="true">vs</span>
+          <div class="itip q-uncommon"><span class="itip-tag">You just found</span><img src="../assets/icons/inv_chest_leather_01.jpg" alt="" width="40" height="40"><div><b class="iname">Vest of the Monkey</b><span>Chest · Leather</span><span>64 Armor</span><span class="up">+5 Agility</span><span class="up">+4 Stamina</span></div></div>
+          <p class="gc-verdict">Better: it has <b>Agility</b>, the stat a cat wants most. Put it on.</p>
+        </div>
+        <ul>
+          <li><b>What you can wear:</b> <b>leather</b> armor (cloth too, but leather is better). Druids can't wear mail or plate, or use shields.</li>
+          <li><b>Stats to look for:</b> before level 10, <b>Intellect</b> and <b>Spirit</b> (more mana). From 10, as a bear and a cat: <b>Agility</b> and <b>Strength</b> first (both give attack power; Agility also gives crits and dodging), then <b>Stamina</b> (more health). A little Intellect still helps, for changing form and healing.</li>
+          <li><b>Name endings:</b> green items often end in a word that tells you their stats. <b>of the Monkey</b> (Agility + Stamina), <b>of the Tiger</b> (Strength + Agility) and <b>of the Bear</b> (Strength + Stamina) are great for you.</li>
+          <li><b>Weapons:</b> in WoW: Forever your cat and bear attacks get stronger with a better weapon, so a big two-handed <b>staff</b>, <b>mace</b> or <b>polearm</b> is best. Look at the <b>damage per second</b> number: higher is better. Polearms need training (Woo Ping in Stormwind, from level 20).</li>
+          <li><b>Idols</b> go in the relic slot and give a druid-only bonus. The Aquatic Form quest gives you one.</li>
+          <li><b>How to compare:</b> point at the new item and hold <kbd>Shift</kbd>. The game shows what you're wearing right next to it. Right-click an item in your bags to put it on.</li>
+          <li><b>Easy mode:</b> the <b>Pawn</b> addon (see <a href="../addons.html?c=nightelf-druid">Addons</a>) puts a green arrow on items that are an upgrade for you.</li>
+          <li><b>Quest rewards:</b> when you can pick one, take the one with Agility or Strength. If none fits, take the one that sells for the most.</li>
+        </ul>
+
+        <h3>Getting around</h3>
+        <ul>
+          <li>Talk to the innkeeper in each new town and choose "Make this inn your home". Your Hearthstone then brings you back there.</li>
+          <li>Talk to every flight master (the person with a hippogryph or gryphon) you pass, so you can fly there later.</li>
+          <li>If you die, you appear as a ghost at a graveyard. Run back to your body and click "Resurrect". As a night elf you're a fast wisp while dead (Wisp Spirit).</li>
+          <li><b>Teleport: Moonglade</b> is like a second Hearthstone: from Moonglade, <b>Sindrayl</b> flies you to any Kalimdor flight path you've unlocked, and <b>Silva Fil'naveth</b> to Darnassus. From level 30, <b>Travel Form</b> is your mount; at 40 you can buy a real one.</li>
+          <li>Log out inside an inn to get bonus XP next time.</li>
+        </ul>
+
+        <h3>Addons</h3>
+        <p>Addons are free extras that improve the game's interface. You don't need any, but a few make leveling much easier. The <a href="../addons.html?c=nightelf-druid">Addons page</a> lists which ones to get (must-have, recommended, optional, and a separate list for dungeons) and how to install them.</p>
+        <p><b>Waypoint arrow:</b> with the <b>TomTom</b> addon, click a pin on any Quest Guide map and press <b>Copy /way</b>. In game, press <kbd>Enter</kbd>, paste with <kbd>Ctrl</kbd> + <kbd>V</kbd> and press <kbd>Enter</kbd> again. An arrow points the way. <b>/way reset all</b> clears it.</p>
+
+        <h3>Useful keys</h3>
+        <table class="keys-table">
+          <tr><td><kbd>L</kbd></td><td>Quest log</td><td><kbd>M</kbd></td><td>Map</td></tr>
+          <tr><td><kbd>P</kbd></td><td>Spellbook</td><td><kbd>N</kbd></td><td>Talents</td></tr>
+          <tr><td><kbd>C</kbd></td><td>Your character</td><td><kbd>B</kbd></td><td>Bags</td></tr>
+          <tr><td><kbd>X</kbd></td><td>Sit down</td><td><kbd>Y</kbd></td><td>Legacy (from about level 25)</td></tr>
+        </table>
+
+        <h3>The combos to learn</h3>
+        <p><b>As a bear (levels 10–20, and whenever you need to take hits):</b></p>
+        <ol>
+          <li>Pull with <b>Moonfire</b> (or <b>Faerie Fire</b> from level 18).</li>
+          <li><b>Bear Form</b> (<kbd>Shift</kbd> + <kbd>1</kbd>), then <b>Enrage</b> for some rage to start with.</li>
+          <li><b>Demoralizing Roar</b> once, then <b>Maul</b> whenever you have the rage. <b>Swipe</b> if two or more enemies fight you.</li>
+        </ol>
+        <p><b>As a cat (from level 20):</b></p>
+        <ol>
+          <li><b>Prowl</b> and walk up behind the enemy.</li>
+          <li>Open with <b>Ravage</b> (from 32) or <b>Pounce</b> (from 36). Before that, <b>Rake</b> or <b>Shred</b>.</li>
+          <li><b>Claw</b> (or <b>Shred</b> from behind) until you have 4 or 5 combo points.</li>
+          <li><b>Rip</b> on a strong enemy, <b>Ferocious Bite</b> on a weak one. Low on energy at 40+? <b>Shifting Power</b>.</li>
+          <li>After the fight: night elf form, <b>Regrowth</b>, back to Cat Form.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TALENTS ===== -->
+  <section class="panel" id="panel-talents">
+    <div class="frame">
+      <div class="frame-title">Talents</div>
+      <div class="frame-body">
+        <p>From level 10 you get one talent point each level. This is your talent window (<kbd>N</kbd> in game), one point at a time: the glowing talent is the one to click at this level. The build is <b>Feral</b>, from Warcraft Tavern's WoW: Forever leveling guide: the first 32 points go into <b>Feral Combat</b>, then 5 into <b>Restoration</b>, 9 into <b>Balance</b> and the last 5 back into Feral. Like the Gear tab, it follows your place in the Quest Guide; use <b>Next</b>, the slider or the arrow keys to look ahead. In the game, click <b>Apply Changes</b> after placing the point.</p>
+        <div id="talents"></div>
+        <p class="hint">Made a mistake? Any druid trainer (Loganaar in Moonglade is the closest) can reset your talents for a little gold. From level 40 a druid trainer teaches you a second talent setup (Dual Specialization): use it for <b>Restoration</b> (healing) or a bear tank build for dungeons, and keep this Feral one for questing.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GEAR ===== -->
+  <section class="panel" id="panel-gear">
+    <div class="frame">
+      <div class="frame-title">Gear</div>
+      <div class="frame-body">
+        <p>Your character window (<kbd>C</kbd> in game), filled with the items this guide's quests give you. Like the Action Bars tab, it follows your place in the Quest Guide; move the level slider to look ahead or back. Your own window won't match exactly: dungeon drops, the auction house and lucky finds can beat these.</p>
+        <div id="gear"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WORDS ===== -->
+  <section class="panel" id="panel-words">
+    <div class="frame">
+      <div class="frame-title">Words Explained</div>
+      <div class="frame-body">
+        <dl class="glossary" id="glossary"></dl>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">Fan-made guide for World of Warcraft: Forever. Ability icons and maps © Blizzard Entertainment. Icons from the game files; zone maps from Wowhead, Mount Hyjal from the game files.</p>
+</main>
+
+<div class="wordpop" id="wordpop" hidden></div>
+<div class="spelltip" id="spelltip" hidden></div>
+
+<script src="../assets/js/characters.js"></script>
+<script src="../data/words.js"></script>
+<script src="data/guide.js"></script>
+<script src="data/quests.js"></script>
+<script src="../assets/js/guide.js"></script>
+<script src="data/gear.js"></script>
+<script src="../assets/js/action-bars.js"></script>
+<script src="../assets/js/gear.js"></script>
+<script src="../data/talents/druid.js"></script>
+<script src="../assets/js/talents.js"></script>
+<script src="../assets/js/site.js"></script>
+</body>
+</html>

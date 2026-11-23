@@ -52,6 +52,20 @@ CLASSES = {
                   w=dict(Agility=1.0, Stamina=.6, Strength=.5, ap=.5, crit=14, hit=12, Armor=.02, Spirit=.05, Intellect=0),
                   wdps=dict(melee=2.4, ranged=.5), word="leather",
                   stats=["Agility", "Stamina", "Strength", "Spirit", "Intellect"]),
+    # Feral druid: in WoW: Forever cat and bear attacks scale with weapon damage, so weapon DPS counts.
+    # Strength is 2 attack power in Cat Form, Agility is 1 plus crit; a little Intellect for shifting and heals.
+    "Druid": dict(armor={"Leather", "Cloth", ""}, weap1={"Dagger", "Mace", "Fist Weapon"}, weap2={"Staff", "Polearm", "Mace"},
+                  ranged=set(), held=True, dual=False,
+                  w=dict(Agility=1.0, Strength=1.0, Stamina=.6, Intellect=.3, Spirit=.2, ap=.5, crit=14, hit=12, Armor=.02, sp=.2),
+                  wdps=dict(melee=2.0, ranged=0), word="leather",
+                  stats=["Agility", "Strength", "Stamina", "Intellect", "Spirit"]),
+    # Retribution paladin: a big two-hander, mail and (once learned at 40) plate. Holy damage scales with spell power,
+    # and Champion of the Light turns Intellect into spell power, so both count a little.
+    "Paladin": dict(armor={"Plate", "Mail", "Leather", "Cloth", ""}, plate_from=40, weap1=set(),
+                    weap2={"Mace", "Sword", "Axe", "Polearm"}, ranged=set(), held=False, dual=False,
+                    w=dict(Strength=1.0, Stamina=.6, Agility=.4, Intellect=.35, Spirit=.05, ap=.5, sp=.5, crit=14, hit=12, Armor=.02),
+                    wdps=dict(melee=3.0, ranged=0), word="mail",
+                    stats=["Strength", "Stamina", "Intellect", "Agility", "Spirit"]),
 }
 GAME = next((sys.argv[i + 1] for i, a in enumerate(sys.argv) if a == "--game" and i + 1 < len(sys.argv)),
             "E:/World of Warcraft/_forever_")
@@ -320,6 +334,8 @@ def fits(it, cls, p):
     if not s:
         return None
     if s in ARMOR_SLOTS:
+        if k == "Plate" and it["req"] < p.get("plate_from", 0):
+            return None   # plate is learned later (paladins: 40), so a plate item for a lower level is never worn
         return ARMOR_SLOTS[s] if s in ("Back", "Neck", "Shirt", "Tabard") or k in p["armor"] else None
     if s in ("Finger", "Trinket"):
         return s.lower()
@@ -351,6 +367,10 @@ POOL_LISTS = {
     "Mage": [("4.1", None), ("4.0", 2), ("4.0", 11), ("4.0", 12), ("4.0", 23), ("2.10", None), ("2.15", None), ("2.7", None), ("2.19", None)],
     "Rogue": [("4.2", None), ("4.1", 16), ("4.0", 2), ("4.0", 11), ("4.0", 12), ("2.15", None), ("2.7", None), ("2.4", None),
               ("2.13", None), ("2.2", None), ("2.3", None), ("2.18", None), ("2.16", None)],
+    "Druid": [("4.2", None), ("4.1", 16), ("4.0", 2), ("4.0", 11), ("4.0", 12), ("4.0", 23), ("2.10", None), ("2.6", None),
+              ("2.5", None), ("2.4", None), ("2.15", None), ("2.13", None)],
+    "Paladin": [("4.4", None), ("4.3", None), ("4.1", 16), ("4.0", 2), ("4.0", 11), ("4.0", 12), ("2.5", None), ("2.8", None),
+                ("2.1", None), ("2.6", None)],
 }
 BANDS = [(1, 9)] + [(a, a + 4) for a in range(10, 60, 5)]
 DUNGEONS = {2437: "Ragefire Chasm", 1581: "The Deadmines", 718: "Wailing Caverns", 209: "Shadowfang Keep", 717: "The Stockade",

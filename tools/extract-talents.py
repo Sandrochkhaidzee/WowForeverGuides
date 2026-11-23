@@ -294,6 +294,9 @@ def main():
 
     chars = open(os.path.join(SITE, "assets", "js", "characters.js"), encoding="utf-8").read()
     classes = sorted(set(re.findall(r'cls:\s*"(\w+)"', chars)))
+    only = [a.split("=", 1)[1] for a in sys.argv if a.startswith("--class=")]   # --class=Druid: just that class's file
+    if only:
+        classes = [c for c in classes if c in only]
     icons, backgrounds = set(), set()
     out_dir = os.path.join(SITE, "data", "talents")
     os.makedirs(out_dir, exist_ok=True)

@@ -194,8 +194,8 @@ function syncTicks() {
   const qLines = questLinesOf(i);
   const lines = s.todo.map((t, n) => n).filter((n) => !qLines.has(n));
   const ticked = lines.filter((n) => got.includes(n)).length;
-  const qs = stepQuestList(i), have = gameQuests();
-  const qDone = qs.filter((q) => questTicked(i, q, have)).length;
+  const qs = stepQuestList(i), g = gameState();
+  const qDone = qs.filter((q) => questTicked(i, q, g)).length;
   /* Next lights up when every objective shown and every quest is ticked */
   const all = lines.length || qs.length ? ticked >= lines.length && qDone >= qs.length : got.length >= s.todo.length;
   const count = $("#tickcount");
@@ -767,69 +767,170 @@ function buildGlossary() {
 }
 
 /* ---------- find my step from the game ----------
-   The game can't talk to a website, so the player runs one chat command that shows
-   "<level>-<quest id>,<quest id>,..." for every quest the character has handed in, copies it, and pastes
-   it here. Steps list the quests handed in on them (quests:{id:"name"}), so the furthest step with a
-   finished quest is where the player has got to. Training and talent steps have no quests, and the game
-   doesn't share spells, so those can't be checked. */
+   The game can't talk to a website, so the player runs two chat commands. The first reads the character into W:
+   level, every quest handed in, and every quest in the quest log ("!" after one whose objectives are done).
+   The second shows W in a box to copy, with the zone you're standing in and where your Hearthstone is set:
+     "18-9,12,22-31,45!,0,/Darkshore/Auberdine"   (0 is a quest log header)
+   The older one-command line "18-9,12,22" still works.
 
-/* Chat lines stop at 255 characters, so every one counts. The box opens with the text already selected
-   and hides itself as soon as it loses focus: Esc, Enter or a click anywhere closes it. WoW doesn't let
-   scripts write to the clipboard, so Ctrl + C is the one thing the player has to do. */
-const SYNC_COMMAND = '/run f=CreateFrame("EditBox",nil,UIParent,"InputBoxTemplate")f:SetSize(400,32)f:SetPoint"CENTER"f:SetText(UnitLevel"player".."-"..table.concat(C_QuestLog.GetAllCompletedQuestIDs(),","))f:SetFocus()f:HighlightText()f:SetScript("OnEditFocusLost",f.Hide)';
+   Steps list the quests handed in on them (quests:{id:"name"}) and the ones only picked up there
+   (pickup:{id:"name"}). Laid end to end, they make one long list of things the guide has you do, in order.
+   The guide finds where in that list "done" turns into "not done yet", allowing for quests you skipped or did
+   early, then steps over trainer, talent and travel steps the rest of what the game says shows you've done. */
+
+/* Chat lines stop at 255 characters, which is why it takes two. The box opens with the text already selected and
+   hides itself as soon as it loses focus: Esc, Enter or a click anywhere closes it. WoW doesn't let scripts write
+   to the clipboard, so Ctrl + C is the one thing the player has to do. GetNumQuestLogEntries returns two numbers;
+   the brackets stop the second one from becoming the loop's step. */
+const SYNC_COMMANDS = [
+  '/run L=C_QuestLog W=UnitLevel"player".."-"..table.concat(L.GetAllCompletedQuestIDs(),",").."-"for i=1,(L.GetNumQuestLogEntries())do q=L.GetInfo(i).questID or 0 W=W..q..(L.IsComplete(q)and"!,"or",")end',
+  '/run f=CreateFrame("EditBox",nil,UIParent,"InputBoxTemplate")f:SetSize(400,32)f:SetPoint"CENTER"f:SetText((W or"").."/"..GetZoneText().."/"..(GetBindLocation()or""))f:SetFocus()f:HighlightText()f:SetScript("OnEditFocusLost",f.Hide)',
+];
 const stepQuestIds = (i) => Object.keys(STEPS[i].quests || {}).map(Number);
-const gameQuests = () => new Set(Array.isArray(saved.quests) ? saved.quests : []);
+const stepPickupIds = (i) => Object.keys(STEPS[i].pickup || {}).map(Number);
 
-/* "18-9,12,22" -> { level: 18, ids: [9, 12, 22] }. A bare list of ids works too. */
+/* what the last import said: have = handed in, log = quest log (id -> true once its objectives are done) */
+function gameState() {
+  const log = saved.qlog && typeof saved.qlog === "object" ? saved.qlog : {};
+  return {
+    have: new Set(Array.isArray(saved.quests) ? saved.quests : []),
+    log: new Map(Object.entries(log).map(([id, c]) => [+id, !!c])),
+  };
+}
+/* "in" = handed in, "ready" = in the log with its objectives done, "log" = in the log, "" = none of those */
+function gameSays(id, g) { return g.have.has(id) ? "in" : g.log.has(id) ? (g.log.get(id) ? "ready" : "log") : ""; }
+/* a pickup is done once the quest is in your log (or already handed in); a hand-in only once it's handed in */
+function gameDone(q, g) { const s = gameSays(q.id, g); return q.role === "pickup" ? !!s : s === "in"; }
+
+/* "18-9,12-31,45!,/Darkshore/Auberdine" -> { level, ids, log, zone, home }. A bare list of ids works too.
+   { missing: true } when only the second command ran. */
 function parseGameExport(text) {
-  const t = String(text).replace(/\s+/g, "");
-  const m = /^(?:(\d{1,2})-)?(\d+(?:,\d+)*),?$/.exec(t);
-  if (!m) return null;
-  return { level: m[1] ? +m[1] : null, ids: m[2].split(",").map(Number) };
+  const [main = "", zone = "", home = ""] = String(text).trim().split("/");
+  const parts = main.replace(/\s+/g, "").split("-");
+  if (!parts.join("") && zone) return { missing: true };
+  if (parts.length > 3) return null;
+  const [level, ids, log] = parts.length === 1 ? [null, parts[0], null] : parts;
+  if (level !== null && !/^\d{1,2}$/.test(level)) return null;
+  if (!/^[\d,]*$/.test(ids) || (log != null && !/^[\d!,]*$/.test(log))) return null;
+  const list = ids.split(",").filter(Boolean).map(Number).filter((n) => n > 0);
+  const qlog = log == null ? null : new Map(log.split(",").filter((x) => x && x !== "0" && x !== "0!")
+    .map((x) => [parseInt(x, 10), x.endsWith("!")]));
+  if (!list.length && !level && !(qlog && qlog.size)) return null;
+  return { level: level ? +level : null, ids: list, log: qlog, zone: zone.trim(), home: home.trim() };
 }
 
-function findStepFromQuests(level, have) {
-  let reached = -1;
+/* Everything the guide has you do with quests, in order: { step, id, role }. A quest handed in on a step
+   without being picked up on an earlier one is picked up there too, so having it in your log counts. */
+let GUIDE_EVENTS = null;
+function guideEvents() {
+  if (GUIDE_EVENTS) return GUIDE_EVENTS;
+  const picked = new Set(), out = [];
   STEPS.forEach((s, i) => {
-    const ids = stepQuestIds(i);
-    if (!ids.length) return;
-    if (level && lvNums(s.lv)[0] > level + 1) return;   // a stray quest from far ahead doesn't move you there
-    if (ids.some((id) => have.has(id))) reached = i;
+    const take = (id) => { if (!picked.has(id)) { picked.add(id); out.push({ step: i, id, role: "pickup" }); } };
+    stepQuestIds(i).forEach(take);
+    stepQuestIds(i).forEach((id) => out.push({ step: i, id, role: "turnin" }));
+    stepPickupIds(i).forEach(take);
   });
-  if (reached < 0) return { at: 0, reached, left: [], skipped: [] };
-  const left = stepQuestIds(reached).filter((id) => !have.has(id));
-  let at = left.length ? reached : Math.min(reached + 1, STEPS.length - 1);
-  /* trainer and talent visits for a level you're already past: you've most likely done them */
-  const skipped = [];
-  while (!left.length && level && at < STEPS.length - 1 && !stepQuestIds(at).length
-    && ["train", "talent"].includes(stepKind(at)) && lvNums(STEPS[at].lv)[0] < level) skipped.push(at++);
-  return { at, reached, left, skipped };
+  return (GUIDE_EVENTS = out);
 }
 
-/* The import decides the ticks: every objective behind you is ticked, and from your step on, a line that
-   names quests is ticked only if they're all handed in. If the import lands on the step you were already
-   on, your own ticks on its other lines stay; every other step starts clean. */
-function tickFromQuests(at, have) {
+/* how much one quest counts when deciding where you are */
+function eventWeight(e, done, level) {
+  if (!level) return 1;
+  const lv = lvNums(STEPS[e.step].lv)[0] || 1;
+  if (done && lv > level + 3) return 0.2;     // done long before the guide gets there: it shouldn't pull you ahead
+  if (!done && lv + 6 < level) return 0.5;    // left on a step far below your level: most likely skipped on purpose
+  return 1;
+}
+
+/* the zone names a step is in: its map, plus where its quests are given and handed in */
+function stepZones(i) {
+  const names = new Set();
+  (STEPS[i].map || []).forEach(([k]) => { if (ZONES[k]) names.add(ZONES[k].name); });
+  if (typeof QUEST_DATA !== "undefined" && typeof QUEST_ZONES !== "undefined")
+    [...stepQuestIds(i), ...stepPickupIds(i)].forEach((id) => {
+      const d = QUEST_DATA[id];
+      [d && d.from, d && d.to].forEach((p) => { if (p && QUEST_ZONES[p[0]]) names.add(QUEST_ZONES[p[0]]); });
+    });
+  return [...names];
+}
+const sameZone = (a, b) => { a = a.toLowerCase(); b = b.toLowerCase(); return !!a && !!b && (a.startsWith(b) || b.startsWith(a)); };
+const inZone = (zone, i) => !!zone && stepZones(i).some((z) => sameZone(zone, z));
+
+/* a step's line about making an inn your home is done when your Hearthstone is set there */
+const HOME_LINE = /\byour home\b/i;
+function homeLineDone(t, i, home) {
+  if (!home || !HOME_LINE.test(t)) return false;
+  const h = home.toLowerCase(), place = STEPS[i].place.toLowerCase();
+  return t.replace(/<[^>]+>/g, "").toLowerCase().includes(h) || place.includes(h) || h.includes(place);
+}
+
+/* A step with no quests can't be checked against the quest list. Step over it when the rest of the import
+   says you're past it: a trainer or talent visit below your level, a step for levels you've outgrown, travel
+   to the zone you're standing in, or making the inn your home where your Hearthstone already is. */
+function skippable(i, got, until) {
+  const s = STEPS[i], k = stepKind(i), lv = lvNums(s.lv), lo = lv[0] || 1, hi = lv[lv.length - 1] || lo;
+  const why = (text) => ({ i, why: text });
+  if (got.level && ["train", "talent"].includes(k) && lo < got.level) return why("you're past that level");
+  if (k === "home" && got.home && s.todo.some((t) => homeLineDone(t, i, got.home))) return why(`your Hearthstone is set in ${got.home}`);
+  if (k === "travel" && inZone(got.zone, until)) return why(`you're already in ${got.zone}`);
+  if (got.level && !["start", "done"].includes(k) && hi < got.level) return why("you're past that level");
+  if (k === "start" && got.level > 1) return why("you've already started");
+  return null;
+}
+
+function findStepFromGame(got, g) {
+  /* without the quest log (the older one-line export) a pickup can't be checked, so only hand-ins count */
+  const ev = got.log ? guideEvents() : guideEvents().filter((e) => e.role === "turnin");
+  const done = ev.map((e) => gameDone(e, g));
+  const w = ev.map((e, k) => eventWeight(e, done[k], got.level));
+  /* put the line between "done" and "not yet" where the fewest quests disagree: the ones not done before it
+     plus the ones done after it. On a tie, the later place (you skipped one rather than did one early). */
+  let after = 0, before = 0, best, b = 0;
+  done.forEach((d, k) => { if (d) after += w[k]; });
+  best = after;
+  for (let k = 0; k < ev.length; k++) {
+    if (done[k]) after -= w[k]; else before += w[k];
+    if (before + after <= best + 1e-9) { best = before + after; b = k + 1; }
+  }
+  const prev = b > 0 ? ev[b - 1].step : -1;
+  const open = b < ev.length ? ev[b].step : STEPS.length - 1;
+  let at = prev === open ? open : prev + 1;
+  const skipped = [];
+  for (let why; at < open && (why = skippable(at, got, open)); at++) skipped.push(why);
+
+  const doneEv = ev.filter((e, k) => done[k]);
+  const behind = ev.slice(0, b).filter((e, k) => !done[k]);
+  const ahead = ev.slice(b).filter((e, k) => done[b + k]);
+  return {
+    at, skipped, none: !doneEv.length,
+    /* quests the guide hands in on an earlier step that are still in your log */
+    stillInLog: ev.filter((e) => e.role === "turnin" && e.step < at && g.log.has(e.id)),
+    /* hand-ins you left behind that are still worth doing at your level */
+    missed: behind.filter((e) => e.role === "turnin" && e.step < at && !g.log.has(e.id)
+      && (!got.level || (lvNums(STEPS[e.step].lv)[0] || 1) + 4 >= got.level)),
+    ahead: ahead.filter((e) => e.role === "turnin" && e.step > at),
+  };
+}
+
+/* The import decides the ticks: every objective behind you is ticked, and from your step on, a line that names
+   quests is ticked once the game says they're all done (picked up, for the quests the step only picks up), and a
+   "make the inn your home" line once your Hearthstone is set there. If the import lands on the step you were
+   already on, your own ticks on its other lines stay; every other step starts clean. */
+function tickFromGame(at, g, home) {
   STEPS.forEach((s, i) => {
     if (i < at) { saved.done[i] = s.todo.map((t, n) => n); return; }
-    const named = Object.entries(s.quests || {});
+    const list = stepQuestList(i);
     const got = new Set(i === at && at === saved.step ? ticksFor(i) : []);
     s.todo.forEach((t, n) => {
       const bold = [...t.matchAll(/<b>(.*?)<\/b>/g)].map((m) => m[1].replace(/<[^>]+>/g, ""));
-      const ids = named.filter(([, name]) => bold.includes(name)).map(([id]) => +id);
-      if (!ids.length) return;
-      if (ids.every((id) => have.has(id))) got.add(n); else got.delete(n);
+      const qs = list.filter((q) => bold.includes(q.name));
+      if (qs.length) { if (qs.every((q) => gameDone(q, g))) got.add(n); else got.delete(n); }
+      else if (homeLineDone(t, i, home)) got.add(n);
     });
     if (got.size) saved.done[i] = [...got].sort((a, b) => a - b);
     else delete saved.done[i];
   });
-}
-
-/* a step's quests by name: parts of a chain share a name, and count as done when every part is */
-function stepQuestNames(i, have) {
-  const byName = new Map();
-  Object.entries(STEPS[i].quests || {}).forEach(([id, name]) => byName.set(name, (byName.get(name) ?? true) && have.has(+id)));
-  return [...byName];
 }
 
 /* ---------- the step's quest log: every quest it picks up or hands in, checked against the game ---------- */
@@ -864,11 +965,13 @@ function plainLine(t, name) {
   return t;
 }
 
-/* a quest on a step is done when the game says it's handed in, or when you ticked it yourself
-   (saved.qdone["step:id"]: picked up for a pickup quest, handed in for a hand-in quest) */
-function questTicked(i, q, have = gameQuests()) {
-  return have.has(q.id) || !!(saved.qdone && saved.qdone[`${i}:${q.id}`]);
+/* a quest on a step is done when the game says so (handed in; or in your log, for a quest the step only picks
+   up), or when you ticked it yourself (saved.qdone["step:id"]) */
+function questTicked(i, q, g = gameState()) {
+  return gameDone(q, g) || !!(saved.qdone && saved.qdone[`${i}:${q.id}`]);
 }
+
+const GAME_SAYS = { in: "Handed in", ready: "Ready to hand in", log: "In your quest log" };
 
 function drawStepQuests(i) {
   const box = $("#questlog");
@@ -878,14 +981,14 @@ function drawStepQuests(i) {
   questLinesOf(i).forEach((id, n) => tips.set(id, [...(tips.get(id) || []), STEPS[i].todo[n]]));
   box.hidden = !list.length;
   if (!list.length) return;
-  const synced = !!saved.sync, have = gameQuests();
-  const done = list.filter((q) => questTicked(i, q, have)).length;
+  const synced = !!saved.sync, g = gameState();
+  const done = list.filter((q) => questTicked(i, q, g)).length;
   box.innerHTML = `<h4>Quests <span class="ql-count${done === list.length ? " all" : ""}">${done
       ? `${done} of ${list.length} done${synced ? ` · read from your game ${syncAge()}` : ""}`
       : "Click ! or ? when you've done one · click a quest for the map"}</span></h4>
     <ul>${list.map((q) => {
       const d = (typeof QUEST_DATA !== "undefined" && QUEST_DATA[q.id]) || {};
-      const fromGame = have.has(q.id), ticked = questTicked(i, q, have);
+      const says = gameSays(q.id, g), fromGame = gameDone(q, g), ticked = questTicked(i, q, g);
       const how = q.role === "pickup" ? "picked up" : "handed in";
       const who = q.role === "pickup" ? (d.from ? `From ${d.from[3]}` : "") : (d.to ? `Hand in to ${d.to[3]}` : "");
       const on = MV.focus && MV.focus.step === i && MV.focus.id === q.id;
@@ -893,9 +996,10 @@ function drawStepQuests(i) {
       return `<li class="ql-row">
         <button type="button" class="ql-mark" data-check="${q.id}" aria-pressed="${ticked}"${fromGame ? ' aria-disabled="true"' : ""}
           aria-label="${attr(`${q.name}: ${ticked ? `${how}, click to untick` : `mark as ${how}`}`)}"
-          title="${fromGame ? "Handed in, says your game" : ticked ? `Ticked as ${how}. Click to untick.` : `Click when you've ${how} it`}">${ticked ? "✓" : q.role === "pickup" ? "!" : "?"}</button>
+          title="${fromGame ? `${GAME_SAYS[says]}, says your game` : ticked ? `Ticked as ${how}. Click to untick.` : `Click when you've ${how} it`}">${ticked ? "✓" : q.role === "pickup" ? "!" : "?"}</button>
         <button type="button" class="ql-q ql-${ticked ? "done" : "open"}${on ? " on" : ""}" data-q="${q.id}" aria-pressed="${on}">
         <span class="ql-main"><b>${q.name}</b>${d.lv ? `<em>Lv ${d.lv}</em>` : ""}<span class="ql-role">${q.role === "pickup" ? "Pick up" : "Hand in"}</span>
+          ${says ? `<span class="ql-game ql-g-${says}">${GAME_SAYS[says]}</span>` : ""}
           ${d.text ? `<span class="ql-text">${d.text}</span>` : ""}
           ${(tips.get(q.id) || []).map((t) => `<span class="ql-guide">${plainLine(t, q.name)}</span>`).join("")}
           ${who ? `<span class="ql-who">${who}</span>` : ""}</span>
@@ -958,59 +1062,113 @@ function syncAge() {
   return h < 36 ? `${h} hours ago` : `${Math.round(h / 24)} days ago`;
 }
 
+/* "a", "a and b", "a, b and c"; names after the first few become "and 3 more" */
+function namesList(names, max = 4) {
+  names = [...new Set(names)];
+  const shown = names.slice(0, max).map((n) => `<b>${n}</b>`);
+  if (names.length > max) shown.push(`${names.length - max} more`);
+  return shown.length < 2 ? shown.join("") : `${shown.slice(0, -1).join(", ")} and ${shown[shown.length - 1]}`;
+}
+const questName = (e) => (STEPS[e.step][e.role === "turnin" ? "quests" : "pickup"] || {})[e.id]
+  || (STEPS[e.step].quests || {})[e.id] || (STEPS[e.step].pickup || {})[e.id] || `quest ${e.id}`;
+
+/* what the import found, in a few short lines under the button */
+function syncReport(got, g, r) {
+  const s = STEPS[r.at], lines = [];
+  const ready = got.log ? [...got.log.values()].filter(Boolean).length : 0;
+  const read = [got.level ? `level ${got.level}` : "", `${g.have.size} handed-in quests`,
+    got.log ? `${got.log.size} in your quest log${ready ? ` (${ready} ready to hand in)` : ""}` : ""].filter(Boolean);
+  let head = `Read ${read.length > 1 ? `${read.slice(0, -1).join(", ")} and ${read[read.length - 1]}` : read[0]}.`;
+  head += r.none ? " None of them are in this guide yet, so you're at the start." : ` You're on <b>step ${r.at + 1}: ${s.title}</b>.`;
+
+  const here = stepQuestList(r.at).map((q) => ({ q, says: gameSays(q.id, g) }));
+  const readyHere = here.filter((x) => x.q.role === "turnin" && x.says === "ready").map((x) => x.q.name);
+  const doHere = here.filter((x) => x.q.role === "turnin" && (x.says === "log" || (!x.says && !got.log))).map((x) => x.q.name);
+  const takeHere = here.filter((x) => !x.says && (x.q.role === "pickup" || got.log)).map((x) => x.q.name);
+  if (readyHere.length) lines.push(`Ready to hand in here: ${namesList(readyHere)}.`);
+  if (doHere.length) lines.push(`Still to finish here: ${namesList(doHere)}.`);
+  if (takeHere.length && got.log) lines.push(`Still to pick up here: ${namesList(takeHere.filter((n) => !doHere.includes(n)))}.`);
+
+  if (r.skipped.length) {
+    const why = [...new Set(r.skipped.map((x) => x.why))];
+    lines.push(`Stepped over ${namesList(r.skipped.map((x) => STEPS[x.i].title), 3)}, since ${why.join(" and ")}. Go back if you haven't done ${r.skipped.length > 1 ? "them" : "it"}.`);
+  }
+  if (r.stillInLog.length) lines.push(`Still in your quest log from earlier steps: ${namesList(r.stillInLog.map(questName))}. Hand ${r.stillInLog.length > 1 ? "them" : "it"} in when you pass by.`);
+  if (r.missed.length) lines.push(`Skipped earlier and still worth doing at your level: ${namesList(r.missed.map(questName), 3)}.`);
+  if (r.ahead.length) lines.push(`You've already handed in ${r.ahead.length} quest${r.ahead.length > 1 ? "s" : ""} from later steps. They're ticked for when you get there.`);
+
+  const zones = stepZones(r.at);
+  if (got.zone && zones.length && !inZone(got.zone, r.at)) lines.push(`This step is in <b>${zones[0]}</b>, and you're in <b>${got.zone}</b>.`);
+  const lo = lvNums(s.lv)[0] || 1;
+  if (got.level && lo + 3 < got.level) {
+    const j = STEPS.findIndex((x, n) => n > r.at && (lvNums(x.lv)[0] || 1) >= got.level - 1);
+    if (j > r.at) lines.push(`You're level ${got.level}, well above this step (level ${s.lv}). The quests here will be easy and give little XP. <button type="button" class="wowbtn small" data-jump="${j}">Go to step ${j + 1}, level ${STEPS[j].lv}</button>`);
+  }
+  if (!r.none && ["train", "talent"].includes(stepKind(r.at))) lines.push("The game doesn't share trainer visits or talents, so if you've already done this step, press Next.");
+  if (!got.log) lines.push("This was the older one-line export. Run both commands above and the guide reads your quest log too: what you've picked up and what's ready to hand in.");
+  return `${head}${lines.length ? `<ul>${lines.map((l) => `<li>${l}</li>`).join("")}</ul>` : ""}`;
+}
+
 function buildSync() {
   const box = document.createElement("details");
   box.className = "sync";
   box.id = "sync";
   box.innerHTML = `<summary>Find my step from the game</summary>
     <ol class="sync-how">
-      <li>Copy this command, paste it into the chat box in game and press <kbd>Enter</kbd>:
-        <div class="sync-cmd"><code id="synccmd"></code><button type="button" class="wowbtn small" id="synccopy">Copy</button></div></li>
-      <li>A box opens with a line of numbers, already selected. Press <kbd>Ctrl</kbd> + <kbd>C</kbd>, then <kbd>Esc</kbd> to close it. Clicking anywhere else closes it too.</li>
+      <li>Copy this command, paste it into the chat box in game and press <kbd>Enter</kbd>. Nothing shows yet: it reads your quests.
+        <div class="sync-cmd"><code data-cmd="0"></code><button type="button" class="wowbtn small" data-copy="0">Copy</button></div></li>
+      <li>Then this one. A box opens with a line of text, already selected. Press <kbd>Ctrl</kbd> + <kbd>C</kbd>, then <kbd>Esc</kbd> to close it. Clicking anywhere else closes it too.
+        <div class="sync-cmd"><code data-cmd="1"></code><button type="button" class="wowbtn small" data-copy="1">Copy</button></div></li>
       <li>Paste it here:
-        <textarea id="syncpaste" rows="3" spellcheck="false" placeholder="18-179,3114,170,…"></textarea></li>
+        <textarea id="syncpaste" rows="3" spellcheck="false" placeholder="18-179,3114,170-3116,3117!,/Teldrassil/Dolanaar"></textarea></li>
     </ol>
+    <p class="sync-what">It reads your level, every quest you've handed in, what's in your quest log and what's ready to hand in, the zone you're in and where your Hearthstone is set. Then it finds your step and ticks off everything you've done.</p>
     <div class="sync-go"><button type="button" class="wowbtn" id="syncgo">Find my step</button></div>
-    <p class="sync-out" id="syncout" aria-live="polite"></p>`;
+    <div class="sync-out" id="syncout" aria-live="polite"></div>`;
   $("#panel-steps .nav").before(box);
-  $("#synccmd").textContent = SYNC_COMMAND;
+  box.querySelectorAll("code[data-cmd]").forEach((c) => { c.textContent = SYNC_COMMANDS[+c.dataset.cmd]; });
 
-  $("#synccopy").addEventListener("click", async () => {
-    const b = $("#synccopy");
-    try { await navigator.clipboard.writeText(SYNC_COMMAND); b.textContent = "Copied!"; }
-    catch (e) {
-      const r = document.createRange(); r.selectNodeContents($("#synccmd"));
+  box.addEventListener("click", async (e) => {
+    const b = e.target.closest("button[data-copy]");
+    if (!b) return;
+    const n = +b.dataset.copy;
+    try { await navigator.clipboard.writeText(SYNC_COMMANDS[n]); b.textContent = "Copied!"; }
+    catch (err) {
+      const r = document.createRange(); r.selectNodeContents(box.querySelector(`code[data-cmd="${n}"]`));
       getSelection().removeAllRanges(); getSelection().addRange(r);
       b.textContent = "Press Ctrl + C";
     }
     setTimeout(() => { b.textContent = "Copy"; }, 2000);
   });
 
+  $("#syncout").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-jump]");
+    if (!b) return;
+    const j = +b.dataset.jump;
+    showStep(j, j >= saved.step ? "next" : "back");
+    scrollToStep();
+  });
+
   $("#syncgo").addEventListener("click", () => {
     const out = $("#syncout");
     const got = parseGameExport($("#syncpaste").value);
-    if (!got) {
+    if (!got || got.missing) {
       out.className = "sync-out bad";
-      out.innerHTML = "That doesn't look like the line from the game. It should be your level, a dash, then numbers with commas, like <b>18-179,3114,170</b>.";
+      out.innerHTML = got ? "Only the second command's part came through. Run the <b>first</b> command in game, then the second one again, and paste the new line."
+        : "That doesn't look like the line from the game. It should start with your level, a dash, then numbers with commas, like <b>18-179,3114,170-…</b>.";
       return;
     }
-    const have = new Set(got.ids);
-    const r = findStepFromQuests(got.level, have);
     saved.quests = got.ids;
-    saved.sync = { at: Date.now(), level: got.level };
-    tickFromQuests(r.at, have);
+    if (got.log) saved.qlog = Object.fromEntries([...got.log].map(([id, c]) => [id, c ? 1 : 0]));
+    else delete saved.qlog;
+    saved.sync = { at: Date.now(), level: got.level, zone: got.zone || null, home: got.home || null };
+    const g = gameState();
+    const r = findStepFromGame(got, g);
+    tickFromGame(r.at, g, got.home);
     persist();
     showStep(r.at, r.at >= saved.step ? "next" : "back");
-
-    const s = STEPS[r.at];
-    const lvl = got.level ? `level ${got.level}, ` : "";
-    let html = `Read ${lvl}${have.size} handed-in quests. You're on <b>step ${r.at + 1}: ${s.title}</b>.`;
-    if (r.reached < 0) html = `Read ${lvl}${have.size} handed-in quests, but none of them are in this guide yet, so you're at the start.`;
-    else if (r.left.length) html += ` Still to hand in here: ${stepQuestNames(r.at, have).filter(([, done]) => !done).map(([name]) => `<b>${name}</b>`).join(", ")}.`;
-    if (r.skipped.length) html += ` Skipped ${r.skipped.map((k) => `<b>${STEPS[k].title}</b>`).join(", ")}, since you're past that level. Go back if you haven't done ${r.skipped.length > 1 ? "them" : "it"}.`;
-    if (r.reached >= 0 && !stepQuestIds(r.at).length) html += " The game doesn't share trainer visits or talents, so if you've already done this step, press Next.";
     out.className = "sync-out good";
-    out.innerHTML = html;
+    out.innerHTML = syncReport(got, g, r);
     $("#syncpaste").value = "";
   });
 }

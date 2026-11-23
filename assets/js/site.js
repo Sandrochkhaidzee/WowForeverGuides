@@ -228,7 +228,7 @@
           "The <b>parchment</b> is your current step: where to go and what to do. Tick each objective as you go.",
           "When the <b>Done when</b> box is true, press <b>Next Step</b>.",
           "The <b>map</b> shows where to go. Gold pins are numbered in the order you visit them.",
-          "<b>Find my step from the game</b>: paste one command into the game's chat, copy back what it shows, and the guide jumps to your step and ticks off the quests you've done.",
+          "<b>Find my step from the game</b>: paste two commands into the game's chat, copy back what it shows, and the guide jumps to your step and ticks off every quest you've handed in or picked up.",
         ]],
         bars: ["Action Bars", [
           "Shows which ability goes on which key, at any level from 1 to 60.",

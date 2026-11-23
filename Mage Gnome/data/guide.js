@@ -195,12 +195,12 @@ const STEPS = [
     "Bring it back to Bink and choose your reward: the <b>Arcane Staff</b> (a two-handed staff, the better pick) or the <b>Arcane Orb</b> (an off-hand item)."
   ] },
 
-{ lv:"10–13", place:"Ironforge", title:"Get a wand and a dungeon quest", pickup:{96403:"Important Heirlooms"}, map:[["ironforge",[25,74,"Auction house"],[39,55,"Thom Filch (below the High Seat)"]]], learn:["shoot"],
+{ lv:"10–13", place:"Ironforge", title:"Get a wand and a dungeon quest", pickup:{96403:"Important Heirlooms"}, map:[["ironforge",[25,74,"Auction house"],[32.2,44.5,"Thom Filch (hall north-west of the High Seat)"]]], learn:["shoot"],
   done:"a wand is equipped, Shoot is on <kbd>6</kbd>, and <b>Important Heirlooms</b> is in your log.",
   todo:[
     "Buy a <b>Lesser Magic Wand</b> from the auction house, or ask an enchanter to make you one. At level 13, upgrade to a <b>Greater Magic Wand</b>.",
     "Put your wand's <b>Shoot</b> on key <kbd>6</kbd>. Use it to finish enemies that are almost dead. It costs no mana.",
-    "Find <b>Thom Filch</b> near the bridge under the king's throne room and take <b>Important Heirlooms</b>. It's for the Hall of Thanes dungeon later."
+    "Find <b>Thom Filch</b> in the hall just north-west of the king's throne room (the High Seat) and take <b>Important Heirlooms</b>. It's for the Hall of Thanes dungeon later."
   ] },
 
 /* ---------- Loch Modan, levels 11–19 ---------- */
@@ -255,7 +255,7 @@ const STEPS = [
     "You don't need it much while questing alone. It's for later, when you fight groups."
   ] },
 
-{ lv:"15", place:"Stormwind", title:"Mage quest: a free robe", quests:{1338:"Stormpike's Order", 1920:"Investigate the Blue Recluse", 1921:"Gathering Materials", 1941:"Manaweave Robe"}, pickup:{1919:"Report to Jennea"}, map:[["ironforge",[76.5,51,"Deeprun Tram"]],["stormwind",[64,8,"The tram arrives here"],[49,86,"Jennea Cannon (Mage Quarter)"],[51.8,83.5,"Wynne Larson (Larson Clothiers)"],[66.3,62.1,"Flight master"]],["lochmodan",[35,19,"Silver Stream Mine (Charged Rift Gems)"]]],
+{ lv:"15", place:"Stormwind", title:"Mage quest: a free robe", quests:{1338:"Stormpike's Order", 1920:"Investigate the Blue Recluse", 1921:"Gathering Materials", 1941:"Manaweave Robe"}, pickup:{1919:"Report to Jennea"}, map:[["ironforge",[76.5,51,"Deeprun Tram"]],["stormwind",[69.2,30.6,"The tram arrives here"],[49,86,"Jennea Cannon (Mage Quarter)"],[51.8,83.5,"Wynne Larson (Larson Clothiers)"],[71.3,72.2,"Flight master"]],["lochmodan",[35,19,"Silver Stream Mine (Charged Rift Gems)"]]],
   done:"you're wearing the <b>Manaweave Robe</b>, <b>Stormpike's Order</b> is handed in, and Stormwind's flight path is unlocked.",
   todo:[
     "Magis Sparkmantle in Kharanos gives <b>Report to Jennea</b> (optional). In Ironforge, go to Tinker Town and take the <b>Deeprun Tram</b> to Stormwind. Unlock the flight path, and hand <b>Stormpike's Order</b> to <b>Furen Longbeard</b> in the Dwarven District.",
@@ -298,7 +298,7 @@ const STEPS = [
     "In dungeons, when a party member has a curse on them, click them and cast it. Groups love mages who do this."
   ] },
 
-{ lv:"18–19", place:"Ironforge → Redridge Mountains", title:"Travel to Redridge Mountains", pickup:{244:"Encroaching Gnolls"}, map:[["ironforge",[76.5,51,"Deeprun Tram"]],["stormwind",[64,8,"The tram arrives here"],[66.3,62.1,"Flight master"]],["elwynn",[42,65,"Goldshire"],[84,69,"Eastvale: the road east to Redridge"]],["redridge",[10.4,71.3,"Guard Parker (where you come in)"],[26.5,46.5,"Lakeshire"],[30.6,59.4,"Lakeshire flight path"]]],
+{ lv:"18–19", place:"Ironforge → Redridge Mountains", title:"Travel to Redridge Mountains", pickup:{244:"Encroaching Gnolls"}, map:[["ironforge",[76.5,51,"Deeprun Tram"]],["stormwind",[69.2,30.6,"The tram arrives here"],[71.3,72.2,"Flight master"]],["elwynn",[42,65,"Goldshire"],[84,69,"Eastvale: the road east to Redridge"]],["redridge",[10.4,71.3,"Guard Parker (where you come in)"],[26.5,46.5,"Lakeshire"],[25.5,59.4,"Lakeshire flight path"]]],
   done:"you're in Lakeshire, you've unlocked its flight path, and <b>Encroaching Gnolls</b> is in your quest log.",
   todo:[
     "From Ironforge, take the <b>Deeprun Tram</b> in Tinker Town to Stormwind.",
@@ -392,7 +392,7 @@ const STEPS = [
     "Find a group the same way as Hall of Thanes."
   ] },
 
-{ lv:"26", place:"Stormwind (teleport)", title:"Level 26: Cone of Cold and another mage quest", quests:{1939:"High Sorcerer Andromath", 1940:"Pristine Spider Silk"}, pickup:{1938:"Ur's Treatise on Shadow Magic"}, map:[["stormwind",[49,86,"Jennea Cannon and Andromath (Mage Quarter)"],[51.8,83.5,"Wynne Larson"]],["redridge",[79,49,"Tower of Ilgalar (the book)"]],["duskwood",[20,45,"Raven Hill Cemetery (spiders)"]]], learn:["coneofcold"],
+{ lv:"26", place:"Stormwind (teleport)", title:"Level 26: Cone of Cold and another mage quest", quests:{1939:"High Sorcerer Andromath", 1940:"Pristine Spider Silk"}, pickup:{1938:"Ur's Treatise on Shadow Magic"}, map:[["stormwind",[49,86,"Jennea Cannon and Andromath (Mage Quarter)"],[51.8,83.5,"Wynne Larson"]],["redridge",[73.9,49,"Tower of Ilgalar (the book)"]],["duskwood",[20,45,"Raven Hill Cemetery (spiders)"]]], learn:["coneofcold"],
   done:"Cone of Cold is on <kbd>8</kbd> and you're wearing the <b>Astral Knot Robe</b> or <b>Blouse</b>.",
   todo:[
     "Learn <b>Cone of Cold</b> and put it on key <kbd>8</kbd>. It hits and slows everything in front of you.",
@@ -529,7 +529,7 @@ const STEPS = [
   ] },
 
 /* ---------- 37–44: Riverglades ---------- */
-{ chapter:"Riverglades", lv:"37", place:"Redridge → Riverglades", title:"Travel to the Riverglades", map:[["redridge",[30.6,59.4,"Lakeshire flight path"]],["riverglades"]],
+{ chapter:"Riverglades", lv:"37", place:"Redridge → Riverglades", title:"Travel to the Riverglades", map:[["redridge",[25.5,59.4,"Lakeshire flight path"]],["riverglades",[66.7,81,"Farholde Keep"],[60.6,81.5,"Gretchen Mayberry (flight master)"]]],
   done:"Farholde Keep is your home (hover over your Hearthstone to check) and you've unlocked its flight path.",
   todo:[
     "Fly to <b>Lakeshire</b> in Redridge Mountains. No flight path there yet? Fly to Darkshire and ride north-east into Redridge.",
@@ -538,7 +538,7 @@ const STEPS = [
     "Unlock the flight path (Gretchen Mayberry) and make the inn your home. From now on you can fly straight between Farholde Keep and Lakeshire."
   ] },
 
-{ lv:"37–40", place:"Farholde Keep, Riverglades", title:"Riverglades: around Farholde Keep", map:[["riverglades"]],
+{ lv:"37–40", place:"Farholde Keep, Riverglades", title:"Riverglades: around Farholde Keep", map:[["riverglades",[66.7,81,"Demar Brant (Farholde Keep)"],[60.6,81.5,"Flight master"]]],
   done:"you're level 40.", stuck:"Fight the enemies near your current quests in the south of the zone until you are.",
   todo:[
     "Take every quest in Farholde Keep. Many come from <b>Demar Brant</b>, the knight in charge, and the people around him. There are over 70 Alliance quests in this zone.",
@@ -546,7 +546,7 @@ const STEPS = [
     "Start with the farms and lookouts close to the keep. The enemies get tougher the further north you go.",
     "The Horde quests here too (their town is Rog'mar). On PvP servers, keep your escape buttons ready. Move on at level 40."
   ],
-  tip:"There's no Riverglades map on this site yet. Use your in-game map (<kbd>M</kbd>): Farholde Keep is in the south of the zone." },
+  tip:"Farholde Keep is in the south-east corner of the zone. The Horde town, Rog'mar, is in the middle of the map: give it a wide berth." },
 
 { lv:"38", place:"Ironforge (teleport)", title:"Level 38: Mana Jade", map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["conjuregem2","managem2"],
   done:"your Mana Jade is on <kbd>Shift</kbd> + <kbd>5</kbd>.",
@@ -570,11 +570,11 @@ const STEPS = [
   done:"you're riding your mechanostrider, Ice Barrier is on <kbd>Shift</kbd> + <kbd>4</kbd> and your new water is on <kbd>Alt</kbd> + <kbd>1</kbd>.",
   todo:[
     "Learn riding and buy a <b>mechanostrider</b> (gnome mount) at <b>Steelgrill's Depot</b> in Dun Morogh. Right-click the mount item to learn it, then drag it from your spellbook to the right bar.",
-    "At the trainer, learn <b>Frostfire Bolt</b>, <b>Teleport: Dalaran</b>, the <b>Portals</b> to Stormwind and Ironforge, and a new <b>Conjure Water</b> (Mineral Water).",
+    "At the trainer, learn <b>Frostfire Bolt</b>, the <b>Portals</b> to Stormwind and Ironforge, and a new <b>Conjure Water</b> (Mineral Water).",
     "Talent: <b>Ice Barrier</b>, a shield that absorbs damage. Use it before every fight."
   ] },
 
-{ lv:"40–43", place:"Riverglades (north)", title:"Riverglades: Sunnyglade and the north", quests:{94877:"Saving Sunnyglade"}, map:[["riverglades"]],
+{ lv:"40–43", place:"Riverglades (north)", title:"Riverglades: Sunnyglade and the north", quests:{94877:"Saving Sunnyglade"}, map:[["riverglades",[66.7,81,"Demar Brant (Farholde Keep)"],[45,53,"Sunnyglade"],[27,44,"Twilight's Shroud"],[77,49,"Powderfuse Port"]]],
   done:"you're level 43 and have handed in <b>Saving Sunnyglade</b>.", stuck:"Fight the enemies around Sunnyglade until you are.",
   todo:[
     "Fly back to Farholde Keep. Demar Brant's <b>Saving Sunnyglade</b> sends you north to the village of <b>Sunnyglade</b>.",
@@ -583,7 +583,7 @@ const STEPS = [
     "<b>Powderfuse Port</b>, a neutral goblin port on the east coast, has a bank, an auction house and the boat to Tanaris. Move on at about level 43."
   ] },
 
-{ lv:"41–45", place:"Riverglades", title:"Dungeon: Krol'dok Stronghold (optional)", map:[["riverglades"]],
+{ lv:"41–45", place:"Riverglades", title:"Dungeon: Krol'dok Stronghold (optional)", map:[["riverglades",[37.5,37.5,"Krol'dok Stronghold entrance"],[66.7,81,"Farholde Keep (the dungeon quests)"]]],
   done:"your group has beaten the last boss, or you've decided to skip it.",
   todo:[
     "A new 5-player dungeon for levels 40–45, with six bosses. The entrance is in the hills north of Sunnyglade (with TomTom: <kbd>/way 37.5 37.5</kbd>).",
@@ -597,7 +597,7 @@ const STEPS = [
   todo:[
     "Learn new ranks, including a new rank of <b>Conjure Food</b> (Conjured Sourdough). Put it on <kbd>Alt</kbd> + <kbd>2</kbd>.",
     "Talent: <b>Winter's Chill</b> (Frost tab). The Talents tab shows which one to pick each level.",
-    "Optional mage quest: <b>Garon Wendell</b> in the Stormwind Mage Quarter gives <b>A Lesson in Literacy</b> for the <b>Personal Spellbook</b>. You need a Pristine Owlbeast Quill (owlbeasts in the Hinterlands), 5 Zukk'ash Resin (Feralas) and 8 Farraki Papyrus (zombies inside Zul'Farrak)."
+    "Optional mage quest: <b>Garion Wendell</b> in the Stormwind Mage Quarter gives <b>A Lesson in Literacy</b> for the <b>Personal Spellbook</b>. You need a Pristine Owlbeast Quill (owlbeasts in the Hinterlands), 5 Zukk'ash Resin (Feralas) and 8 Farraki Papyrus (zombies inside Zul'Farrak)."
   ] },
 
 /* ---------- 43–50: Tanaris, Feralas, Hinterlands ---------- */
@@ -745,7 +745,7 @@ const STEPS = [
     "Fly back to Chillwind Camp and carry on."
   ] },
 
-{ lv:"56–58", place:"Light's Hope, Eastern Plaguelands", title:"Eastern Plaguelands", map:[["epl",[81.5,59,"Light's Hope Chapel"],[36,90,"Darrowshire"],[7,43,"Tirion Fordring's house"],[27,11,"Stratholme"]]],
+{ lv:"56–58", place:"Light's Hope, Eastern Plaguelands", title:"Eastern Plaguelands", map:[["epl",[71.7,49.6,"Light's Hope Chapel"],[30.7,77.3,"Darrowshire"],[5.2,35.6,"Tirion Fordring's house"],[22.6,6.1,"Stratholme"]]],
   done:"you're level 58.", stuck:"Fight the undead near Light's Hope Chapel until you are.",
   todo:[
     "Ride east into <b>Eastern Plaguelands</b> and follow the road to <b>Light's Hope Chapel</b> on the far east side. Unlock the flight path.",
@@ -769,10 +769,10 @@ const STEPS = [
     "For the last bars of XP, run end-game dungeons with groups: Blackrock Depths, Lower Blackrock Spire, Dire Maul, Stratholme and Scholomance."
   ] },
 
-{ lv:"60", place:"Ironforge (teleport)", title:"Level 60: the last ranks", pickup:{7463:"Arcane Refreshment"}, map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]], learn:["food7"],
-  done:"the new food is on <kbd>Alt</kbd> + <kbd>2</kbd> and all 51 talent points are spent.",
+{ lv:"60", place:"Ironforge (teleport)", title:"Level 60: the last ranks", pickup:{7463:"Arcane Refreshment"}, map:[["ironforge",[26.5,8.5,"Mage trainers (Hall of Mysteries)"],[55.5,47.7,"Gryphon master: you land here"]]],
+  done:"you've learned the last ranks and all 51 talent points are spent.",
   todo:[
-    "Learn the last ranks, including a new <b>Conjure Food</b> (Conjured Cinnamon Rolls). Put it on <kbd>Alt</kbd> + <kbd>2</kbd>.",
+    "Learn the last ranks: <b>Frostfire Bolt</b>, <b>Ice Armor</b> and <b>Blizzard</b> among them. Your food stays the Conjured Sweet Rolls from level 52: in WoW Forever no trainer teaches a higher Conjure Food.",
     "Spend your last talent point on <b>Arcane Subtlety</b>. That's all 51.",
     "The best water, <b>Conjured Crystal Water</b>, doesn't come from the trainer: it's the reward for <b>Arcane Refreshment</b>, a quest from Lorekeeper Lydros in Dire Maul (a group dungeon)."
   ] },
@@ -841,7 +841,7 @@ const ZONES = {
   felwood: { name: "Felwood", id: 361 },          burning: { name: "Burning Steppes", id: 46 },
   wpl: { name: "Western Plaguelands", id: 28 },   epl: { name: "Eastern Plaguelands", id: 139 },
   winterspring: { name: "Winterspring", id: 618 },
-  riverglades: { name: "Riverglades", id: null, none: "Riverglades is new in WoW: Forever, so there's no map of it here yet. Follow the directions above." },
+  riverglades: { name: "Riverglades", id: 16591 },
   hyjal: { name: "Mount Hyjal", id: "hyjal" }
 };
 
@@ -883,8 +883,7 @@ const SPELLBOOK = {
   food3:  { name:"Conjured Rye", lv:22, school:"item", icon:"bread", text:"Better food from Conjure Food (rank 3)." },
   food4:  { name:"Conjured Pumpernickel", lv:32, school:"item", icon:"bread", text:"Better food from Conjure Food (rank 4)." },
   food5:  { name:"Conjured Sourdough", lv:42, school:"item", icon:"bread", text:"Better food from Conjure Food (rank 5)." },
-  food6:  { name:"Conjured Sweet Roll", lv:52, school:"item", icon:"bread", text:"Better food from Conjure Food (rank 6)." },
-  food7:  { name:"Conjured Cinnamon Roll", lv:60, school:"item", icon:"bread", text:"Best food from Conjure Food (rank 7)." },
+  food6:  { name:"Conjured Sweet Roll", lv:52, school:"item", icon:"bread", text:"Best food from Conjure Food (rank 6), the highest rank in WoW Forever." },
   evocation:     { name:"Evocation", lv:20, school:"arcane", icon:"swirl", text:"Channels to refill a big chunk of mana. Use after a hard fight." },
   escape:        { name:"Escape Artist", lv:1, school:"racial", icon:"chain", text:"Gnome racial. Breaks roots and slows on you." },
   coldsnap:      { name:"Cold Snap", lv:32, school:"frost", icon:"clock", talent:true, text:"Resets your Frost cooldowns, so you can use Ice Block or Frost Nova again." },
@@ -932,7 +931,7 @@ const ICONS = {
   water1:"inv_drink_06", water2:"inv_drink_07", water3:"inv_drink_milk_02", water4:"inv_drink_10",
   water5:"inv_drink_09", water6:"inv_drink_11", water7:"inv_drink_18",
   food1:"inv_misc_food_10", food2:"inv_misc_food_09", food3:"inv_misc_food_12", food4:"inv_misc_food_08",
-  food5:"inv_misc_food_11", food6:"inv_misc_food_33", food7:"inv_misc_food_73cinnamonroll"
+  food5:"inv_misc_food_11", food6:"inv_misc_food_33"
 };
 
 /* ---------- which key holds what, from which level ---------- */
@@ -986,7 +985,7 @@ const BARS = [
   { id:"alt", title:"Bottom right bar", how:"Alt + 1 and Alt + 2. The water and food you conjure. Drink and eat after fights.",
     slots:[
       ["A1", [[4,"water1"],[10,"water2"],[20,"water3"],[30,"water4"],[40,"water5"],[50,"water6"],[60,"water7"]]],
-      ["A2", [[6,"food1"],[12,"food2"],[22,"food3"],[32,"food4"],[42,"food5"],[52,"food6"],[60,"food7"]]]
+      ["A2", [[6,"food1"],[12,"food2"],[22,"food3"],[32,"food4"],[42,"food5"],[52,"food6"]]]
     ]}
 ];
 

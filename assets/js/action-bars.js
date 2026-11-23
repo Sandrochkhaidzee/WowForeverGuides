@@ -101,7 +101,7 @@ function drawBars(level) {
   document.getElementById("bars").innerHTML = BARS.map((bar) => `
     <div class="barblock">
       <div class="barhead"><span>${bar.title}</span><small>${bar.how}</small></div>
-      <div class="bar ${bar.id === "main" ? "main mb-frame" : "multi"}">
+      <div class="bar ${bar.id === "main" || bar.frame ? "main mb-frame" : "multi"}">
         ${bar.slots.map((slot) => iconHTML(spellIn(slot, level), slot[0], isNewIn(slot, level))).join("")}
       </div>
     </div>`).join("");
@@ -145,6 +145,7 @@ function findPlace(id, level) {
 }
 function whereText(p) {
   const key = p.slot[0];
+  if (p.bar.where) return p.bar.where.replace("{key}", `<kbd>${key}</kbd>`);   // a bar that describes its own keys (druid forms)
   if (p.bar.id === "main") return `Key <kbd>${key}</kbd> <small>main bar</small>`;
   if (p.bar.id === "shift") return `<kbd>Shift</kbd> + <kbd>${key.slice(1)}</kbd> <small>bottom left bar</small>`;
   if (p.bar.id === "alt") return `<kbd>Alt</kbd> + <kbd>${key.slice(1)}</kbd> <small>bottom right bar</small>`;
