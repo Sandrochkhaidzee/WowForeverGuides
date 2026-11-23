@@ -90,9 +90,11 @@
   let level = 1;
   let picked = null;                 // the slot whose options are open below the window
   const box = $("#gear");
-  const stepLv = (i) => parseInt(STEPS[i].lv, 10) || 1;
-  /* the last guide step you'd have done by the end of level L */
-  const lastStepFor = (L) => { let k = 0; STEPS.forEach((st, i) => { if (stepLv(i) <= L) k = i; }); return k; };
+  /* a step's level range: "28–30" -> 30 is the level you reach by its end */
+  const stepHi = (i) => Math.max(...String(STEPS[i].lv).split(/[–-]/).map((n) => parseInt(n, 10)).filter((n) => !isNaN(n)), 1);
+  /* the last guide step you've fully finished by level L (-1: none yet) */
+  const lastStepFor = (L) => { let k = -1; STEPS.forEach((st, i) => { if (stepHi(i) <= L) k = i; }); return k; };
+  let pending = [];                  // rewards the current Quest Guide step gives you (not in your bags yet)
 
   box.innerHTML = `
     <div class="levelpick">
@@ -146,11 +148,17 @@
   let worn = {};
   let shownLevel = 1;
   function draw() {
-    const upTo = follow ? (window.currentStepIndex ? window.currentStepIndex() : 0) : lastStepFor(level);
-    const c = CHAPTERS[Math.max(0, CHAPTERS.findIndex((ch) => upTo >= ch.from && upTo <= ch.to))];
+    /* Following the Quest Guide: what you've earned on the steps before this one; this step's own
+       rewards are listed apart, because you only get them when you finish it. With the slider:
+       everything from the steps you've fully finished by that level. */
+    const cur = window.currentStepIndex ? window.currentStepIndex() : 0;
+    const upTo = follow ? cur - 1 : lastStepFor(level);
+    const here = follow ? cur : Math.max(0, upTo);
+    const c = CHAPTERS[Math.max(0, CHAPTERS.findIndex((ch) => here >= ch.from && here <= ch.to))];
     const from = c.from;
     shownLevel = level;
     worn = setAt(upTo, level);
+    pending = follow ? items.filter((it) => it.s === cur && !it.clear) : [];
     const fresh = (it) => it && !it.fill && it.s >= from && it.s <= upTo;
     $("#pdleft").innerHTML = LEFT.map((k) => slotHTML(k, worn[k], fresh(worn[k]))).join("");
     $("#pdright").innerHTML = RIGHT.map((k) => slotHTML(k, worn[k], fresh(worn[k]))).join("");
@@ -159,8 +167,8 @@
     $("#gearslider").value = level;
     $("#gearlevel").textContent = level;
     $("#pdstatus").innerHTML = follow
-      ? `Matches your Quest Guide: step ${upTo + 1}, ${STEPS[upTo].title} (${c.name}).`
-      : `Showing level ${level} (${c.name}). Open another step in the Quest Guide and this follows it again.`;
+      ? `Matches your Quest Guide: what you have when you start step ${cur + 1}, ${STEPS[cur].title} (${c.name}).`
+      : `Showing level ${level}: gear from every step you've finished by then. Open another step in the Quest Guide and this follows it again.`;
 
     /* stat totals from everything worn */
     const tot = {};
@@ -177,7 +185,10 @@
       + (stats || armor ? "" : `<p class="pd-none">Nothing yet: your first quest rewards come soon.</p>`);
 
     const newOnes = items.filter((it) => it.s >= from && it.s <= upTo && worn[it.slot] === it);
-    $("#pdnew").innerHTML = `<h4>New in ${c.name}</h4>`
+    $("#pdnew").innerHTML = (pending.length
+      ? `<h4>This step gives you</h4><ul>${pending.map((it, n) => `<li><button type="button" class="pd-row soon" data-slot="${it.slot}" data-pend="${n}">${WF.icon(it.i, "mini")}<span class="q${it.q}">${it.n}</span><small>${SLOTS[it.slot][0]}</small></button></li>`).join("")}</ul>`
+      : "")
+      + `<h4>New in ${c.name}</h4>`
       + (newOnes.length
         ? `<ul>${newOnes.map((it) => `<li><button type="button" class="pd-row" data-slot="${it.slot}">${WF.icon(it.i, "mini")}<span class="q${it.q}">${it.n}</span></button></li>`).join("")}</ul>`
         : `<p class="pd-none">No new pieces here yet. Keep what you have.</p>`);
@@ -187,7 +198,7 @@
     const seen = new Set();
     [...LEFT, ...RIGHT, ...BOTTOM].forEach((key) => {
       const cur = worn[key];
-      if (!cur || cur.fill || (key === "off" && twoHanded(worn.main))) return;
+      if (!cur || cur.fill || (key === "off" && twoHanded(worn.main)) || pending.some((it) => it.slot === key)) return;
       const curSc = cur.sc || 0;
       const best = pool
         .filter((p) => BUYABLE.includes(p.src[0]) && p.req <= level && fitsSlot(p, key, worn, level) && !seen.has(p.n)
@@ -271,7 +282,7 @@
 
   function showTip(el) {
     const key = el.dataset.slot;
-    const it = el.dataset.pool ? poolById[el.dataset.pool] : worn[key];
+    const it = el.dataset.pool ? poolById[el.dataset.pool] : el.dataset.pend ? pending[+el.dataset.pend] : worn[key];
     if (!it) {
       const label = SLOTS[key][0];
       const armorSlot = ["head", "shoulder", "chest", "wrist", "hands", "waist", "legs", "feet"].includes(key);

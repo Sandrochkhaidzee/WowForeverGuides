@@ -1,11 +1,8 @@
 {
-  "_help": "Read by tools/build-gear.py. skip = quest names whose classicdb reward is wrong for WoW: Forever. Per character id: items the guide names that classicdb doesn't give; step = the guide step's exact title, id = one item, ids = a choice (the best one is worn), from = what the tooltip says.",
-  "skip": ["Mage-tastic Gizmonitor"],
+  "_help": "Read by tools/build-gear.py. Items a character gets without a quest (bought or crafted), per character id: step = the guide step's exact title, id = one item, ids = a choice (the best one is worn), from = what the tooltip says. Quest rewards come from WoW: Forever's QuestieDB, so they don't go here.",
   "gnome-mage": [
-    { "step": "Mage quest: Bink", "ids": [9513, 7508], "from": "Quest: Mage-tastic Gizmonitor" },
     { "step": "Get a wand and a dungeon quest", "id": 11287, "from": "Buy it at the auction house, or ask an enchanter to make it" },
-    { "step": "Your first dungeon: Hall of Thanes", "id": 11288, "from": "Buy it at the auction house at level 13, or ask an enchanter to make it" },
-    { "step": "Level 26: Cone of Cold and another mage quest", "ids": [7511, 9516], "from": "Mage quest from Wynne Larson, Stormwind (pick the Robe or the Blouse)" }
+    { "step": "Your first dungeon: Hall of Thanes", "id": 11288, "from": "Buy it at the auction house at level 13, or ask an enchanter to make it" }
   ],
   "nightelf-rogue": []
 }

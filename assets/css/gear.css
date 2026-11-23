@@ -171,3 +171,6 @@
   .pdd-list li { grid-template-columns: 1fr; }
   .pdd-tags { justify-content: flex-start; padding-left: 31px; }
 }
+/* this step's rewards: not in your bags until you finish the step */
+.pd-row.soon { border: 1px dashed #5a5040; }
+.pd-row.soon .mini { opacity: .85; }

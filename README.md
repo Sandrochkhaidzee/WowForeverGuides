@@ -157,17 +157,23 @@ python tools/build-gear.py              (all characters, or add an id like gnome
 python tools/extract-icons.py "E:/World of Warcraft/_forever_"
 ```
 
-It looks up every quest a guide names in **bold**, the follow-up quests in their chains, and the other
-quests in the zones each step sends you to (classicdb.ch for rewards, Wowhead's classic tooltips for
-stats and icons). Then it walks the steps in order and puts on each reward that's an upgrade for the
-class (the stat weights are in `CLASSES` at the top of the tool). It also saves a pool of every other green
-and blue item the class can use, levels 1–60, with where each comes from (another quest, a dungeon boss,
-a profession recipe, a vendor, or the Auction House for items that bind when equipped). The Gear tab
-fills empty slots with the best one you can buy or craft, lists "Worth buying now" upgrades, and shows
-all the options for a slot when you click it. Items the guide names that those sites
-get wrong or don't have, like bought wands or WoW: Forever's own rewards, go in `tools/gear-extra.json`.
-Downloads are cached in `tools/.gear-cache` (not in git); the first run without it takes about half an
-hour. Needs Node.js and curl. A new class needs an entry in `CLASSES` first.
+Quests, their levels and their rewards come from WoW: Forever itself: the QuestieDB addon in your install
+(Forever's own quests included), and item level requirements from the game's item table. A quest the guide
+hands in on a step (its `quests:` list) gives its reward on that step; any other quest you can do there
+(named, picked up, or in the step's zone) gives it at the first step in its zone where you've reached the
+quest's level and minimum level, and an item that needs a higher level waits until you have it. Then the
+tool walks the steps in order and puts on each reward that's an upgrade for the class (the stat weights are
+in `CLASSES` at the top of the tool). On the page, the window shows what you have when you *start* your
+step; the step's own rewards are listed under "This step gives you".
+
+It also saves a pool of every other green and blue item the class can use, levels 1–60, with where each
+comes from (another quest, a dungeon boss, a profession recipe, a vendor, or the Auction House for items
+that bind when equipped; from classicdb.ch, with stats and icons from Wowhead's classic tooltips). The Gear
+tab fills empty slots with the best one you can buy or craft, lists "Worth buying now" upgrades, and shows
+all the options for a slot when you click it. Items you buy rather than earn from a quest (the magic wands)
+go in `tools/gear-extra.json`. Downloads are cached in `tools/.gear-cache` (not in git); the first run
+without it takes about half an hour. Needs Node.js, curl and the game install (`--game "<folder>"` if it
+isn't at `E:/World of Warcraft/_forever_`). A new class needs an entry in `CLASSES` first.
 
 ## Hosting on GitHub Pages
 

@@ -3,26 +3,27 @@
     python tools/build-gear.py              all characters
     python tools/build-gear.py gnome-mage   one character (its id in assets/js/characters.js)
 
-Where the items come from, for each character's guide (<folder>/data/guide.js):
-  1. Every quest a step names in <b>bold</b> (looked up on classicdb.ch by name).
-     You get its reward at the last step that names it.
-  2. The follow-up quests of those (classicdb's "Open Quests"), up to 5 deep: the guide
-     often names only the first quest of a chain, and the reward comes at the end.
-  3. The other quests in the zones each step sends you to (a step's first map zone),
-     at the levels the guide has you there. Cities, reputation turn-ins and raid/dungeon
-     quests are left out.
-  4. tools/gear-extra.json: items the guide names that classicdb gets wrong or doesn't
-     have (bought wands, WoW: Forever changes), and quests whose classicdb reward to skip.
-Item stats and icons come from Wowhead's classic tooltips.
-
+Quests, their levels and their rewards come from WoW: Forever itself: the QuestieDB addon in your
+install (every quest's level and minimum level, and which quests reward each item, Forever's own new
+quests included). Item level requirements come from the game's item table (ItemSparse, with the
+server's latest changes from Cache/ADB applied). For each character's guide:
+  1. A quest the guide hands in on a step (the step's quests:{} list) gives its reward on that step.
+  2. Every other quest you can do (named in bold, picked up, or simply in a zone a step sends you to)
+     gives its reward at the first step in its zone where you've reached both its minimum level and
+     its quest level. A quest no step reaches is left out. Cities and reputation turn-ins are left out.
+  3. An item that needs a higher level than the step waits for the first step where you have it.
+  4. tools/gear-extra.json: items you buy rather than earn from a quest (the magic wands).
 Then it walks the steps in order, "equipping" each reward that beats what's worn, for the
 class's stats (CLASSES below). A reward with a choice takes the single best option.
 
-Downloads are cached in tools/.gear-cache (delete it to fetch everything again; the first
-run takes about 30 minutes because the sites are slow and rate-limited). Needs Node.js
-(to read the guide data) and curl. Steps are saved by title, so adding steps to a guide
-doesn't break gear.js, but run this again after changing which quests or zones a guide uses.
-Afterwards run tools/extract-icons.py so the new item icons are stored with the site.
+It also saves a pool of other items for each slot (other quests, dungeon drops, crafting, vendors,
+the Auction House) from classicdb.ch; item stats and icons come from Wowhead's classic tooltips.
+Downloads are cached in tools/.gear-cache (delete it to fetch everything again; the first run takes
+about half an hour because the sites are slow). Needs Node.js, curl and your game install.
+Steps are saved by title, so adding steps to a guide doesn't break gear.js, but run this again after
+changing a guide's quests or zones. Afterwards run tools/extract-icons.py for the new item icons.
+
+    python tools/build-gear.py [ids…] [--game "E:/World of Warcraft/_forever_"]
 """
 import html
 import json
@@ -52,6 +53,11 @@ CLASSES = {
                   wdps=dict(melee=2.4, ranged=.5), word="leather",
                   stats=["Agility", "Stamina", "Strength", "Spirit", "Intellect"]),
 }
+GAME = next((sys.argv[i + 1] for i, a in enumerate(sys.argv) if a == "--game" and i + 1 < len(sys.argv)),
+            "E:/World of Warcraft/_forever_")
+RACE_BIT = {"Human": 1, "Orc": 2, "Dwarf": 4, "Night Elf": 8, "Undead": 16, "Tauren": 32, "Gnome": 64, "Troll": 128}
+CLASS_BIT = {"Warrior": 1, "Paladin": 2, "Hunter": 4, "Rogue": 8, "Priest": 16, "Shaman": 64, "Mage": 128,
+             "Warlock": 256, "Druid": 1024}
 SKIP_ZONES = {"Stormwind", "Ironforge", "Darnassus", "Orgrimmar", "Thunder Bluff", "Undercity"}
 SKIP_QUESTS = re.compile(r"Armaments of|The Argent Hold|Reputation")
 
@@ -158,9 +164,78 @@ def zone_quests(zone_ids):
 def item_tooltip(iid):
     t = get(f"https://nether.wowhead.com/classic/tooltip/item/{iid}?dataEnv=4&locale=0", f"i_{iid}")
     try:
-        return json.loads(t)
+        d = json.loads(t)
     except ValueError:
         return None
+    return d if isinstance(d, dict) and d.get("tooltip") else None   # an item Wowhead's classic database doesn't have
+
+
+# ---------------------------------------------------------------- WoW: Forever's own data (your install)
+
+QUESTIE_JS = r"""
+// every quest and quest reward in the QuestieDB addon: {quests: {id: [name, minLevel, level, races, classes, zone]},
+// rewards: {itemId: [questId, ...]}}
+const fs = require('fs');
+const src = fs.readFileSync(process.argv[2], 'utf8');
+eval(src.slice(src.indexOf('function cbor'), src.indexOf('/* ---------- the database')));
+const raw = new Map();
+for (const line of fs.readFileSync(process.argv[1], 'utf8').split(/\r?\n/)) {
+  const m = /^## X-(Quest|Item)-(\d+)-(S|6): (.*)$/.exec(line);
+  if (m) raw.set(`${m[1]}-${m[2]}-${m[3]}`, m[4]);
+}
+const f = (k) => { try { return cbor(Buffer.from(raw.get(k), 'base64')); } catch (e) { return undefined; } };
+const quests = {}, rewards = {};
+for (const k of raw.keys()) {
+  const [kind, id, part] = k.split('-');
+  if (kind === 'Quest') { const q = f(k) || {}; quests[id] = [q[1] || '', q[4] || 0, q[5] || 0, q[6] || 0, q[7] || 0, q[17] || 0]; }
+  else if (part === '6') { const q = f(k); if (Array.isArray(q) && q.length) rewards[id] = q; }
+}
+console.log(JSON.stringify({ quests, rewards }));
+"""
+
+
+def questie():
+    toc = os.path.join(GAME, "Interface", "AddOns", "QuestieDB", "QuestieDB_Forever.toc")
+    if not os.path.exists(toc):
+        sys.exit(f"QuestieDB not found at {toc} (install Questie for WoW: Forever, or pass --game)")
+    d = node(QUESTIE_JS, toc, os.path.join(SITE, "tools", "build-quest-data.js"))
+    for v in d["quests"].values():
+        if v[2] <= 0:            # a quest that scales with you has no fixed level: use its minimum
+            v[2] = v[1]
+    return d
+
+
+def forever_required_levels():
+    """{item id: level needed}, from the game's item table with the server's latest changes"""
+    import glob
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("talents", os.path.join(SITE, "tools", "extract-talents.py"))
+    et = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(et)
+    from casc import Casc
+    from db2 import apply_hotfixes, parse_dbd, read_hotfix_file, read_table
+    casc = Casc(GAME)
+    build = et.casc_build(GAME)
+    e = {x["tableName"]: x for x in json.loads(et.fetch(et.MANIFEST))}["ItemSparse"]
+    layout = parse_dbd(et.fetch(et.DBD.format("ItemSparse")).decode("utf-8"), build)
+    rows = read_table(casc.read_fdid(e["db2FileDataID"], zero_encrypted=True), layout)
+    hot = []
+    for f in sorted(glob.glob(os.path.join(GAME, "Cache", "ADB", "enUS", "DBCache.bin*")), key=os.path.getmtime):
+        try:
+            hot += read_hotfix_file(f)
+        except (OSError, AssertionError):
+            pass                  # the game keeps the newest one open while it runs
+    apply_hotfixes(rows, hot, int(e["tableHash"], 16), layout)
+    return {str(i): r.get("RequiredLevel", 0) for i, r in rows.items()}
+
+
+def zone_names():
+    """outdoor zone ids -> names (the list tools/build-quest-data.js uses), plus the dungeons"""
+    src = open(os.path.join(SITE, "tools", "build-quest-data.js"), encoding="utf-8").read()
+    block = src[src.index("const ZONE_NAMES"):src.index("};", src.index("const ZONE_NAMES"))]
+    names = {int(a): b for a, b in re.findall(r'(\d+): "([^"]+)"', block)}
+    names.update(DUNGEONS)
+    return names
 
 
 # ---------------------------------------------------------------- the guides
@@ -173,6 +248,7 @@ console.log(JSON.stringify({
   steps: __S.map((s, i) => {
     const txt = [s.title, ...(s.todo || []), s.tip || '', s.done || ''].join(' ');
     return { i, lv: s.lv, title: s.title, zones: (s.map || []).map((m) => m[0]),
+             quests: Object.keys(s.quests || {}).map(Number), pickup: Object.keys(s.pickup || {}).map(Number),
              names: [...new Set([...txt.matchAll(/<b>([^<]+)<\/b>/g)].map((m) => m[1].trim()))] };
   }),
   zones: __Z,
@@ -370,17 +446,40 @@ def pool_item(iid, page, lv):
     return (d, src) if src else None
 
 
-def build_pool(cls, p, db):
+def quest_ok(q, char):
+    """a WoW: Forever quest this character can do: its race and class, not a reputation turn-in"""
+    name, _, _, races, classes, _ = q
+    return (name and not SKIP_QUESTS.search(name)
+            and (not races or races & RACE_BIT[char["race"]]) and (not classes or classes & CLASS_BIT[char["cls"]]))
+
+
+def quest_where(q, zones):
+    zone = q[5]
+    return zones.get(zone) or ("class quest" if zone < 0 else "")
+
+
+def item_req(iid, it, db):
+    """level needed to wear it: WoW: Forever's own value when the game has the item"""
+    return db["freq"].get(str(iid), it["req"]) or 1
+
+
+def build_pool(char, cls, p, db):
     """the items worth listing as alternatives for this class: per slot group and level, the best few of each source"""
     cand = []
-    # quest rewards from the zones the guides visit (their items have no level of their own: the quest's counts)
+    # quest rewards: the quest's level is when you get it (the items themselves rarely need a level)
     every = dict(db["pool"])
-    for iid, (name, zone, qlv, req) in db["questrewards"].items():
-        if iid not in every and db["items"].get(iid):
-            every[iid] = (dict(db["items"][iid], _req=req), ["quest", f"Quest: {name} ({zone}, level {qlv})"])
+    Q = db["questie"]["quests"]
+    for iid, qs in db["questie"]["rewards"].items():
+        if iid in every or not db["items"].get(iid):
+            continue
+        ok = [Q[str(q)] for q in qs if str(q) in Q and quest_ok(Q[str(q)], char) and 0 < Q[str(q)][2] <= 60]
+        if ok:
+            q = min(ok, key=lambda q: q[2])
+            where = quest_where(q, db["zonenames"])
+            every[iid] = (dict(db["items"][iid], _req=q[2]), ["quest", f"Quest: {q[0]} ({where + ', ' if where else ''}level {q[2]})"])
     for iid, (d, src) in every.items():
         it = parse_item(int(iid), d)
-        it["req"] = max(it["req"], d.get("_req", 1))
+        it["req"] = max(item_req(iid, it, db), d.get("_req", 1))
         g = fits(it, cls, p)
         if not g:
             continue
@@ -409,55 +508,91 @@ def build(char, guide, db):
     steps = guide["steps"]
     items = db["items"]
     step_lv = {r["i"]: int(re.match(r"\d+", r["lv"]).group()) for r in steps}
-    last = {}
-    for r in steps:
-        for n in r["names"]:
-            last[html.unescape(n)] = r["i"]
+    span = lambda lv: [int(n) for n in re.findall(r"\d+", lv)]
+    lo_of = {r["i"]: min(span(r["lv"])) for r in steps}          # "28–30": you're 28 when the step starts
+    hi_of = {r["i"]: max(span(r["lv"])) for r in steps}          # …and 30 when it ends
+    Q = db["questie"]["quests"]
+    zid_of = {k: z["id"] for k, z in guide["zones"].items() if isinstance(z.get("id"), int)}
+    zname_of = {z["id"]: z["name"] for z in guide["zones"].values() if isinstance(z.get("id"), int)}
+
+    def rewards(qid):
+        ids = db["rewards_of"].get(str(qid), [])
+        kinds = db["kinds"].get(str(qid), {})
+        return [[int(i), kinds.get(str(i), "choice" if len(ids) > 1 else "given")] for i in ids]
+
+    def label(qid):
+        q = Q[str(qid)]
+        where = quest_where(q, db["zonenames"])
+        return f"Quest: {q[0]} ({where + ', ' if where else ''}level {q[2]})"
 
     events = []   # (step, where from, [(item id, "given" | "choice")])
-    roots = {}    # quest id the guide names -> its step
-    for name, ids in db["names"].items():
-        if name not in last or name in EXTRA.get("skip", []):
-            continue
-        s = last[name]
-        best = None
-        for q in ids:
-            qd = db["quests"].get(str(q))
-            if not qd or qd.get("side") == "horde":
-                continue
-            d = abs((qd.get("level") or step_lv[s]) - step_lv[s])
-            if best is None or d < best[0]:
-                best = (d, q)
-        if not best or best[0] > 12:
-            continue
-        roots[best[1]] = s
-        events.append((s, f"Quest: {name}", db["quests"][str(best[1])]["items"]))
-    for q, v in db["chain"].items():
-        if v["root"] in roots:
-            events.append((roots[v["root"]], f"Quest: {v['title']}", v["items"]))
+    done = set()
+    # 1. quests the guide hands in on a step: their rewards come on that step
+    for r in steps:
+        for qid in r["quests"]:
+            q = Q.get(str(qid))
+            if q and qid not in done:
+                done.add(qid)
+                events.append((r["i"], label(qid), rewards(qid)))
+                if q[2] > hi_of[r["i"]] + 2 and rewards(qid):
+                    print(f"  note: step {r['i'] + 1} ({r['lv']}) hands in {q[0]}, a level {q[2]} quest")
 
-    zid_of = {k: z["id"] for k, z in guide["zones"].items() if isinstance(z.get("id"), int)}
-    known = set(roots) | {int(q) for q in db["chain"]}
-    span = lambda lv: [int(n) for n in re.findall(r"\d+", lv)]
-    for k, zid in zid_of.items():
-        zname = guide["zones"][k]["name"]
-        st = [(r["i"], min(span(r["lv"])), max(span(r["lv"]))) for r in steps if r["zones"] and r["zones"][0] == k]
-        if not st or zname in SKIP_ZONES:
+    # 2. every other quest you can do: named in bold, picked up, or in a zone a step sends you to.
+    #    Its reward comes at the first step in its zone where you've reached its minimum level and its level.
+    by_name = {}
+    for qid, q in Q.items():
+        by_name.setdefault(q[0].lower(), []).append(int(qid))
+    named = {}    # quest id -> first step that names or picks it up
+    for r in steps:
+        for qid in r["pickup"]:
+            named.setdefault(qid, r["i"])
+        for n in r["names"]:
+            for qid in by_name.get(html.unescape(n).lower(), []):
+                named.setdefault(qid, r["i"])
+    zone_steps = {}
+    for r in steps:
+        z = zid_of.get(r["zones"][0]) if r["zones"] else None
+        if z and zname_of.get(z) not in SKIP_ZONES:
+            zone_steps.setdefault(z, []).append(r["i"])
+    for qid in sorted(set(named) | {int(i) for i, q in Q.items() if q[5] in zone_steps}):
+        q = Q.get(str(qid))
+        if not q or qid in done or not quest_ok(q, char) or not db["rewards_of"].get(str(qid)) or not 0 < q[2] <= 62:
             continue
-        for q in db["zones"].get(str(zid), []):
-            L = int(q.get("level") or 0)
-            if (SKIP_QUESTS.search(q["name"]) or q.get("side") not in ("1", "3") or int(q["id"]) in known or L <= 0
-                    or q.get("type", 0) not in (0, 1) or L > max(h for _, _, h in st) + 2 or L < min(l for _, l, _ in st) - 4):
-                continue
-            s = next((i for i, lo, hi in st if hi >= L), st[-1][0])   # first step there you're high enough for
-            rw = [[i, "given"] for i, _ in q.get("itemrewards") or []] + [[i, "choice"] for i, _ in q.get("itemchoices") or []]
-            events.append((s, f"Quest: {q['name']} ({zname})", rw))
+        minl, L, zone = q[1], q[2], q[5]
+        start = named.get(qid, 0)
+        fits_at = lambda i: i >= start and lo_of[i] >= minl and hi_of[i] >= L
+        s = next((i for i in zone_steps.get(zone, []) if fits_at(i)), None)
+        if s is None and qid in named and zone not in zone_steps:
+            # outside the guide's zones (class and dungeon quests): the first step from its mention on that fits
+            s = next((r["i"] for r in steps if fits_at(r["i"])), None)
+        if s is None or (qid not in named and L < lo_of[s] - 4):
+            continue          # no step reaches it, or it would be grey (no XP) by the time you're there
+        done.add(qid)
+        events.append((s, label(qid), rewards(qid)))
 
     idx = {r["title"]: r["i"] for r in steps}
     for e in EXTRA.get(char["id"], []):
         ids = e.get("ids") or [e["id"]]
         events.append((idx[e["step"]], e["from"], [[i, "choice" if len(ids) > 1 else "given"] for i in ids]))
-    events.sort(key=lambda e: e[0])
+
+    # 3. an item that needs a higher level than the step waits for the first step where you have it
+    placed = []
+    for s, src, rw in events:
+        now, later = [], []
+        for iid, kind in rw:
+            if not items.get(str(iid)):
+                continue
+            req = item_req(iid, parse_item(iid, items[str(iid)]), db)
+            (now if req <= lo_of[s] else later).append((iid, kind, req))
+        if now:
+            placed.append((s, src, [[i, k] for i, k, _ in now]))
+        for iid, kind, req in later:
+            if kind == "choice" and any(k == "choice" for _, k, _ in now):
+                continue      # you'd pick one of the others you can wear now
+            t = next((r["i"] for r in steps if r["i"] > s and lo_of[r["i"]] >= req), None)
+            if t is not None:
+                placed.append((t, src, [[iid, kind]]))
+    events = sorted(placed, key=lambda e: e[0])
 
     worn, out, src_of = {}, [], {}
 
@@ -473,8 +608,9 @@ def build(char, guide, db):
             if not items.get(str(iid)):
                 continue
             it = parse_item(iid, items[str(iid)])
+            it["req"] = item_req(iid, it, db)
             g = fits(it, cls, p)
-            if not g or it["req"] > lv + 2:
+            if not g:
                 continue
             st = {k: v for k, v in it["stats"].items() if k not in ("Armor", "dps")}
             if g in ("finger", "trinket", "neck") and not st:
@@ -545,7 +681,7 @@ def build(char, guide, db):
             g = fits(it, cls, p)
             rows.append({"step": title[o["s"]], "slot": o["slot"], "id": it["id"], "n": it["name"], "i": it["icon"],
                          "q": it["q"], "g": g, "sc": round(score(it, p, g), 1), "lines": it["lines"], "from": o["src"]})
-    pool = build_pool(cls, p, db)
+    pool = build_pool(char, cls, p, db)
     head = f"""/* {char['name']}: the gear this guide's quests give you, for the Gear tab (assets/js/gear.js).
    Made by tools/build-gear.py: for each quest you hand in, its reward is checked against what
    you're wearing, and the best upgrade for a {cls.lower()} is put on. Don't edit by hand; change
@@ -572,59 +708,40 @@ const GEAR = {{
 def main():
     os.makedirs(CACHE, exist_ok=True)
     chars = node(CHARS_JS, os.path.join(SITE, "assets", "js", "characters.js"))
-    if len(sys.argv) > 1:
-        chars = [c for c in chars if c["id"] in sys.argv[1:]]
+    ids = [a for a in sys.argv[1:] if not a.startswith("--") and a != GAME]
+    if ids:
+        chars = [c for c in chars if c["id"] in ids]
     chars = [c for c in chars if c["cls"] in CLASSES or print(f"skipping {c['name']}: add {c['cls']} to CLASSES first")]
     guides = {c["id"]: node(GUIDE_JS, os.path.join(SITE, c["folder"], "data", "guide.js")) for c in chars}
 
-    names = sorted({html.unescape(n) for g in guides.values() for r in g["steps"] for n in r["names"]})
-    names = [n for n in names if 3 < len(n) < 60 and not re.match(r"^[\d\s/.+-]+$", n)]
-    print(f"looking up {len(names)} bold names as quests…")
-    found = dict(zip(names, pmap(search_quest, names)))
-    db = {"names": {n: ids for n, ids in found.items() if ids}}
-    qids = sorted({i for ids in db["names"].values() for i in ids})
-    print(f"{len(qids)} quests; reading their pages…")
-    db["quests"] = {str(q): v for q, v in zip(qids, pmap(quest, qids))}
-
-    print("following quest chains…")
-    chain, seen = {}, set(qids)
-    frontier = [(q, q, 0) for q in qids]
-    while frontier:
-        nxt = []
-        for (q, root, d), ups in zip(frontier, pmap(lambda f: follow_ups(f[0]), frontier)):
-            for n in ups:
-                if n not in seen and d < 5:
-                    seen.add(n)
-                    chain[n] = root
-                    nxt.append((n, root, d + 1))
-        frontier = nxt
-    db["chain"] = {}
-    for q, v in zip(sorted(chain), pmap(quest, sorted(chain))):
-        root = db["quests"][str(chain[q])]
-        if v["side"] != "horde" and not (v["level"] and root.get("level") and v["level"] > root["level"] + 8):
-            db["chain"][str(q)] = dict(v, root=chain[q])
+    print("reading WoW: Forever's quests (QuestieDB) and item levels (game files)…")
+    db = {"questie": questie(), "zonenames": zone_names()}
+    levels = os.path.join(CACHE, "forever-item-levels.json")
+    if not os.path.exists(levels) or "--refresh" in sys.argv:
+        json.dump(forever_required_levels(), open(levels, "w"))
+    db["freq"] = json.load(open(levels))
+    db["rewards_of"] = {}
+    for iid, qs in db["questie"]["rewards"].items():
+        for q in qs:
+            db["rewards_of"].setdefault(str(q), []).append(iid)
 
     zone_ids = sorted({z["id"] for g in guides.values() for z in g["zones"].values() if isinstance(z.get("id"), int)})
-    print(f"reading the quest lists of {len(zone_ids)} zones…")
+    print(f"reading the quest lists of {len(zone_ids)} zones (which rewards are a choice)…")
     db["zones"] = {str(k): v for k, v in zone_quests(zone_ids).items()}
-    zone_name = {str(z["id"]): z["name"] for g in guides.values() for z in g["zones"].values() if isinstance(z.get("id"), int)}
-    db["questrewards"] = {}      # item id -> (quest, zone, quest level, level needed): alternatives for the Gear tab
-    for zid, qs in db["zones"].items():
-        if zone_name.get(zid) in SKIP_ZONES:
-            continue
+    db["kinds"] = {}
+    for qs in db["zones"].values():
         for q in qs:
-            if q.get("side") in ("1", "3") and not SKIP_QUESTS.search(q["name"]) and q.get("type", 0) in (0, 1):
-                L = int(q.get("level") or 0)
-                for i, _ in (q.get("itemrewards") or []) + (q.get("itemchoices") or []):
-                    db["questrewards"].setdefault(str(i), (q["name"], zone_name.get(zid, ""), L, int(q.get("reqlevel") or max(1, L - 5))))
+            k = db["kinds"].setdefault(str(q["id"]), {})
+            k.update({str(i): "given" for i, _ in q.get("itemrewards") or []})
+            k.update({str(i): "choice" for i, _ in q.get("itemchoices") or []})
 
-    iids = {i for q in list(db["quests"].values()) + list(db["chain"].values()) for i, _ in q["items"]}
-    iids |= {i for qs in db["zones"].values() for q in qs if q.get("side") in ("1", "3")
-             for i, _ in (q.get("itemrewards") or []) + (q.get("itemchoices") or [])}
+    Q = db["questie"]["quests"]
+    iids = {int(i) for i, qs in db["questie"]["rewards"].items()
+            if any(str(q) in Q and 0 < Q[str(q)][2] <= 62 and any(quest_ok(Q[str(q)], c) for c in chars) for q in qs)}
     iids |= {i for c in chars for e in EXTRA.get(c["id"], []) for i in e.get("ids") or [e["id"]]}
     iids = sorted(iids)
     print(f"reading {len(iids)} item tooltips…")
-    db["items"] = {str(i): v for i, v in zip(iids, pmap(item_tooltip, iids, 2))}
+    db["items"] = {str(i): v for i, v in zip(iids, pmap(item_tooltip, iids, 4))}
 
     pids = sorted({i for c in chars for i in pool_ids(c["cls"])})
     print(f"reading {len(pids)} item pages for alternatives, auction house and crafting…")
